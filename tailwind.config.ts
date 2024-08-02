@@ -9,5 +9,10 @@ export default {
 
   plugins: [
     require('daisyui'),
-  ]
+  ],
+
+  daisyui: {
+    themes: true,
+    darkTheme: "forest",
+  }
 } as Config;
