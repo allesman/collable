@@ -7,9 +7,11 @@
   let songQuery = '';
   let searchResults = [];
   let error = null;
+  let isLoading = false; // Add a loading state variable
 
   async function handleSearch(event) {
     event.preventDefault(); // Prevent the default form submission behavior
+    isLoading = true; // Set loading state to true
     try {
       const response = await fetch(`api/search?query=${encodeURIComponent(songQuery)}`);
       if (!response.ok) {
@@ -22,6 +24,9 @@
     } catch (err) {
       error = err.message;
       searchResults = [];
+    }
+    finally {
+      isLoading = false; // Set loading state to false after the request is complete
     }
   }
 
@@ -48,16 +53,17 @@
   </form>
 </div>
 
-{#if error}
-  <p class="error">{error}</p>
-{/if}
-
-{#if searchResults.length > 0}
+{#if isLoading}
+  <p>Loading...</p>
+{:else if searchResults.length > 0}
   <ul>
     {#each searchResults as hit}
       <li>{hit.result.full_title}</li>
     {/each}
   </ul>
-{:else if searchResults.length === 0 && !error}
-  <p>Loading...</p>
 {/if}
+
+{#if error}
+  <p class="error">{error}</p>
+{/if}
+
