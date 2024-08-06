@@ -9,6 +9,8 @@
   let error = null;
   let isLoading = false; // Add a loading state variable
 
+  let artist = "Kendrick Lamar";
+
   async function handleSearch(event) {
     event.preventDefault(); // Prevent the default form submission behavior
     isLoading = true; // Set loading state to true
@@ -18,12 +20,45 @@
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
       const data = await response.json();
-      console.log(data);
-      searchResults = data;
+      // console.log(data);
+      for (let i=0;i<data.length;i++)
+      {
+        let hasArtist=false;
+        let primary = data[i].result.primary_artists;
+        let features = data[i].result.featured_artists;
+        // console.log(data[i].result.primary_artists[0].name);
+        // try
+        // {
+        // console.log(data[i].result.featured_artists[0].name);
+        // }
+        // catch{
+        //   console.log("no features");
+        // }
+        primary.forEach(element => {
+          if (element.name==artist)
+          {
+            hasArtist=true;
+          }
+        });
+        features.forEach(element => {
+          if(element.name==artist)
+          {
+            hasArtist=true;
+          }
+        });
+        if (hasArtist)
+        {
+          searchResults.push(data[i]);
+          // console.log(searchResults);
+        }
+      }
+      // searchResults = data;
+      console.log(searchResults.length + "songs featured artist");
       error = null;
     } catch (err) {
       error = err.message;
       searchResults = [];
+      console.log("oh no error:"+error);
     }
     finally {
       isLoading = false; // Set loading state to false after the request is complete
@@ -61,6 +96,8 @@
       <li>{hit.result.full_title}</li>
     {/each}
   </ul>
+{:else}
+<p class="text-gray-400">{searchResults.length} Results</p>
 {/if}
 
 {#if error}

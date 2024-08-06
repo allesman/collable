@@ -1,7 +1,8 @@
 import { searchGenius } from "$lib/geniusApi";
 
 export async function GET({ url }) {
-  const query = url.searchParams.get("query") || "Kendrick Lamar";
+  const query = url.searchParams.get("query");
+  const artist = url.searchParams.get("artist");
   try {
     const data = await searchGenius(query);
     return new Response(JSON.stringify(data.response.hits), {
