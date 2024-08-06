@@ -1,10 +1,11 @@
-import { searchGenius } from "$lib/geniusApi";
+import { searchGenius, getArtistInfo } from "$lib/geniusApi";
 
 export async function GET({ url }) {
   const query = url.searchParams.get("query");
-  const artist = url.searchParams.get("artist");
+  const artistId = url.searchParams.get("artist");
   try {
-    const data = await searchGenius(query);
+    const artist = await getArtistInfo(artistId);
+    const data = await searchGenius(query + " " + artist);
     return new Response(JSON.stringify(data.response.hits), {
       headers: { "Content-Type": "application/json" },
     });

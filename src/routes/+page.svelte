@@ -9,51 +9,49 @@
   let error = null;
   let isLoading = false; // Add a loading state variable
 
-  let artist = "Kendrick Lamar";
+  let artist = "Travis Scott";
+  let artistId= 683879;
 
   async function handleSearch(event) {
     event.preventDefault(); // Prevent the default form submission behavior
     isLoading = true; // Set loading state to true
     try {
-      const response = await fetch(`api/search?query=${encodeURIComponent(songQuery)}`);
+      const response = await fetch(`api/search?query=${encodeURIComponent(songQuery)}&artistId=${artistId}`);
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
       const data = await response.json();
+      // Clear the searchResults array
+      searchResults = [];
       // console.log(data);
       for (let i=0;i<data.length;i++)
       {
         let hasArtist=false;
         let primary = data[i].result.primary_artists;
         let features = data[i].result.featured_artists;
-        // console.log(data[i].result.primary_artists[0].name);
-        // try
-        // {
-        // console.log(data[i].result.featured_artists[0].name);
-        // }
-        // catch{
-        //   console.log("no features");
-        // }
         primary.forEach(element => {
-          if (element.name==artist)
+          // if (element.name==artist)
+          if (element.id==artistId)
           {
             hasArtist=true;
           }
         });
         features.forEach(element => {
-          if(element.name==artist)
+          // if(element.name==artist)
+          if (element.id==artistId)
           {
             hasArtist=true;
           }
         });
+        // hasArtist=true;
         if (hasArtist)
         {
           searchResults.push(data[i]);
-          // console.log(searchResults);
         }
+        console.log(data[i]);
       }
       // searchResults = data;
-      console.log(searchResults.length + "songs featured artist");
+      console.log(searchResults.length + " songs featured artist");
       error = null;
     } catch (err) {
       error = err.message;
