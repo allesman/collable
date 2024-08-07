@@ -4,6 +4,8 @@ import {
   ResourceOwnerPassword,
   AuthorizationCode,
 } from "simple-oauth2";
+
+// TODO: put into geniusApi.ts in class
 const config = {
   client: {
     id: CLIENT_ID,

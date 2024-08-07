@@ -1,5 +1,6 @@
 import { getAccessToken } from "./auth";
-
+// TODO: class pattern
+// TODO: singleton pattern?
 export async function searchGenius(query: string) {
   const accessToken = await getAccessToken();
   const response = await fetch(

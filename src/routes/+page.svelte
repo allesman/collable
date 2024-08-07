@@ -9,7 +9,7 @@
   let error = null;
   let isLoading = false; // Add a loading state variable
 
-  let artist = "Travis Scott";
+  let artist = "Travis Scott"; // TODO: remove
   let artistId= 683879;
 
   async function handleSearch(event) {
@@ -29,26 +29,30 @@
         let hasArtist=false;
         let primary = data[i].result.primary_artists;
         let features = data[i].result.featured_artists;
-        primary.forEach(element => {
+        for (element in primary)
+        {
           // if (element.name==artist)
           if (element.id==artistId)
           {
             hasArtist=true;
+            searchResults.push(data[i]);
+            break;
           }
-        });
-        features.forEach(element => {
+        }
+        if (hasArtist)
+        {
+          continue;
+        }
+        for (element in features)
+        {
           // if(element.name==artist)
           if (element.id==artistId)
           {
-            hasArtist=true;
+            searchResults.push(data[i]);
+            break;
           }
-        });
-        // hasArtist=true;
-        if (hasArtist)
-        {
-          searchResults.push(data[i]);
         }
-        console.log(data[i]);
+        // console.log(data[i]);
       }
       // searchResults = data;
       console.log(searchResults.length + " songs featured artist");
