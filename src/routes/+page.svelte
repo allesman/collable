@@ -29,7 +29,7 @@
         let hasArtist=false;
         let primary = data[i].result.primary_artists;
         let features = data[i].result.featured_artists;
-        for (element in primary)
+        for (let element in primary)
         {
           // if (element.name==artist)
           if (element.id==artistId)
@@ -43,7 +43,7 @@
         {
           continue;
         }
-        for (element in features)
+        for (let element in features)
         {
           // if(element.name==artist)
           if (element.id==artistId)

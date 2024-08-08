@@ -36,5 +36,6 @@ export async function getArtistInfo(query: string) {
   }
 
   const data = await response.json();
+  // console.log(data.response.artist.name);
   return data;
 }
