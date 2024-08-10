@@ -4,11 +4,11 @@
     </div>
     <label class="swap swap-rotate flex-none ">
         <!-- this hidden checkbox controls the state -->
-        <input type="checkbox" class="theme-controller" value="dark" checked />
+        <input type="checkbox" class="theme-controller" value="cupcake" />
 
         <!-- sun icon -->
         <svg
-            class="swap-off h-10 w-10 fill-current"
+            class="swap-on h-10 w-10 fill-current"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24">
             <path
@@ -17,7 +17,7 @@
 
         <!-- moon icon -->
         <svg
-            class="swap-on h-10 w-10 fill-current"
+            class="swap-off h-10 w-10 fill-current"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24">
             <path
