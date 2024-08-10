@@ -1,95 +1,50 @@
 <script>
+// TODO: remove this and adress type errors
 // @ts-nocheck
 
   import { onMount } from 'svelte';
 
-  let songQuery = '';
   let searchResults = [];
   let error = null;
-  let isLoading = false; // Add a loading state variable
+  let isLoading = false;
 
-  // let artist = "Travis Scott"; // TODO: remove
   let artistId= 683879;
 
-  async function handleSearch(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-    isLoading = true; // Set loading state to true
-    try {
-      const response = await fetch(`api/search?query=${encodeURIComponent(songQuery)}&artistId=${artistId}`);
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
-      const data = await response.json();
-      // Clear the searchResults array
-      searchResults = [];
-      // console.log(data);
-      for (let i=0;i<data.length;i++)
-      {
-        let hasArtist=false;
-        let primary = data[i].result.primary_artists;
-        let features = data[i].result.featured_artists;
-        // searchResults.push(data[i]); // Debug line, uncomment to see all results
-        // TODO: simplify by combining primary and featured artists?
-        for (let element of primary)
-        {
-          // if (element.name==artist)
-          if (element.id==artistId)
-          {
-            console.log("found artist in primary");
-            hasArtist=true;
-            searchResults.push(data[i]);
-            break;
-          }
-        }
-        if (hasArtist)
-        {
-          continue;
-        }
-        for (let element of features)
-        {
-          // if(element.name==artist)
-          if (element.id==artistId)
-          {
-            console.log("found artist in featured");
-            searchResults.push(data[i]);
-            break;
-          }
-        }
-        // console.log(data[i]);
-      }
-      // searchResults = data;
-      console.log(searchResults.length + " songs featured artist");
-      error = null;
-    } catch (err) {
-      error = err.message;
-      searchResults = [];
-      console.log("oh no error:"+error);
+  async function handleSubmit(event) {
+    event.preventDefault();
+    isLoading = true;
+    const formData = new FormData(event.target);
+    if (!formData.get('songQuery')) {
+      return;
     }
-    finally {
-      isLoading = false; // Set loading state to false after the request is complete
+    const response = await fetch(event.currentTarget.action, {
+      method: 'POST',
+      body: formData
+    });
+    if (response.ok) {
+      const result = await response.json();
+      // console.log(result.data);
+      searchResults = JSON.parse(JSON.parse(result.data)[0]);
+      console.log(searchResults);
+    } else {
+      error = 'Something went wrong';
     }
+    event.target.reset();
+    isLoading = false;
   }
-
-  // Optionally, you can perform an initial search on mount
-  // onMount(() => {
-  //   handleSearch(new Event('submit'));
-  // });
 </script>
 
-
 <div class="flex items-center justify-center">
-  <form on:submit={handleSearch} class="w-full max-w-xs">
-    <input
-      type="text"
-      placeholder="Enter Song :3"
-      class="input input-bordered w-full"
-      bind:value={songQuery}
-    />
-    
+
+  <form method="POST" on:submit|preventDefault={handleSubmit} autocomplete="off" class="w-full max-w-xs">
+    <!-- TODO: prevent from typing after submission -->
+    <input name="songQuery" type="text" placeholder="Enter Song :3" class="input input-bordered w-full" />
+    <input type="hidden" name="artistId" bind:value={artistId} />
     <div class="flex items-center justify-center">
       <button type="submit" class="btn mt-2 btn-primary">Search</button>
     </div>
   </form>
+
 </div>
 
 {#if isLoading}
