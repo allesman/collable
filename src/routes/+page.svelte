@@ -1,7 +1,6 @@
 <script>
 // @ts-nocheck
 
-  import Navbar from '$lib/components/Navbar.svelte';
   import { onMount } from 'svelte';
 
   let songQuery = '';
@@ -9,7 +8,7 @@
   let error = null;
   let isLoading = false; // Add a loading state variable
 
-  let artist = "Travis Scott"; // TODO: remove
+  // let artist = "Travis Scott"; // TODO: remove
   let artistId= 683879;
 
   async function handleSearch(event) {
@@ -29,11 +28,14 @@
         let hasArtist=false;
         let primary = data[i].result.primary_artists;
         let features = data[i].result.featured_artists;
-        for (let element in primary)
+        // searchResults.push(data[i]); // Debug line, uncomment to see all results
+        // TODO: simplify by combining primary and featured artists?
+        for (let element of primary)
         {
           // if (element.name==artist)
           if (element.id==artistId)
           {
+            console.log("found artist in primary");
             hasArtist=true;
             searchResults.push(data[i]);
             break;
@@ -43,11 +45,12 @@
         {
           continue;
         }
-        for (let element in features)
+        for (let element of features)
         {
           // if(element.name==artist)
           if (element.id==artistId)
           {
+            console.log("found artist in featured");
             searchResults.push(data[i]);
             break;
           }
@@ -73,7 +76,6 @@
   // });
 </script>
 
-<Navbar/>
 
 <div class="flex items-center justify-center">
   <form on:submit={handleSearch} class="w-full max-w-xs">
