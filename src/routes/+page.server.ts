@@ -6,7 +6,7 @@ export const load = (async () => {}) satisfies PageServerLoad;
 
 // TODO: caching?
 export const actions = {
-  default: async ({ request }) => {
+  search: async ({ request }) => {
     const data = await request.formData();
     // Do something with the data
     const geniusApi = await GeniusApi.initialize();
@@ -31,27 +31,14 @@ export const actions = {
       let searchResults = [];
       // console.log(data);
       for (let i = 0; i < data.length; i++) {
-        let hasArtist = false;
         let primary = data[i].result.primary_artists;
         let features = data[i].result.featured_artists;
+        let combinedArtists = primary.concat(features);
         // searchResults.push(data[i]); // Debug line, uncomment to see all results
-        // TODO: simplify by combining primary and featured artists?
-        for (let element of primary) {
+        for (let element of combinedArtists) {
           // if (element.name==artist)
           if (element.id == artistId) {
-            console.log("found artist in primary");
-            hasArtist = true;
-            searchResults.push(data[i]);
-            break;
-          }
-        }
-        if (hasArtist) {
-          continue;
-        }
-        for (let element of features) {
-          // if(element.name==artist)
-          if (element.id == artistId) {
-            console.log("found artist in featured");
+            console.log("found artist");
             searchResults.push(data[i]);
             break;
           }
@@ -65,11 +52,17 @@ export const actions = {
       //   },
       //   body: searchResults,
       // };
+      // TODO: filter out results that aren't songs
       return JSON.stringify(searchResults);
       // return "hiii";
     } catch (e) {
       console.error(e);
       return error(500, "Whut?");
     }
+  },
+  clickSong: async ({ request }) => {
+    const data = await request.formData();
+    console.log(data.get("songId"));
+    return "test";
   },
 } satisfies Actions;
