@@ -36,14 +36,12 @@ export const actions = {
     try {
       const data = apiData.response.hits;
       let searchResults = [];
-      // console.log(data);
       for (let i = 0; i < data.length; i++) {
         let primary = data[i].result.primary_artists;
         let features = data[i].result.featured_artists;
         let combinedArtists = primary.concat(features);
         // searchResults.push(data[i]); // Debug line, uncomment to see all results
         for (let element of combinedArtists) {
-          // if (element.name==artist)
           if (element.id == artistId) {
             searchResults.push(data[i]);
             break;
@@ -51,24 +49,11 @@ export const actions = {
         }
       }
       console.log(searchResults.length + " songs featured artist");
-      // return {
-      //   status: 200,
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: searchResults,
-      // };
       // TODO: filter out results that aren't songs
       return JSON.stringify(searchResults);
-      // return "hiii";
     } catch (e) {
       console.error(e);
       return error(500, "Whut?");
     }
-  },
-  clickSong: async ({ request }) => {
-    const data = await request.formData();
-    console.log(data.get("songId"));
-    return "test";
   },
 } satisfies Actions;
