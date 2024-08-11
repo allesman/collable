@@ -38,7 +38,7 @@ export default class GeniusApi {
         tokenHost: "https://api.genius.com",
       },
     };
-    const client = new ClientCredentials(config);
+    const client: ClientCredentials = new ClientCredentials(config);
 
     // Get an access token using the client object
     try {

@@ -4,10 +4,10 @@ import { error } from "@sveltejs/kit";
 
 export const load = (async () => {
   const geniusApi = await GeniusApi.initialize();
-  const data = await geniusApi.getArtistInfo("683879");
+  const data = await geniusApi.getArtistInfo("15740");
   const artistObj = data.response.artist;
   return {
-    artistObj: JSON.stringify(artistObj),
+    artistJSON: JSON.stringify(artistObj),
   };
 }) satisfies PageServerLoad;
 

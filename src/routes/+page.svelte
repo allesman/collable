@@ -1,30 +1,32 @@
-<script>
-  // TODO: remove this and adress type errors
-  // @ts-nocheck
+<!-- TODO:add eslint -->
+<script lang="ts">
+  import type { SearchResult, Song, Artist } from "$lib/types.js";
 
   // get the data from the server
-  export let data;
+  export let data: { artistJSON: string };
 
   // the different stages of the game
   // 0: select a song by the current artist
   // 1: select artist featured on the song to be new current artist -> back to 0
-  let gameStage = 0;
+  let gameStage: number = 0;
 
   // for gameStage 0
-  let artistObj = JSON.parse(data.artistObj); // the current artist, initialized with the artist from the server
-  let searchResults = [];
-  let error = null;
-  let isLoading = false;
+  let artistObj: Artist = JSON.parse(data.artistJSON); // the current artist, initialized with the artist from the server
+  let searchResults: SearchResult[] = [];
+  let error: string | null = null;
+  let isLoading: boolean = false;
 
-  async function handleSearch(event) {
+  async function handleSearch(event: SubmitEvent) {
     event.preventDefault();
     isLoading = true;
-    const formData = new FormData(event.target);
-    if (!formData.get("songQuery")) {
+    const form: HTMLFormElement = event.target as HTMLFormElement;
+    const formData: FormData = new FormData(form);
+    if (!formData.get("songQuery") || event.currentTarget == null) {
+      // if query is empty or form is null, don't send request
       isLoading = false;
       return;
     }
-    const response = await fetch(event.currentTarget.action, {
+    const response = await fetch(form.action, {
       method: "POST",
       body: formData,
     });
@@ -35,27 +37,24 @@
     } else {
       error = "Something went wrong";
     }
-    event.target.reset();
+    form.reset();
     isLoading = false;
   }
 
   // for gameStage 1
-  let song = null; // the song selected by the user
-  let songArtists = []; // the featured artists of the song selected by the user
+  let song: Song | undefined = undefined; // the song selected by the user
+  let songArtists: Artist[] = []; // the featured artists of the song selected by the user
 
-  async function handleClickSong(event) {
+  async function handleClickSong(index: number) {
     gameStage = 1;
-    const index = event.currentTarget.dataset.index;
     song = searchResults[index].result;
     songArtists = song.primary_artists.concat(song.featured_artists);
   }
 
-  async function handleClickArtist(event) {
+  async function handleClickArtist(index: number) {
     gameStage = 0;
-    const index = event.currentTarget.dataset.index;
-    artistObj = songArtists[index];
     searchResults = [];
-    console.log(artistObj.index);
+    artistObj = songArtists[index];
   }
 </script>
 
@@ -98,7 +97,7 @@
         {#each searchResults as hit, i}
           <li class="w-full text-center m-1">
             <button
-              on:click={handleClickSong}
+              on:click={() => handleClickSong(i)}
               data-index={i}
               class="btn btn-secondary btn-outline"
             >
@@ -121,13 +120,15 @@
   <!-- TODO: close out of this view? -->
   <div class="flex flex-col items-center justify-center mt-10">
     <button class="btn btn-secondary no-animation">
-      {song.title}
+      {#if song}
+        {song.title}
+      {/if}
     </button>
     <ul class="flex flex-col items-center justify-center mt-5">
       {#each songArtists as artist, i}
         <li class="w-full text-center m-1">
           <button
-            on:click={handleClickArtist}
+            on:click={() => handleClickArtist(i)}
             data-index={i}
             class="btn btn-secondary btn-outline">{artist.name}</button
           >
