@@ -38,10 +38,10 @@
 
   <form method="POST" on:submit|preventDefault={handleSubmit} autocomplete="off" class="w-full max-w-xs">
     <!-- TODO: prevent from typing after submission -->
-    <input name="songQuery" type="text" placeholder="Enter Song :3" class="input input-bordered w-full" />
+    <input name="songQuery" type="text" placeholder="Enter Song :3" disabled={isLoading} class="input input-bordered w-full" />
     <input type="hidden" name="artistId" bind:value={artistId} />
     <div class="flex items-center justify-center">
-      <button type="submit" class="btn mt-2 btn-primary">Search</button>
+      <button type="submit" disabled={isLoading} class="btn mt-2 btn-primary">Search</button>
     </div>
   </form>
 
