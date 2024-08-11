@@ -2,7 +2,14 @@ import type { Actions, PageServerLoad } from "./$types";
 import GeniusApi from "$lib/GeniusApi.js";
 import { error } from "@sveltejs/kit";
 
-export const load = (async () => {}) satisfies PageServerLoad;
+export const load = (async () => {
+  const geniusApi = await GeniusApi.initialize();
+  const data = await geniusApi.getArtistInfo("683879");
+  const artistObj = data.response.artist;
+  return {
+    artistObj: JSON.stringify(artistObj),
+  };
+}) satisfies PageServerLoad;
 
 // TODO: caching?
 export const actions = {
@@ -38,7 +45,6 @@ export const actions = {
         for (let element of combinedArtists) {
           // if (element.name==artist)
           if (element.id == artistId) {
-            console.log("found artist");
             searchResults.push(data[i]);
             break;
           }
