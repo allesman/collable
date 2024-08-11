@@ -59,7 +59,7 @@
 </script>
 
 <!-- Name of current artist -->
-<!-- add image -->
+<!-- TODO: add image -->
 <div class="text-center m-2 text-4xl text-primary">{artistObj.name}</div>
 
 <!-- Search Bar -->
