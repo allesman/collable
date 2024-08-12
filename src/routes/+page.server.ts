@@ -4,7 +4,7 @@ import { error } from "@sveltejs/kit";
 
 export const load = (async () => {
   const geniusApi = await GeniusApi.initialize();
-  const data = await geniusApi.getArtistInfo("15740");
+  const data = await geniusApi.getArtistInfo("35344"); // TODO: dont hardcode this
   const artistObj = data.response.artist;
   return {
     artistJSON: JSON.stringify(artistObj),
@@ -15,7 +15,6 @@ export const load = (async () => {
 export const actions = {
   search: async ({ request }) => {
     const data = await request.formData();
-    // Do something with the data
     const geniusApi = await GeniusApi.initialize();
     console.assert(geniusApi, "GeniusApi not initialized");
     const query = data.get("songQuery");
@@ -32,11 +31,13 @@ export const actions = {
     const artist = await geniusApi.getArtistInfo(artistId);
     const finalQuery = query + " " + artist.response.artist.name;
     console.log("Searching: " + finalQuery);
+    // TODO: use other api call in general (song), to 1) stop user from using tactical search, 2) also get collab ("&") songs, but this will need own search
     const apiData = await geniusApi.searchGenius(finalQuery);
     try {
       const data = apiData.response.hits;
       let searchResults = [];
       for (let i = 0; i < data.length; i++) {
+        // TODO: split artist if contains "&" and check each
         let primary = data[i].result.primary_artists;
         let features = data[i].result.featured_artists;
         let combinedArtists = primary.concat(features);

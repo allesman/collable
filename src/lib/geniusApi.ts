@@ -70,6 +70,7 @@ export default class GeniusApi {
     }
 
     const data = await response.json();
+    // TODO: only pass the data we need
     return data;
   }
 
@@ -88,7 +89,8 @@ export default class GeniusApi {
     }
 
     const data = await response.json();
-    // console.log(data.response.artist.name);
     return data;
   }
 }
+
+// TODO: method to get artist from name?

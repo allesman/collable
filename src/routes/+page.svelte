@@ -111,7 +111,8 @@
         {/each}
       </ul>
     {:else}
-      <!-- <p class="text-gray-400">No Results</p> -->
+      <!-- TODO: readd and also link to page which enables submission of missing songs -->
+      <!-- <p class="text-gray-400">No Results</p>  -->
     {/if}
   </div>
 
