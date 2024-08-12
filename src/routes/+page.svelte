@@ -58,6 +58,8 @@
   }
 </script>
 
+<!-- TODO: extract more into components? -->
+
 <!-- Name of current artist -->
 <!-- TODO: add image -->
 <div class="text-center m-2 text-4xl text-primary">{artistObj.name}</div>

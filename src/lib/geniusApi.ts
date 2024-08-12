@@ -73,23 +73,44 @@ export default class GeniusApi {
     return data.response.hits;
   }
 
-  async getArtistInfo(query: string) {
+  // old version, takes artist id
+  // async getArtistInfo(artistId: string) {
+  //   const response = await fetch(
+  //     `https://api.genius.com/artists/${encodeURIComponent(artistId)}`,
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${this.#accessToken}`,
+  //       },
+  //     }
+  //   );
+
+  //   if (!response.ok) {
+  //     throw new Error(`Error fetching data: ${response.statusText}`);
+  //   }
+
+  //   const data = await response.json();
+  //   return data;
+  // }
+
+  // new version, takes artist name
+  async getArtistInfo(artistName: string) {
     const response = await fetch(
-      `https://api.genius.com/artists/${encodeURIComponent(query)}`,
+      `https://api.genius.com/search?q=${encodeURIComponent(artistName)}`,
       {
         headers: {
           Authorization: `Bearer ${this.#accessToken}`,
         },
       }
     );
-
     if (!response.ok) {
       throw new Error(`Error fetching data: ${response.statusText}`);
     }
-
     const data = await response.json();
-    return data;
+    for (let hit of data.response.hits) {
+      if (hit.result.primary_artist.name === artistName) {
+        return hit.result.primary_artist;
+      }
+    }
+    return null;
   }
 }
-
-// TODO: method to get artist from name?

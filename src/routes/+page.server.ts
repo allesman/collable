@@ -4,8 +4,16 @@ import { error } from "@sveltejs/kit";
 
 export const load = (async () => {
   const geniusApi = await GeniusApi.initialize();
-  const data = await geniusApi.getArtistInfo("15740"); // TODO: dont hardcode this
-  const artistObj = data.response.artist;
+
+  // TODO: dont hardcode this and make it do something
+  const startingArtist = "Quadeca";
+  const goalArtist = "Quadeca";
+
+  const artistObj = await geniusApi.getArtistInfo(startingArtist);
+  if (!artistObj) {
+    return error(500, "Artist not found");
+  }
+  // const artistObj = data.response.artist;
   return {
     artistJSON: JSON.stringify(artistObj),
   };
