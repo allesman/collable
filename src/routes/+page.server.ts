@@ -33,9 +33,8 @@ export const actions = {
     const finalQuery = query + " " + artistName;
     console.log("Searching: " + finalQuery);
     // TODO: use other api call in general (song), to 1) stop user from using tactical search, 2) also get collab ("&") songs, but this will need own search
-    const apiData = await geniusApi.searchGenius(finalQuery);
     try {
-      const data = apiData.response.hits;
+      const data = await geniusApi.searchGenius(finalQuery);
       let searchResults = [];
       for (let i = 0; i < data.length; i++) {
         // TODO: split artist if contains "&" and check each

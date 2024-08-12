@@ -70,8 +70,7 @@ export default class GeniusApi {
     }
 
     const data = await response.json();
-    // TODO: only pass the data we need
-    return data;
+    return data.response.hits;
   }
 
   async getArtistInfo(query: string) {
