@@ -79,6 +79,7 @@
       class="input input-bordered select-none"
     />
     <input type="hidden" name="artistId" bind:value={artistObj.id} />
+    <input type="hidden" name="artistName" bind:value={artistObj.name} />
     <button
       type="submit"
       disabled={isLoading || gameStage != 0}
@@ -139,10 +140,10 @@
   </div>
   <!-- Error if gameStage has ValueError -->
 {:else}
-  <p>Something went wrong</p>
+  <p class="text-error text-center">Something went wrong</p>
 {/if}
 
 <!-- Error Message (if there is one) -->
 {#if error}
-  <p class="error">{error}</p>
+  <p class="text-error text-center">{error}</p>
 {/if}

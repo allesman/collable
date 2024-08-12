@@ -4,7 +4,7 @@ import { error } from "@sveltejs/kit";
 
 export const load = (async () => {
   const geniusApi = await GeniusApi.initialize();
-  const data = await geniusApi.getArtistInfo("35344"); // TODO: dont hardcode this
+  const data = await geniusApi.getArtistInfo("15740"); // TODO: dont hardcode this
   const artistObj = data.response.artist;
   return {
     artistJSON: JSON.stringify(artistObj),
@@ -19,17 +19,18 @@ export const actions = {
     console.assert(geniusApi, "GeniusApi not initialized");
     const query = data.get("songQuery");
     const artistId = data.get("artistId");
+    const artistName = data.get("artistName");
     if (
       !artistId ||
+      !artistName ||
       !query ||
       typeof query !== "string" ||
-      typeof artistId !== "string"
+      typeof artistId !== "string" ||
+      typeof artistName !== "string"
     ) {
       return error(400, "Query and ArtistId required");
     }
-    // TODO: avoid this extra call to get artist name by passing it in from the client
-    const artist = await geniusApi.getArtistInfo(artistId);
-    const finalQuery = query + " " + artist.response.artist.name;
+    const finalQuery = query + " " + artistName;
     console.log("Searching: " + finalQuery);
     // TODO: use other api call in general (song), to 1) stop user from using tactical search, 2) also get collab ("&") songs, but this will need own search
     const apiData = await geniusApi.searchGenius(finalQuery);
