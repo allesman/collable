@@ -1,6 +1,10 @@
 <!-- TODO:add eslint -->
 <script lang="ts">
-  import type { SearchResult, Song, Artist } from "$lib/types.js";
+  import type {
+    // SearchResult,
+    Song,
+    Artist,
+  } from "$lib/types.js";
 
   // get the data from the server
   export let data: { artistJSON: string };
@@ -12,7 +16,7 @@
 
   // for gameStage 0
   let artistObj: Artist = JSON.parse(data.artistJSON); // the current artist, initialized with the artist from the server
-  let searchResults: SearchResult[] = [];
+  let searchResults: Song[] = [];
   let error: string | null = null;
   let isLoading: boolean = false;
 
@@ -33,7 +37,7 @@
     if (response.ok) {
       const result = await response.json();
       searchResults = JSON.parse(JSON.parse(result.data)[0]);
-      console.log(searchResults);
+      // console.log(searchResults);
     } else {
       error = "Something went wrong";
     }
@@ -42,19 +46,17 @@
   }
 
   // for gameStage 1
-  let song: Song | undefined = undefined; // the song selected by the user
-  let songArtists: Artist[] = []; // the featured artists of the song selected by the user
+  let song: Song; // the song selected by the user
 
   async function handleClickSong(index: number) {
     gameStage = 1;
-    song = searchResults[index].result;
-    songArtists = song.primary_artists.concat(song.featured_artists);
+    song = searchResults[index];
   }
 
   async function handleClickArtist(index: number) {
     gameStage = 0;
     searchResults = [];
-    artistObj = songArtists[index];
+    artistObj = song.combined_artists[index];
   }
 </script>
 
@@ -105,10 +107,8 @@
               class="btn btn-secondary btn-outline"
             >
               <!-- TODO: add image -->
-              {hit.result.title}
-              <span class="badge badge-secondary"
-                >{hit.result.artist_names}</span
-              >
+              {hit.title}
+              <span class="badge badge-secondary">{hit.artist_names}</span>
             </button>
           </li>
         {/each}
@@ -129,7 +129,7 @@
       {/if}
     </button>
     <ul class="flex flex-col items-center justify-center mt-5">
-      {#each songArtists as artist, i}
+      {#each song.combined_artists as artist, i}
         <li class="w-full text-center m-1">
           <button
             on:click={() => handleClickArtist(i)}
