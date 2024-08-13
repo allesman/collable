@@ -121,7 +121,7 @@
 
   <!-- Artists of Song (gameStage 1 only) -->
 {:else if gameStage === 1}
-  <!-- TODO: close out of this view? -->
+  <!-- TODO: close out of this view? and then hide current artist -->
   <div class="flex flex-col items-center justify-center mt-10">
     <button class="btn btn-secondary no-animation">
       {#if song}

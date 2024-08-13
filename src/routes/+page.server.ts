@@ -6,7 +6,7 @@ export const load = (async () => {
   const geniusApi = await GeniusApi.initialize();
 
   // TODO: dont hardcode this and make it do something
-  const startingArtist = "Money Boy";
+  const startingArtist = "Ufo361";
   const goalArtist = "Quadeca";
 
   const artistObj = await geniusApi.getArtistInfo(startingArtist);
