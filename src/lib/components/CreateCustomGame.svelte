@@ -1,15 +1,19 @@
 <script lang="ts">
-  import CreateCustomGame from "$lib/components/CreateCustomGame.svelte";
-  import Navbar from "$lib/components/Navbar.svelte";
-  import "../app.css";
-  let createCustomGame: any;
+  // let customGameModal: HTMLDialogElement;
+  import Icon from "@iconify/svelte";
+  import { onMount } from "svelte";
+  // export let dialogRef: { current: HTMLDialogElement | null } = {
+  //   current: null,
+  // };
+
+  export let dialog: HTMLDialogElement;
+
+  // onMount(() => {
+  //   dialogRef.current = dialog;
+  // });
 </script>
 
-<Navbar {createCustomGame} />
-
-<!-- <CreateCustomGame bind:this={createCustomGame} /> -->
-
-<dialog class="modal" id="my_modal_1" bind:this={createCustomGame}>
+<dialog class="modal" id="my_modal_1" bind:this={dialog}>
   <div class="modal-box">
     <form method="dialog">
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -48,5 +52,3 @@
     <button>close</button>
   </form>
 </dialog>
-
-<slot />
