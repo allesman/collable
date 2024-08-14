@@ -67,30 +67,28 @@
 <div class="text-center m-2 text-4xl text-primary">{artistObj.name}</div>
 
 <!-- Search Bar -->
-<div class="flex items-center justify-center">
-  <form
-    method="POST"
-    on:submit|preventDefault={handleSearch}
-    action="?/search"
-    autocomplete="off"
-    class="w-full max-w-xs"
+<form
+  method="POST"
+  on:submit|preventDefault={handleSearch}
+  action="?/search"
+  autocomplete="off"
+  class="flex items-center justify-center gap-2 mt-3"
+>
+  <input
+    name="songQuery"
+    type="text"
+    placeholder="Enter Song :3"
+    disabled={isLoading || gameStage != 0}
+    class="input input-bordered select-none"
+  />
+  <input type="hidden" name="artistId" bind:value={artistObj.id} />
+  <input type="hidden" name="artistName" bind:value={artistObj.name} />
+  <button
+    type="submit"
+    disabled={isLoading || gameStage != 0}
+    class="btn btn-primary">Search</button
   >
-    <input
-      name="songQuery"
-      type="text"
-      placeholder="Enter Song :3"
-      disabled={isLoading || gameStage != 0}
-      class="input input-bordered select-none"
-    />
-    <input type="hidden" name="artistId" bind:value={artistObj.id} />
-    <input type="hidden" name="artistName" bind:value={artistObj.name} />
-    <button
-      type="submit"
-      disabled={isLoading || gameStage != 0}
-      class="btn mt-2 btn-primary">Search</button
-    >
-  </form>
-</div>
+</form>
 
 <!-- Search Results (gameStage 0 only) -->
 {#if gameStage === 0}
