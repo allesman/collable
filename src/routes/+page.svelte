@@ -63,7 +63,7 @@
 <!-- TODO: extract more into components? -->
 
 <!-- Name of current artist -->
-<!-- TODO: add image -->
+<!-- FIXME: add image -->
 <div class="text-center m-2 text-4xl text-primary">{artistObj.name}</div>
 
 <!-- Search Bar -->
@@ -106,7 +106,7 @@
               data-index={i}
               class="btn btn-secondary btn-outline"
             >
-              <!-- TODO: add image -->
+              <!-- FIXME: add image -->
               {hit.title}
               <span class="badge badge-secondary">{hit.artist_names}</span>
             </button>
@@ -121,7 +121,7 @@
 
   <!-- Artists of Song (gameStage 1 only) -->
 {:else if gameStage === 1}
-  <!-- TODO: close out of this view? and then hide current artist -->
+  <!-- FIXME: close out of this view? and then hide current artist -->
   <div class="flex flex-col items-center justify-center mt-10">
     <button class="btn btn-secondary no-animation">
       {#if song}

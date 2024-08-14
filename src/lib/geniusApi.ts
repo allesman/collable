@@ -74,7 +74,7 @@ export default class GeniusApi {
   }
 
   // new version, takes artist name
-  // TODO: resolve "quavo problem"
+  // FIXME: resolve "quavo problem"
   async getArtistInfo(artistName: string) {
     const response = await fetch(
       `https://api.genius.com/search?q=${encodeURIComponent(artistName)}`,

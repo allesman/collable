@@ -5,7 +5,7 @@ import { error } from "@sveltejs/kit";
 export const load = (async () => {
   const geniusApi = await GeniusApi.initialize();
 
-  // TODO: dont hardcode this and make it do something
+  // FIXME: dont hardcode this and make it do something
   const startingArtist = "Ufo361";
   const goalArtist = "Quadeca";
 
@@ -18,7 +18,7 @@ export const load = (async () => {
   };
 }) satisfies PageServerLoad;
 
-// TODO: caching? (especially for splitting artists)
+// TODO: caching (especially for splitting artists)
 export const actions = {
   search: async ({ request }) => {
     const data = await request.formData();
