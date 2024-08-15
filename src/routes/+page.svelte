@@ -8,7 +8,9 @@
   } from "$lib/types.js";
 
   // get the data from the server
-  export let data: { artistJSON: string };
+  export let data: { startArtistJSON: string; goalArtistJSON: string };
+  const startArtist: Artist = JSON.parse(data.startArtistJSON);
+  const goalArtist: Artist = JSON.parse(data.goalArtistJSON);
 
   // the different stages of the game
   // 0: select a song by the current artist
@@ -16,7 +18,7 @@
   let gameStage: number = 0;
 
   // for gameStage 0
-  let artistObj: Artist = JSON.parse(data.artistJSON); // the current artist, initialized with the artist from the server
+  let artistObj: Artist = startArtist; // the current artist, initialized with the start artist
   let searchResults: Song[] = [];
   let error: string | null = null;
   let isLoading: boolean = false;
@@ -61,6 +63,15 @@
   }
 </script>
 
+<div class="mb-4">
+  <div class="text-base">Start Artist:</div>
+  <div class="font-bold text-primary">{startArtist.name}</div>
+</div>
+<div class="mb-4">
+  <div class="text-base">Goal Artist:</div>
+  <div class="font-bold text-primary">{goalArtist.name}</div>
+</div>
+
 <div class="p-10">
   <!-- TODO: extract more into components? -->
 
@@ -71,8 +82,8 @@
   <!-- Search Bar -->
   <form
     method="POST"
-    on:submit|preventDefault={handleSearch}
     action="?/search"
+    on:submit|preventDefault={handleSearch}
     autocomplete="off"
     class="flex items-center justify-center gap-2 mt-3"
   >
@@ -82,6 +93,7 @@
       placeholder="Enter Song :3"
       disabled={isLoading || gameStage != 0}
       class="input input-bordered select-none"
+      required
     />
     <input type="hidden" name="artistId" bind:value={artistObj.id} />
     <input type="hidden" name="artistName" bind:value={artistObj.name} />

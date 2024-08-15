@@ -1,20 +1,38 @@
 import type { Actions, PageServerLoad } from "./$types";
 import GeniusApi from "$lib/GeniusApi.js";
 import { error } from "@sveltejs/kit";
+import { start } from "repl";
+import type { Artist } from "$lib/types";
+
+let startArtist: Artist;
+let goalArtist: Artist;
 
 export const load = (async () => {
   const geniusApi = await GeniusApi.initialize();
 
+  // Check if start and goal artist are already set
+  if (startArtist && goalArtist) {
+    return {
+      startArtistJSON: JSON.stringify(startArtist),
+      goalArtistJSON: JSON.stringify(goalArtist),
+    };
+  }
+  // Since start and goal artist are not set, set them to default values
   // FIXME: dont hardcode this and make it do something
-  const startingArtist = "Ufo361";
-  const goalArtist = "Quadeca";
+  let startArtistName = "Ufo361";
+  let goalArtistName = "Quadeca";
 
-  const artistObj = await geniusApi.getArtistInfo(startingArtist);
-  if (!artistObj) {
+  startArtist = await geniusApi.getArtistInfo(startArtistName);
+  if (!startArtist) {
+    return error(500, "Artist not found");
+  }
+  goalArtist = await geniusApi.getArtistInfo(goalArtistName);
+  if (!goalArtist) {
     return error(500, "Artist not found");
   }
   return {
-    artistJSON: JSON.stringify(artistObj),
+    startArtistJSON: JSON.stringify(startArtist),
+    goalArtistJSON: JSON.stringify(goalArtist),
   };
 }) satisfies PageServerLoad;
 
@@ -88,6 +106,39 @@ export const actions = {
       console.error(e);
       return error(500, "Whut?");
     }
+  },
+
+  customGame: async ({ request }) => {
+    const data = await request.formData();
+    const startArtistName = data.get("startArtist");
+    const goalArtistName = data.get("goalArtist");
+    console.log("Custom game: " + startArtistName + " -> " + goalArtistName);
+
+    const geniusApi = await GeniusApi.initialize();
+    console.assert(geniusApi, "GeniusApi not initialized");
+    const newStartArtist = await geniusApi.getArtistInfo(
+      startArtistName as string
+    );
+    let invalidArtists: { s: boolean; g: boolean } = { s: false, g: false };
+    if (!newStartArtist) {
+      invalidArtists.s = true;
+    }
+    const newGoalArtist = await geniusApi.getArtistInfo(
+      goalArtistName as string
+    );
+    if (!newGoalArtist) {
+      invalidArtists.g = true;
+    }
+    if (invalidArtists.g || invalidArtists.s) {
+      return error(404, {
+        message: "Artist not found",
+        invalidArtists: invalidArtists,
+      });
+    }
+    // update values
+    startArtist = newStartArtist;
+    goalArtist = newGoalArtist;
+    // return success
   },
 } satisfies Actions;
 
