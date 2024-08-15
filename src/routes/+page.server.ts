@@ -1,5 +1,5 @@
 import type { Actions, PageServerLoad } from "./$types";
-import GeniusApi from "$lib/GeniusApi.js";
+import GeniusApi from "$lib/GeniusApi.ts";
 import { error } from "@sveltejs/kit";
 import { start } from "repl";
 import type { Artist } from "$lib/types";
