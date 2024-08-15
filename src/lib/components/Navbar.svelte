@@ -1,9 +1,9 @@
 <script lang="ts">
   import ThemeSwitch from "./ThemeSwitch.svelte";
-
   import Icon from "@iconify/svelte";
   import CreateCustomGame from "./CreateCustomGame.svelte";
-  let createCustomGame: any; // FIXME: type this
+
+  let createCustomGame: CreateCustomGame;
 </script>
 
 <CreateCustomGame bind:this={createCustomGame} />

@@ -15,3 +15,7 @@ export interface Artist {
   id: number;
   name: string;
 }
+
+export interface Modal {
+  openModal: () => void;
+}

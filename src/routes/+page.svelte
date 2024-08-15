@@ -5,6 +5,7 @@
     // SearchResult,
     Song,
     Artist,
+    Modal,
   } from "$lib/types.js";
 
   // get the data from the server
@@ -19,10 +20,12 @@
 
   // modal shown when the user wins the game
   import YouWin from "$lib/components/YouWin.svelte";
-  let youWinModal: any; // FIXME: type this
+  let youWinModal: Modal;
 
   // counting how many guesses the user has made
   let numGuesses: number = 0;
+  // saving whether a search has been made
+  let searchMade: boolean = false;
 
   // the different stages of the game
   // 0: select a song by the current artist
@@ -53,7 +56,7 @@
     if (response.ok) {
       const result = await response.json();
       searchResults = JSON.parse(JSON.parse(result.data)[0]);
-      // console.log(searchResults);
+      searchMade = true;
     } else {
       error = "Something went wrong";
     }
@@ -165,9 +168,14 @@
             </li>
           {/each}
         </ul>
-      {:else}
-        <!-- TODO: readd and also link to page which enables submission of missing songs -->
-        <!-- <p class="text-gray-400">No Results</p>  -->
+      {:else if searchMade}
+        <p class="text-gray-400">
+          No Results. <a
+            href="https://forms.gle/8P8NAvcdbUMABW427"
+            target="_blank"
+            class="link">Is your song missing?</a
+          >
+        </p>
       {/if}
     </div>
   {:else if gameStage === 1}
