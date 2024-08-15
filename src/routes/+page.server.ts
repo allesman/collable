@@ -3,37 +3,41 @@ import GeniusApi from "$lib/GeniusApi.js";
 import { error } from "@sveltejs/kit";
 import { start } from "repl";
 import type { Artist } from "$lib/types";
+import { fetchData } from "$lib/readDB";
 
 let startArtist: Artist;
 let goalArtist: Artist;
 
 export const load = (async () => {
+  // Access Genius API
   const geniusApi = await GeniusApi.initialize();
+  // Access database
+  const data = await fetchData();
 
   // Check if start and goal artist are already set
   if (startArtist && goalArtist) {
     return {
-      startArtistJSON: JSON.stringify(startArtist),
-      goalArtistJSON: JSON.stringify(goalArtist),
+      startArtist: startArtist,
+      goalArtist: goalArtist,
       isCustom: true,
     };
   }
-  // Since start and goal artist are not set, set them to default values
+  // Since start and goal artist are not custom set, set them to default values of the day
   // FIXME: dont hardcode this and make it do something
-  let startArtistName = "Dax";
-  let goalArtistName = "Quadeca";
+  let startArtistName: string = data.startArtist;
+  let goalArtistName: string = data.goalArtist;
 
   startArtist = await geniusApi.getArtistInfo(startArtistName);
   if (!startArtist) {
-    return error(500, "Artist not found");
+    return error(500, `Artist "${startArtistName}" not found`);
   }
   goalArtist = await geniusApi.getArtistInfo(goalArtistName);
   if (!goalArtist) {
-    return error(500, "Artist not found");
+    return error(500, `Artist "${goalArtistName}" not found`);
   }
   return {
-    startArtistJSON: JSON.stringify(startArtist),
-    goalArtistJSON: JSON.stringify(goalArtist),
+    startArtist: startArtist,
+    goalArtist: goalArtist,
     isCustom: false,
   };
 }) satisfies PageServerLoad;

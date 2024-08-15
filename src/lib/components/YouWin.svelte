@@ -13,7 +13,7 @@
 
   let copyMessage: string | undefined = undefined;
   function copyToClipboard() {
-    const text = `🎵 ${isCustom ? ` Custom Musicalle ✨` : `Musicalle ${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`}
+    const text = `🎵  ${isCustom ? `Custom Musicalle ✨` : `Musicalle ${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`}
 
 ${startArtistName} → 👤 ${numGuesses - 1} → ${goalArtistName}`;
     navigator.clipboard
