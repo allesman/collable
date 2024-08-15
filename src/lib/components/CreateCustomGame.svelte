@@ -1,4 +1,4 @@
-<!-- TODO: make reusable for all modals? -->
+<!-- TODO: make reusable for all modals? idk not really man -->
 <script lang="ts">
   let dialog: HTMLDialogElement;
   let invalidArtists: { s: boolean; g: boolean } = { s: false, g: false };
@@ -7,6 +7,7 @@
   }
   async function handleCreateCustomGame(event: SubmitEvent) {
     event.preventDefault();
+    submitting = true;
     const form: HTMLFormElement = event.target as HTMLFormElement;
     const formData: FormData = new FormData(form);
     const response = await fetch(form.action, {
@@ -27,14 +28,17 @@
       console.log("Something went wrong");
     }
   }
+
+  let submitting = false;
 </script>
 
 <dialog class="modal" id="my_modal_1" bind:this={dialog}>
   <div class="modal-box">
-    <!-- FIXME: Disable closing while submitting -->
     <form method="dialog">
-      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-        >✕</button
+      <button
+        class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+        disabled={submitting}
+        on:click={() => dialog.close()}>✕</button
       >
     </form>
     <h3 class="text-2xl font-bold">Create Custom Game</h3>
@@ -70,7 +74,11 @@
       {/if}
       <div class="modal-action">
         <label class="label" for="submit" />
-        <button class="btn btn-success" id="submit" name="submit">Create</button
+        <button
+          class="btn btn-success"
+          id="submit"
+          name="submit"
+          disabled={submitting}>Create</button
         >
       </div>
     </form>
@@ -84,6 +92,6 @@
     <!-- </div> -->
   </div>
   <form method="dialog" class="modal-backdrop">
-    <button>close</button>
+    <button disabled={submitting}>close</button>
   </form>
 </dialog>
