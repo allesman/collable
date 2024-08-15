@@ -69,6 +69,7 @@
 
   async function handleClickSong(index: number) {
     gameStage = 1;
+    searchMade = false;
     song = searchResults[index];
   }
 
