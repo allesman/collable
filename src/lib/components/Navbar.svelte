@@ -8,7 +8,7 @@
 
 <CreateCustomGame bind:this={createCustomGame} />
 
-<div class="navbar bg-base-100">
+<div class="navbar">
   <div class="navbar-start pl-2">
     <button
       class="btn btn-m btn-neutral text-base"
@@ -25,3 +25,4 @@
     <ThemeSwitch />
   </div>
 </div>
+<!-- <div class="divider" /> -->

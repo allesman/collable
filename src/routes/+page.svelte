@@ -12,9 +12,17 @@
   const startArtist: Artist = JSON.parse(data.startArtistJSON);
   const goalArtist: Artist = JSON.parse(data.goalArtistJSON);
 
+  // modal shown when the user wins the game
+  import YouWin from "$lib/components/YouWin.svelte";
+  let youWinModal: any; // FIXME: type this
+
+  // counting how many guesses the user has made
+  let numGuesses: number = 0;
+
   // the different stages of the game
   // 0: select a song by the current artist
-  // 1: select artist featured on the song to be new current artist -> back to 0
+  // 1: select artist featured on the song to be new current artist -> back to 0 or 2
+  // 2: win
   let gameStage: number = 0;
 
   // for gameStage 0
@@ -60,19 +68,43 @@
     gameStage = 0;
     searchResults = [];
     artistObj = song.combined_artists[index];
+    numGuesses++;
+    // Check for game win
+    if (artistObj.id === goalArtist.id) {
+      console.log("You win!");
+      youWinModal.openModal();
+      gameStage = 2;
+    }
   }
 </script>
 
-<div class="mb-4">
-  <div class="text-base">Start Artist:</div>
-  <div class="font-bold text-primary">{startArtist.name}</div>
-</div>
-<div class="mb-4">
-  <div class="text-base">Goal Artist:</div>
-  <div class="font-bold text-primary">{goalArtist.name}</div>
+<!-- <div class="mb-4">
+    <div class="text-base">Start Artist:</div>
+    <div class="font-bold text-primary">{startArtist.name}</div>
+  </div>
+  <div class="mb-4">
+    <div class="text-base">Goal Artist:</div>
+    <div class="font-bold text-primary">{goalArtist.name}</div>
+  </div> -->
+<div class="flex justify-center items-center">
+  <div class="inline-block card bg-base-100">
+    <div class="card-body">
+      <div class="flex justify-center items-center">
+        Use features to get from
+      </div>
+      <div
+        class="flex justify-center items-center pt-2 text-2xl font-bold gap-3"
+      >
+        <!-- FIXME: Add images -->
+        {startArtist.name}
+        <Icon icon="mdi:arrow-right-thick" />
+        {goalArtist.name}
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="p-10">
+<div class="p-3">
   <!-- TODO: extract more into components? -->
 
   <!-- Name of current artist -->
@@ -101,14 +133,14 @@
       type="submit"
       disabled={isLoading || gameStage != 0}
       class="btn btn-primary"
-      class_x="btn btn-primary shadow-md shadow-primary/50"
+      class_alternative="btn btn-primary shadow-md shadow-primary/50"
       ><Icon icon="mdi:search" class="text-lg" />
       Search
     </button>
   </form>
 
-  <!-- Search Results (gameStage 0 only) -->
   {#if gameStage === 0}
+    <!-- Search Results (gameStage 0 only) -->
     <div class="flex items-center justify-center mt-10">
       {#if isLoading}
         <p class="mt-1">Loading...</p>
@@ -133,9 +165,8 @@
         <!-- <p class="text-gray-400">No Results</p>  -->
       {/if}
     </div>
-
-    <!-- Artists of Song (gameStage 1 only) -->
   {:else if gameStage === 1}
+    <!-- Artists of Song (gameStage 1 only) -->
     <!-- FIXME: close out of this view? and then hide current artist -->
     <div class="flex flex-col items-center justify-center mt-10">
       <button class="btn btn-secondary no-animation">
@@ -155,8 +186,8 @@
         {/each}
       </ul>
     </div>
+  {:else if gameStage === 2}{:else}
     <!-- Error if gameStage has ValueError -->
-  {:else}
     <p class="text-error text-center">Something went wrong</p>
   {/if}
 
@@ -165,3 +196,10 @@
     <p class="text-error text-center">{error}</p>
   {/if}
 </div>
+
+<YouWin
+  startArtistName={startArtist.name}
+  goalArtistName={goalArtist.name}
+  {numGuesses}
+  bind:this={youWinModal}
+/>

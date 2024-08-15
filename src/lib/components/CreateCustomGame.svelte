@@ -1,6 +1,5 @@
 <!-- TODO: make reusable for all modals? -->
 <script lang="ts">
-  import Icon from "@iconify/svelte";
   let dialog: HTMLDialogElement;
   let invalidArtists: { s: boolean; g: boolean } = { s: false, g: false };
   export function openModal() {

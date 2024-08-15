@@ -19,7 +19,7 @@ export const load = (async () => {
   }
   // Since start and goal artist are not set, set them to default values
   // FIXME: dont hardcode this and make it do something
-  let startArtistName = "Ufo361";
+  let startArtistName = "Dax";
   let goalArtistName = "Quadeca";
 
   startArtist = await geniusApi.getArtistInfo(startArtistName);
@@ -135,6 +135,7 @@ export const actions = {
         invalidArtists: invalidArtists,
       });
     }
+    // TODO: use url params to set these values instead?? (so the root url is always the daily games, and the custom game is a sharable subpage)
     // update values
     startArtist = newStartArtist;
     goalArtist = newGoalArtist;
