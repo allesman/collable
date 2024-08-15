@@ -14,6 +14,7 @@
       method: "POST",
       body: formData,
     });
+    submitting = false;
     if (response.ok) {
       const result = await response.json();
       console.log(result);
