@@ -23,7 +23,6 @@ export const load = (async () => {
     };
   }
   // Since start and goal artist are not custom set, set them to default values of the day
-  // FIXME: dont hardcode this and make it do something
   let startArtistName: string = data.startArtist;
   let goalArtistName: string = data.goalArtist;
 

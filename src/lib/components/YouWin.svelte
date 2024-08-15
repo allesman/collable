@@ -32,7 +32,6 @@ ${startArtistName} → 👤 ${numGuesses - 1} → ${goalArtistName}`;
 
 <dialog class="modal" id="my_modal_1" bind:this={dialog}>
   <div class="modal-box">
-    <!-- FIXME: Disable closing while submitting -->
     <form method="dialog">
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
         >✕</button
