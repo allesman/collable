@@ -15,6 +15,7 @@ export const load = (async () => {
     return {
       startArtistJSON: JSON.stringify(startArtist),
       goalArtistJSON: JSON.stringify(goalArtist),
+      isCustom: true,
     };
   }
   // Since start and goal artist are not set, set them to default values
@@ -33,6 +34,7 @@ export const load = (async () => {
   return {
     startArtistJSON: JSON.stringify(startArtist),
     goalArtistJSON: JSON.stringify(goalArtist),
+    isCustom: false,
   };
 }) satisfies PageServerLoad;
 

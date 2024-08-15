@@ -8,9 +8,14 @@
   } from "$lib/types.js";
 
   // get the data from the server
-  export let data: { startArtistJSON: string; goalArtistJSON: string };
+  export let data: {
+    startArtistJSON: string;
+    goalArtistJSON: string;
+    isCustom: string;
+  };
   const startArtist: Artist = JSON.parse(data.startArtistJSON);
   const goalArtist: Artist = JSON.parse(data.goalArtistJSON);
+  const isCustom: boolean = JSON.parse(data.isCustom);
 
   // modal shown when the user wins the game
   import YouWin from "$lib/components/YouWin.svelte";
@@ -201,5 +206,6 @@
   startArtistName={startArtist.name}
   goalArtistName={goalArtist.name}
   {numGuesses}
+  {isCustom}
   bind:this={youWinModal}
 />
