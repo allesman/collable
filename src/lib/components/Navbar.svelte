@@ -3,7 +3,7 @@
 
   import Icon from "@iconify/svelte";
   import CreateCustomGame from "./CreateCustomGame.svelte";
-  let createCustomGame: any; // TODO: type this
+  let createCustomGame: any; // FIXME: type this
 </script>
 
 <CreateCustomGame bind:this={createCustomGame} />
