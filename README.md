@@ -8,7 +8,8 @@ A daily game (like wordle) in which you have to get from one artist to another v
 
 - Visit http://genius.com/api-clients
 
-- Create Api Client, Copy "CLIENT ID" and "CLIENT SECRET"
+    - Create Api Client
+    - Copy "CLIENT ID" and "CLIENT SECRET"
 
 - Create `.env` in project root and set environment variables `CLIENT_ID` and `CLIENT_SECRET` accordingly
 
