@@ -191,7 +191,9 @@
         {/each}
       </ul>
     </div>
-  {:else if gameStage === 2}{:else}
+  {:else if gameStage === 2}
+    <nbsp />
+  {:else}
     <!-- Error if gameStage has ValueError -->
     <p class="text-error text-center">Something went wrong</p>
   {/if}
