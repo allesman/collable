@@ -140,7 +140,7 @@ export const actions = {
         invalidArtists: invalidArtists,
       });
     }
-    // TODO: use url params to set these values instead?? (so the root url is always the daily games, and the custom game is a sharable subpage)
+    // FIXME: use url params to set these values instead?? (so the root url is always the daily games, and the custom game is a sharable subpage)
     // update values
     startArtist = newStartArtist;
     goalArtist = newGoalArtist;
