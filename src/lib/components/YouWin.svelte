@@ -12,12 +12,13 @@
   const date = new Date();
 
   let copyMessage: string | undefined = undefined;
+  // TODO: maybe don't just use url, but get it from the parent component
   function copyToClipboard() {
     const text = `🎵  ${isCustom ? `Custom Musicalle ✨` : `Musicalle ${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`}
 
 ${startArtistName} → 👤 ${numGuesses - 1} → ${goalArtistName}
 
-https://musicalle.vercel.app/`;
+${window.location.href}`;
     navigator.clipboard
       .writeText(text)
       .then(() => {

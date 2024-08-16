@@ -75,7 +75,7 @@ export default class GeniusApi {
 
   // new version, takes artist name
   // FIXME: resolve "quavo problem"
-  async getArtistInfo(artistName: string) {
+  async getArtistInfoFromName(artistName: string) {
     const response = await fetch(
       `https://api.genius.com/search?q=${encodeURIComponent(artistName)}`,
       {
@@ -97,5 +97,23 @@ export default class GeniusApi {
       }
     }
     return null;
+  }
+
+  async getArtistInfoFromId(id: string) {
+    const response = await fetch(
+      `https://api.genius.com/artists/${encodeURIComponent(id)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.#accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error fetching data: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.response.artist;
   }
 }

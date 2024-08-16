@@ -11,7 +11,7 @@ export async function fetchData() {
     const snapshot = await get(dbRef);
 
     if (!snapshot.exists()) {
-      console.log("No data available");
+      // console.log("No data available");
       return null;
     }
 
