@@ -17,10 +17,14 @@
     submitting = false;
     if (response.ok) {
       const result = await response.json();
-      console.log(result);
+      const customArtists = JSON.parse(JSON.parse(result.data)[0]);
       dialog.close();
-      // relad page to show new game
-      location.reload();
+      // redirect to custom game page
+      // TODO: or use goto?
+      // location.href = `/custom?s=${customArtists.startArtistId}&g=${customArtists.goalArtistId}`;
+      window.open(
+        `/custom?s=${customArtists.startArtistId}&g=${customArtists.goalArtistId}`
+      );
     } else if (response.status === 404) {
       const error = await response.json();
       invalidArtists = error.error.invalidArtists;
