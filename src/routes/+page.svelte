@@ -80,7 +80,7 @@
     numGuesses++;
     // Check for game win
     if (artistObj.id === goalArtist.id) {
-      console.log("You win!");
+      // console.log("You win!");
       youWinModal.openModal();
       gameStage = 2;
     }
