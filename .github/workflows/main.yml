@@ -13,6 +13,13 @@ jobs:
         uses: actions/checkout@main
       - name: Install dependencies
         run: npm ci
+      - name: Set environment variables
+        run: |
+          echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> $GITHUB_ENV
+          echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> $GITHUB_ENV
+          echo "FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" >> $GITHUB_ENV
+          echo "FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}" >> $GITHUB_ENV
       - name: Build dependencies
         run: npm run build
       - name: Archive production artifact
@@ -24,17 +31,17 @@ jobs:
     name: Deploy 🚀
     needs: build
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: Checkout repository
         uses: actions/checkout@main
       - name: Download artifact
         uses: actions/download-artifact@main
-        with: 
+        with:
           name: build
           path: build
       - name: Sync files to hosting
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
-        with: 
+        with:
           server: v132927.goserver.host
           username: allesman
           password: ${{ secrets.FTP_PASSWORD }}
