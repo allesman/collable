@@ -18,9 +18,7 @@
     </button>
   </div>
 
-  <a href="/" class="btn btn-ghost btn-lg text-4xl navbar-center"
-    >musicalle dev</a
-  >
+  <a href="/" class="btn btn-ghost btn-lg text-4xl navbar-center">musicalle</a>
 
   <!-- aligned right -->
   <div class="navbar-end pr-2">
