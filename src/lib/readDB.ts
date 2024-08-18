@@ -18,8 +18,12 @@ export async function fetchData() {
     // Fetch the data
     const data = snapshot.val();
 
-    // Get the data relevant for the current date
-    const today = date.toISOString().split("T")[0];
+    // Get the data relevant for the current date in YYYY-MM-DD format and Berlin timezone
+    const date = new Date();
+    const today = date.toLocaleDateString("en-CA", {
+      timeZone: "Europe/Berlin",
+    });
+    // const today = date.toISOString().split("T")[0];
     const todayData = data[today];
     return todayData;
   } catch (error) {
