@@ -20,10 +20,14 @@ export async function fetchData() {
 
     // Get the data relevant for the current date in YYYY-MM-DD format and Berlin timezone
     const date = new Date();
-    const today = date.toLocaleDateString("en-CA", {
-      timeZone: "Europe/Berlin",
-    });
-    // const today = date.toISOString().split("T")[0];
+    const berlinDate = new Date(
+      date.toLocaleString("en-US", { timeZone: "Europe/Berlin" })
+    );
+    const year = berlinDate.getFullYear();
+    const month = String(berlinDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const day = String(berlinDate.getDate()).padStart(2, "0");
+    const today = `${year}-${month}-${day}`;
+
     const todayData = data[today];
     return todayData;
   } catch (error) {

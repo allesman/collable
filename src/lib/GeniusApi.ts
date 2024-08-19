@@ -90,8 +90,10 @@ export default class GeniusApi {
     const data = await response.json();
     for (let hit of data.response.hits) {
       if (
-        hit.result.primary_artist.name.toLowerCase() ===
-        artistName.toLowerCase()
+        hit.result.primary_artist.name
+          .toLowerCase()
+          .trim()
+          .replace("\u200B", "") === artistName.toLowerCase()
       ) {
         return hit.result.primary_artist;
       }
