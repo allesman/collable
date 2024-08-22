@@ -1,10 +1,5 @@
 import { CLIENT_ID, CLIENT_SECRET } from "$env/static/private";
-import {
-  ClientCredentials,
-  ResourceOwnerPassword,
-  AuthorizationCode,
-  type AccessToken,
-} from "simple-oauth2";
+import { ClientCredentials, type AccessToken } from "simple-oauth2";
 
 export default class GeniusApi {
   // singleton
@@ -15,8 +10,7 @@ export default class GeniusApi {
 
   #accessToken: AccessToken;
 
-  private constructor(my_access_token: any) {
-    // const client = new ClientCredentials(this.config);
+  private constructor(my_access_token: AccessToken) {
     this.#accessToken = my_access_token;
   }
 
@@ -44,11 +38,18 @@ export default class GeniusApi {
     try {
       const tokenParams = {};
       const accessToken = await client.getToken(tokenParams);
+      if (!accessToken) {
+        throw new Error("Access token not found");
+      }
       // Create a new instance of GeniusApi with the access token and return it
-      this.#instance = new GeniusApi(accessToken.token.access_token);
+      this.#instance = new GeniusApi(
+        accessToken.token.access_token as AccessToken
+      );
       return this.#instance;
-    } catch (error: any) {
-      console.error("Access Token error", error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Access Token error", error.message);
+      }
       throw error;
     }
   }
@@ -88,7 +89,7 @@ export default class GeniusApi {
       throw new Error(`Error fetching data: ${response.statusText}`);
     }
     const data = await response.json();
-    for (let hit of data.response.hits) {
+    for (const hit of data.response.hits) {
       if (
         hit.result.primary_artist.name
           .toLowerCase()

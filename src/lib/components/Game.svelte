@@ -72,6 +72,10 @@
     song = searchResults[index];
   }
 
+  async function handleCloseSong() {
+    gameStage = 0;
+  }
+
   async function handleClickArtist(index: number) {
     gameStage = 0;
     searchResults = [];
@@ -136,7 +140,7 @@
     <input
       name="songQuery"
       type="text"
-      placeholder="Enter Song :3"
+      placeholder="Enter Song..."
       disabled={isLoading || gameStage != 0}
       class="input input-bordered select-none"
       required
@@ -146,7 +150,7 @@
     <button
       type="submit"
       disabled={isLoading || gameStage != 0}
-      class="btn btn-primary x_shadow-md x_shadow-primary/50"
+      class="btn btn-primary x_shadow-md x_shadow-primary/50 text-base"
       ><Icon icon="mdi:search" class="text-lg" />
       Search
     </button>
@@ -189,22 +193,29 @@
     </div>
   {:else if gameStage === 1}
     <!-- Artists of Song (gameStage 1 only) -->
-    <!-- FIXME: close out of this view? and then hide current artist -->
     <div class="flex flex-col items-center justify-center mt-10">
-      <button class="btn btn-secondary no-animation">
+      <button class="btn btn-secondary" on:click={handleCloseSong}>
         {#if song}
+          <img
+            class="w-8 rounded mr-1"
+            src={song.song_art_image_thumbnail_url}
+            alt={song.title}
+          />
           {song.title}
         {/if}
+        <span class="ml-1">✕</span>
       </button>
       <ul class="flex flex-col items-center justify-center mt-5">
         {#each song.combined_artists as artist, i}
-          <li class="w-full text-center m-1">
-            <button
-              on:click={() => handleClickArtist(i)}
-              data-index={i}
-              class="btn btn-secondary btn-outline">{artist.name}</button
-            >
-          </li>
+          {#if artist.id !== artistObj.id}
+            <li class="w-full text-center m-1">
+              <button
+                on:click={() => handleClickArtist(i)}
+                data-index={i}
+                class="btn btn-secondary btn-outline">{artist.name}</button
+              >
+            </li>
+          {/if}
         {/each}
       </ul>
     </div>
