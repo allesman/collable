@@ -136,7 +136,7 @@
     <input
       name="songQuery"
       type="text"
-      placeholder="Enter Song :3"
+      placeholder="Enter Song..."
       disabled={isLoading || gameStage != 0}
       class="input input-bordered select-none"
       required
@@ -146,7 +146,7 @@
     <button
       type="submit"
       disabled={isLoading || gameStage != 0}
-      class="btn btn-primary x_shadow-md x_shadow-primary/50"
+      class="btn btn-primary x_shadow-md x_shadow-primary/50 text-base"
       ><Icon icon="mdi:search" class="text-lg" />
       Search
     </button>
