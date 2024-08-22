@@ -95,9 +95,18 @@
       <div
         class="flex justify-center items-center pt-2 text-2xl font-bold gap-3"
       >
-        <!-- FIXME: Add images -->
+        <img
+          class="w-10 rounded-full"
+          src={startArtist.image_url}
+          alt={startArtist.name}
+        />
         {startArtist.name}
         <Icon icon="mdi:arrow-right-thick" />
+        <img
+          class="w-10 rounded-full"
+          src={goalArtist.image_url}
+          alt={goalArtist.name}
+        />
         {goalArtist.name}
       </div>
     </div>
@@ -108,8 +117,13 @@
   <!-- TODO: extract more into components? -->
 
   <!-- Name of current artist -->
-  <!-- FIXME: add image -->
-  <div class="text-center m-2 text-4xl text-primary">{artistObj.name}</div>
+  <div class="m-2 text-4xl text-primary flex justify-center items-center">
+    <img
+      class="w-12 rounded-full m-2 mr-5"
+      src={artistObj.image_url}
+      alt={artistObj.name}
+    />{artistObj.name}
+  </div>
 
   <!-- Search Bar -->
   <form
@@ -152,7 +166,11 @@
                 data-index={i}
                 class="btn btn-secondary btn-outline"
               >
-                <!-- FIXME: add image -->
+                <img
+                  class="w-8 rounded mr-1"
+                  src={hit.song_art_image_thumbnail_url}
+                  alt={hit.title}
+                />
                 {hit.title}
                 <span class="badge badge-secondary">{hit.artist_names}</span>
               </button>
