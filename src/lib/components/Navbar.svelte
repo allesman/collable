@@ -7,7 +7,6 @@
 </script>
 
 <CreateCustomGame bind:this={createCustomGame} />
-
 <div class="navbar">
   <div class="navbar-start pl-2">
     <button

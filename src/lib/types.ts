@@ -3,8 +3,8 @@
 // }
 
 export interface Song {
-  song_art_image_thumbnail_url: string | null | undefined;
-  header_image_thumbnail_url: string | null | undefined;
+  song_art_image_thumbnail_url: string;
+  header_image_thumbnail_url: string;
   id: number;
   title: string;
   artist_names: string;

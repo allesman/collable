@@ -1,7 +1,6 @@
 import type { Actions, PageServerLoad } from "./$types";
 import GeniusApi from "$lib/GeniusApi.ts";
 import { error } from "@sveltejs/kit";
-import { start } from "repl";
 import type { Artist } from "$lib/types";
 import { fetchData } from "$lib/readDB";
 import { gameActions } from "$lib/sharedActions/gameActions";
@@ -16,8 +15,8 @@ export const load = (async () => {
   const data = await fetchData();
 
   // Since start and goal artist are not custom set, set them to default values of the day from the database
-  let startArtistName: string = data.startArtist;
-  let goalArtistName: string = data.goalArtist;
+  const startArtistName: string = data.startArtist;
+  const goalArtistName: string = data.goalArtist;
 
   startArtist = await geniusApi.getArtistInfoFromName(startArtistName);
   if (!startArtist) {

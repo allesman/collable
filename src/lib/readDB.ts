@@ -1,6 +1,5 @@
 import { ref, get } from "firebase/database";
 import { db } from "$lib/firebase"; // adjust this path to where you initialize Firebase
-const date = new Date();
 
 export async function fetchData() {
   try {
