@@ -1,4 +1,3 @@
-<!-- TODO: make reusable for all modals? idk not really man -->
 <script lang="ts">
   let dialog: HTMLDialogElement;
   let invalidArtists: { s: boolean; g: boolean } = { s: false, g: false };
@@ -20,8 +19,6 @@
       const customArtists = JSON.parse(JSON.parse(result.data)[0]);
       dialog.close();
       // redirect to custom game page
-      // TODO: or use goto?
-      // location.href = `/custom?s=${customArtists.startArtistId}&g=${customArtists.goalArtistId}`;
       window.open(
         `/custom?s=${customArtists.startArtistId}&g=${customArtists.goalArtistId}`
       );

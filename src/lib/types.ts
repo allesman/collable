@@ -3,6 +3,8 @@
 // }
 
 export interface Song {
+  song_art_image_thumbnail_url: string | null | undefined;
+  header_image_thumbnail_url: string | null | undefined;
   id: number;
   title: string;
   artist_names: string;
@@ -12,6 +14,7 @@ export interface Song {
 }
 
 export interface Artist {
+  image_url: string;
   id: number;
   name: string;
 }
