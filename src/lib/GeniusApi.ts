@@ -94,11 +94,14 @@ export default class GeniusApi {
         hit.result.primary_artist.name
           .toLowerCase()
           .trim()
-          .replace("\u200B", "") === artistName.toLowerCase()
+          .replace("\u200B", "") // remove zero-width space
+          .replace(String.fromCharCode(160), " ") === // remove non-breaking space
+        artistName.toLowerCase()
       ) {
         return hit.result.primary_artist;
       }
     }
+
     return null;
   }
 
