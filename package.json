@@ -41,5 +41,8 @@
 		"eslint-plugin-svelte": "^2.43.0",
 		"firebase": "^10.13.0",
 		"simple-oauth2": "^5.1.0"
+	},
+	"overrides": {
+		"cookie": "0.7.0"
 	}
 }
