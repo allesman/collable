@@ -27,7 +27,10 @@ export async function fetchData() {
     const day = String(berlinDate.getDate()).padStart(2, "0");
     const today = `${year}-${month}-${day}`;
 
-    const todayData = data[today];
+    // Get data for the current date, or otherwise the newest date existing
+    // TODO: display info showing outdated data
+    const todayData = data[today] ?? data[ Object.keys(data)[Object.keys(data).length-1] ];
+
     return todayData;
   } catch (error) {
     console.error("Error reading data:", error);
