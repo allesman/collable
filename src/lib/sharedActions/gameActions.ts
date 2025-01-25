@@ -28,31 +28,7 @@ export const gameActions = {
       const data = await geniusApi.searchGenius(finalQuery);
       const searchResults = [];
       for (let i = 0; i < data.length; i++) {
-        // for debugging
-        const primaryOld = data[i].result.primary_artists;
-        console.assert(primaryOld.length == 1, "Primary artist length not 1");
-
-        let primary = [data[i].result.primary_artist];
-        const primaryName: string = primary[0].name;
-        // Check if song has combined artist (e.g. "Lana Del Rey & Quavo")
-        // TODO: ensure it's not just an artist with "&" in their name (e.g. "Simon & Garfunkel")
-        if (primaryName.includes(" & ") && !artistName.includes(" & ")) {
-          // Clear old primary artist
-          primary = [];
-          // Split into seperate artists by "&"
-          const splitArtists: string[] = splitArtist(primaryName, " & ");
-          for (const a of splitArtists) {
-            console.log("Split artist:" + a);
-            // Add full artist object to primary artists
-            const artistObj = await geniusApi.getArtistInfoFromName(a);
-            if (!artistObj) {
-              console.error("Artist not found: " + a);
-              continue;
-            }
-            primary.push(artistObj);
-          }
-        }
-
+        let primary = data[i].result.primary_artists;
         const features = data[i].result.featured_artists;
         const combinedArtists = primary.concat(features);
         // searchResults.push(data[i]); // Debug line, uncomment to see all results
