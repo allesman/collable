@@ -2,8 +2,33 @@ import GeniusApi from "$lib/GeniusApi";
 import { splitArtist } from "$lib/stringUtils";
 import { error, type RequestEvent } from "@sveltejs/kit";
 
-// FIXME: caching (especially for splitting artists)
+// FIXME: caching
 export const gameActions = {
+  getSongs: async ({ request }: RequestEvent) => {
+    const data = await request.formData();
+    const geniusApi = await GeniusApi.initialize();
+    console.assert(geniusApi, "GeniusApi not initialized");
+    const artistId = data.get("artistId");
+    if (!artistId || typeof artistId !== "string") {
+      return error(400, "Query and ArtistId required");
+    }
+    try {
+      const songs = await geniusApi.getSongs(artistId, 20);
+      // add combined artists
+      // TODO: move this logic to when song is actually clicked?
+      for (let i = 0; i < songs.length; i++) {
+        let primary = songs[i].primary_artists;
+        const features = songs[i].featured_artists;
+        const combinedArtists = primary.concat(features);
+        songs[i]["combined_artists"] = combinedArtists;
+      }
+      return JSON.stringify(songs);
+    } catch (e) {
+      console.error(e);
+      return error(500, "Whut?");
+    }
+
+  },
   search: async ({ request }: RequestEvent) => {
     const data = await request.formData();
     const geniusApi = await GeniusApi.initialize();
@@ -24,6 +49,7 @@ export const gameActions = {
     const finalQuery = query + " " + artistName;
     console.log("Searching: " + finalQuery);
     // FIXME: use other api call in general (song), to 1) stop user from using tactical search, but this will need own search
+    // actually gonna use new api call with old search for now
     try {
       const data = await geniusApi.searchGenius(finalQuery);
       const searchResults = [];

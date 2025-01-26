@@ -70,22 +70,53 @@
     gameStage = 1;
     searchMade = false;
     song = searchResults[index];
+    console.log(song);
   }
 
   async function handleCloseSong() {
     gameStage = 0;
   }
 
-  async function handleClickArtist(index: number) {
+  async function handleClickArtist(event: SubmitEvent) {
+    event.preventDefault();
+    isLoading = true;
+    const form: HTMLFormElement = event.target as HTMLFormElement;
+    const formData: FormData = new FormData(form);
+    if (!formData.get("artistId") || event.currentTarget == null) {
+      // if query is empty or form is null, don't send request
+      isLoading = false;
+      return;
+    }
+    const artistIndex: number = parseInt(
+      formData.get("artistIndex") as string,
+      10,
+    );
     gameStage = 0;
     searchResults = [];
-    artistObj = song.combined_artists[index];
+    // artistObj = song.combined_artists[index];
+    artistObj = song.combined_artists[artistIndex];
     numGuesses++;
     // Check for game win
     if (artistObj.id === goalArtist.id) {
       // console.log("You win!");
+      isLoading = false;
       youWinModal.openModal();
       gameStage = 2;
+    } else {
+      // Since no game win, get new default songs for artist
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: formData,
+      });
+      if (response.ok) {
+        const result = await response.json();
+        searchResults = JSON.parse(JSON.parse(result.data)[0]);
+        console.assert(searchResults.length > 0, "No results found");
+      } else {
+        error = "Something went wrong";
+      }
+      console.log(song.combined_artists);
+      isLoading = false;
     }
   }
 </script>
@@ -140,7 +171,7 @@
     <input
       name="songQuery"
       type="text"
-      placeholder="Enter Song..."
+      placeholder="Find Song..."
       disabled={isLoading || gameStage != 0}
       class="input input-bordered select-none"
       required
@@ -205,15 +236,22 @@
         {/if}
         <span class="ml-1">✕</span>
       </button>
+      <!-- lowkey fake form to pass artistid to backend when clicked -->
       <ul class="flex flex-col items-center justify-center mt-5">
         {#each song.combined_artists as artist, i}
           {#if artist.id !== artistObj.id}
             <li class="w-full text-center m-1">
-              <button
-                on:click={() => handleClickArtist(i)}
-                data-index={i}
-                class="btn btn-secondary btn-outline">{artist.name}</button
+              <form
+                method="POST"
+                action="?/getSongs"
+                on:submit|preventDefault={handleClickArtist}
               >
+                <input type="hidden" name="artistIndex" value={i} />
+                <input type="hidden" name="artistId" value={artist.id} />
+                <button type="submit" class="btn btn-secondary btn-outline"
+                  >{artist.name}</button
+                >
+              </form>
             </li>
           {/if}
         {/each}
