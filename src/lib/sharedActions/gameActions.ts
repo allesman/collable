@@ -77,6 +77,11 @@ export const gameActions = {
     const data = await request.formData();
     const startArtistName = data.get("startArtist");
     const goalArtistName = data.get("goalArtist");
+
+    if (startArtistName === goalArtistName) {
+      return error(400, { message: "Start artist and goal artist can't be the same" });
+    }
+
     console.log("Custom game: " + startArtistName + " -> " + goalArtistName);
 
     const geniusApi = await GeniusApi.initialize();
