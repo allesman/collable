@@ -28,10 +28,17 @@ export async function fetchData() {
     const today = `${year}-${month}-${day}`;
 
     // Get data for the current date, or otherwise the newest date existing
-    // TODO: display info showing outdated data
-    const todayData = data[today] ?? data[ Object.keys(data)[Object.keys(data).length-1] ];
+    // FIXME: yes in theory this is based on the assumption that there is no gap in the data (in that case, it would incorrectly show the newest data)
+    let latestDate = today;
+    let latestData = data[today];
+    if (!latestData) {
+      latestDate = Object.keys(data)[Object.keys(data).length - 1];
+      latestData = data[latestDate];
+    }
+    // add date stamp to the data
+    latestData["date"] = latestDate;
+    return latestData;
 
-    return todayData;
   } catch (error) {
     console.error("Error reading data:", error);
   }

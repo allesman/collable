@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
+  import type { PageData } from "../../routes/$types";
   import type {
     // SearchResult,
     Song,
@@ -8,16 +9,12 @@
   } from "$lib/types.js";
 
   // get the data from parent component
-  export let data: {
-    startArtist: Artist;
-    goalArtist: Artist;
-    isCustom: boolean;
-    defaultSongs: Song[];
-  };
+  export let data: PageData;
   const startArtist: Artist = data.startArtist;
   const goalArtist: Artist = data.goalArtist;
   const isCustom: boolean = data.isCustom;
   let defaultSongs: Song[] = data.defaultSongs; // the most popular songs of the current artist, not filtered with a search query
+  const dateStamp: string = data.dateStamp;
 
   // modal shown when the user wins the game
   import YouWin from "$lib/components/YouWin.svelte";
@@ -155,7 +152,7 @@
 
 <div class="flex justify-center items-center">
   <div class="inline-block card bg-base-100">
-    <div class="card-body">
+    <div class="card-body pb-5">
       <div class="flex justify-center items-center">
         Use features to get from
       </div>
@@ -175,6 +172,12 @@
           alt={goalArtist.name}
         />
         {goalArtist.name}
+      </div>
+      <!-- FIXME: not 100% happy with this design yet -->
+      <div class="flex justify-center mt-3">
+        <div class="badge badge-ghost text-neutral-600">
+          {dateStamp ?? "custom"}
+        </div>
       </div>
     </div>
   </div>

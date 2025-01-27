@@ -27,6 +27,7 @@ export const load = (async ({ url }) => {
     goalArtist: goalArtist,
     isCustom: true,
     defaultSongs: defaultSongs,
+    dateStamp: null, // no date stamp for custom games
   };
 }) satisfies PageServerLoad;
 

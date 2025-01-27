@@ -28,11 +28,14 @@ export const load = (async () => {
     return error(500, `Artist "${goalArtistName}" not found`);
   }
   const defaultSongs = await getDefaultSongs(startArtist.id.toString());
+
+  const dateStamp = data.date;
   return {
     startArtist: startArtist,
     goalArtist: goalArtist,
     isCustom: false,
     defaultSongs: defaultSongs,
+    dateStamp: dateStamp,
   };
 }) satisfies PageServerLoad;
 
