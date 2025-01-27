@@ -2,12 +2,12 @@ import { error } from "@sveltejs/kit";
 import GeniusApi from "./GeniusApi";
 import type { Song } from "./types";
 
-export async function getDefaultSongs(artistId: string): Promise<Song[]> {
+export async function getDefaultSongs(artistId: string, amount: number = 10): Promise<Song[]> {
     // returns default songs for artist with added combined artists for each song
     const geniusApi = await GeniusApi.initialize();
     console.assert(geniusApi, "GeniusApi not initialized");
     try {
-        const songs = await geniusApi.getSongs(artistId, 10);
+        const songs = await geniusApi.getSongs(artistId, amount);
         // add combined artists
         // TODO: move this logic to when song is actually clicked?
         for (let i = 0; i < songs.length; i++) {

@@ -38,7 +38,8 @@
   let artistObj: Artist = startArtist; // the current artist, initialized with the start artist
   let searchResults: Song[] = []; // the songs found by the search query
   let error: string | null = null;
-  let isLoading: boolean = false;
+  let isLoading: boolean = false; // for loading songs from search query
+  let isLoadingMore: boolean = false; // for loading more songs
 
   async function handleSearch(event: SubmitEvent) {
     event.preventDefault();
@@ -59,7 +60,7 @@
       searchResults = JSON.parse(JSON.parse(result.data)[0]);
       searchMade = true;
     } else {
-      error = "Something went wrong";
+      error = "Something went wrong while handling search";
     }
     form.reset();
     isLoading = false;
@@ -115,11 +116,40 @@
         defaultSongs = JSON.parse(JSON.parse(result.data)[0]);
         console.assert(defaultSongs.length > 0, "No default songs returned");
       } else {
-        error = "Something went wrong";
+        error = "Something went wrong while loading data for new artist";
       }
       console.log(song.combined_artists);
       isLoading = false;
     }
+  }
+
+  async function handleShowMore(event: SubmitEvent) {
+    event.preventDefault();
+    isLoadingMore = true;
+    const form: HTMLFormElement = event.target as HTMLFormElement;
+    const formData: FormData = new FormData(form);
+    if (!formData.get("artistsAmount") || event.currentTarget == null) {
+      // if query is empty or form is null, don't send request
+      isLoadingMore = false;
+      return;
+    }
+    const response = await fetch(form.action, {
+      method: "POST",
+      body: formData,
+    });
+    if (response.ok) {
+      const result = await response.json();
+      defaultSongs = JSON.parse(JSON.parse(result.data)[0]);
+      console.assert(defaultSongs.length > 0, "No default songs returned");
+      console.assert(
+        defaultSongs.length ===
+          parseInt(formData.get("artistsAmount") as string, 10),
+        `got ${defaultSongs.length} songs but should've gotten ${parseInt(formData.get("artistsAmount") as string, 10)}`,
+      );
+    } else {
+      error = "Unable to load more songs";
+    }
+    isLoadingMore = false;
   }
 </script>
 
@@ -216,6 +246,22 @@
               </button>
             </li>
           {/each}
+          <li class="w-full text-center m-1 mt-4">
+            <!-- Show more button, inside here because it's only needed when there's songs being listed -->
+            <!-- FIXME: fake ass form, again -->
+            <form action="?/getSongs" on:submit|preventDefault={handleShowMore}>
+              <input
+                type="hidden"
+                name="artistsAmount"
+                value={defaultSongs.length + 10}
+              />
+              <input type="hidden" name="artistId" value={artistObj.id} />
+              <button class="btn btn-ghost" disabled={searchMade} type="submit">
+                <!-- TODO: could also put || isLoadingMore up there in disabled but idk tbh -->
+                {isLoadingMore ? "Loading..." : "Show More"}
+              </button>
+            </form>
+          </li>
         </ul>
       {:else if searchMade}
         <!-- no search results even though a search was made-->
@@ -225,8 +271,6 @@
             target="_blank"
             class="link">Is your song missing?</a
           >
-          searchmade: {searchMade}
-          defaultSongs: {defaultSongs.length}
         </p>
       {/if}
     </div>
@@ -245,6 +289,7 @@
         <span class="ml-1">✕</span>
       </button>
       <!-- lowkey fake form to pass artistid to backend when clicked -->
+      <!-- FIXME: just use custom api instead of fake form?  -->
       <ul class="flex flex-col items-center justify-center mt-5">
         {#each song.combined_artists as artist, i}
           {#if artist.id !== artistObj.id}
@@ -269,7 +314,9 @@
     <nbsp />
   {:else}
     <!-- Error if gameStage has ValueError -->
-    <p class="text-error text-center">Something went wrong</p>
+    <p class="text-error text-center">
+      Something went wrong. Debug information: gameStage={gameStage}
+    </p>
   {/if}
 
   <!-- Error Message (if there is one) -->
