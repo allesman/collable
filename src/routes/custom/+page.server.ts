@@ -2,6 +2,7 @@ import GeniusApi from "$lib/GeniusApi";
 import { error, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { gameActions } from "$lib/sharedActions/gameActions";
+import { getDefaultSongs } from "$lib/gameUtils";
 
 export const load = (async ({ url }) => {
   // Access Genius API
@@ -19,10 +20,13 @@ export const load = (async ({ url }) => {
   // get full artist info
   const startArtist = await geniusApi.getArtistInfoFromId(startArtistId);
   const goalArtist = await geniusApi.getArtistInfoFromId(goalArtistId);
+  const defaultSongs = await getDefaultSongs(startArtist.id.toString());
+
   return {
     startArtist: startArtist,
     goalArtist: goalArtist,
     isCustom: true,
+    defaultSongs: defaultSongs,
   };
 }) satisfies PageServerLoad;
 

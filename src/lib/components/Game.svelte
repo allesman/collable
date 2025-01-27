@@ -12,10 +12,12 @@
     startArtist: Artist;
     goalArtist: Artist;
     isCustom: boolean;
+    defaultSongs: Song[];
   };
   const startArtist: Artist = data.startArtist;
   const goalArtist: Artist = data.goalArtist;
   const isCustom: boolean = data.isCustom;
+  let defaultSongs: Song[] = data.defaultSongs; // the most popular songs of the current artist, not filtered with a search query
 
   // modal shown when the user wins the game
   import YouWin from "$lib/components/YouWin.svelte";
@@ -34,7 +36,7 @@
 
   // for gameStage 0
   let artistObj: Artist = startArtist; // the current artist, initialized with the start artist
-  let searchResults: Song[] = [];
+  let searchResults: Song[] = []; // the songs found by the search query
   let error: string | null = null;
   let isLoading: boolean = false;
 
@@ -68,9 +70,8 @@
 
   async function handleClickSong(index: number) {
     gameStage = 1;
-    searchMade = false;
-    song = searchResults[index];
-    console.log(song);
+    // searchMade = false;
+    song = searchResults[index] ?? defaultSongs[index];
   }
 
   async function handleCloseSong() {
@@ -96,6 +97,7 @@
     // artistObj = song.combined_artists[index];
     artistObj = song.combined_artists[artistIndex];
     numGuesses++;
+    searchMade = false;
     // Check for game win
     if (artistObj.id === goalArtist.id) {
       // console.log("You win!");
@@ -110,8 +112,8 @@
       });
       if (response.ok) {
         const result = await response.json();
-        searchResults = JSON.parse(JSON.parse(result.data)[0]);
-        console.assert(searchResults.length > 0, "No results found");
+        defaultSongs = JSON.parse(JSON.parse(result.data)[0]);
+        console.assert(defaultSongs.length > 0, "No default songs returned");
       } else {
         error = "Something went wrong";
       }
@@ -188,13 +190,15 @@
   </form>
 
   {#if gameStage === 0}
-    <!-- Search Results (gameStage 0 only) -->
+    <!-- Songs (gameStage 0 only) -->
     <div class="flex items-center justify-center mt-10">
       {#if isLoading}
+        <!-- still loading -->
         <p class="mt-1">Loading...</p>
-      {:else if searchResults.length > 0}
+      {:else if (searchMade && searchResults.length > 0) || !searchMade}
+        <!-- search made and had results, display them / no search made yet, display default songs -->
         <ul class="flex flex-col items-center justify-center">
-          {#each searchResults as hit, i}
+          {#each searchMade ? searchResults : defaultSongs as hit, i}
             <li class="w-full text-center m-1">
               <button
                 on:click={() => handleClickSong(i)}
@@ -207,18 +211,22 @@
                   alt={hit.title}
                 />
                 {hit.title}
+                <!-- combined artists: {hit.combined_artists} <br /> -->
                 <span class="badge badge-secondary">{hit.artist_names}</span>
               </button>
             </li>
           {/each}
         </ul>
       {:else if searchMade}
+        <!-- no search results even though a search was made-->
         <p class="text-gray-400">
           No Results. <a
             href="https://forms.gle/8P8NAvcdbUMABW427"
             target="_blank"
             class="link">Is your song missing?</a
           >
+          searchmade: {searchMade}
+          defaultSongs: {defaultSongs.length}
         </p>
       {/if}
     </div>

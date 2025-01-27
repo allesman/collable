@@ -1,33 +1,17 @@
+import { getDefaultSongs } from "$lib/gameUtils";
 import GeniusApi from "$lib/GeniusApi";
-import { splitArtist } from "$lib/stringUtils";
 import { error, type RequestEvent } from "@sveltejs/kit";
 
 // FIXME: caching
 export const gameActions = {
   getSongs: async ({ request }: RequestEvent) => {
     const data = await request.formData();
-    const geniusApi = await GeniusApi.initialize();
-    console.assert(geniusApi, "GeniusApi not initialized");
     const artistId = data.get("artistId");
     if (!artistId || typeof artistId !== "string") {
-      return error(400, "Query and ArtistId required");
+      return error(400, "ArtistId required");
     }
-    try {
-      const songs = await geniusApi.getSongs(artistId, 20);
-      // add combined artists
-      // TODO: move this logic to when song is actually clicked?
-      for (let i = 0; i < songs.length; i++) {
-        let primary = songs[i].primary_artists;
-        const features = songs[i].featured_artists;
-        const combinedArtists = primary.concat(features);
-        songs[i]["combined_artists"] = combinedArtists;
-      }
-      return JSON.stringify(songs);
-    } catch (e) {
-      console.error(e);
-      return error(500, "Whut?");
-    }
-
+    const defaultSongs = await getDefaultSongs(artistId);
+    return JSON.stringify(defaultSongs);
   },
   search: async ({ request }: RequestEvent) => {
     const data = await request.formData();
