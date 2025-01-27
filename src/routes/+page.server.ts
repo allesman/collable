@@ -4,6 +4,7 @@ import { error } from "@sveltejs/kit";
 import type { Artist } from "$lib/types";
 import { fetchData } from "$lib/readDB";
 import { gameActions } from "$lib/sharedActions/gameActions";
+import { getDefaultSongs } from "$lib/gameUtils";
 
 let startArtist: Artist;
 let goalArtist: Artist;
@@ -26,10 +27,15 @@ export const load = (async () => {
   if (!goalArtist) {
     return error(500, `Artist "${goalArtistName}" not found`);
   }
+  const defaultSongs = await getDefaultSongs(startArtist.id.toString());
+
+  const dateStamp = data.date;
   return {
     startArtist: startArtist,
     goalArtist: goalArtist,
     isCustom: false,
+    defaultSongs: defaultSongs,
+    dateStamp: dateStamp,
   };
 }) satisfies PageServerLoad;
 

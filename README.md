@@ -6,12 +6,11 @@ A daily game (like wordle) in which you have to get from one artist to another v
 
 - `npm install` to install dependencies
 
-- Visit http://genius.com/api-clients
+- Obtain Genius API keys (see .env.example for more info)
 
-    - Create Api Client
-    - Copy "CLIENT ID" and "CLIENT SECRET"
+- Obtain Firebase API keys (see .env.example for more info)
 
-- Create `.env` in project root and set environment variables `CLIENT_ID` and `CLIENT_SECRET` accordingly
+- Create `.env` in project root and set environment variables for Genius and Firebase accordingly
 
 - `npm run dev` to start the development server
 
