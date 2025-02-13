@@ -19,22 +19,24 @@ async function createNewGamesUntil(untilDateStr: string) {
     }
 }
 
-export async function createNewGame(dateStr: string | null = null) {
-    let artistsList: string[] = await getArtistList();
-    const getRandomArtist = () => artistsList[Math.floor(Math.random() * artistsList.length)];
-    let startArtist: string;
-    let goalArtist: string;
-    do {
-        startArtist = getRandomArtist();
-        goalArtist = getRandomArtist();
+export async function createNewGame(dateStr: string | null = null, startArtist: string | null = null, goalArtist: string | null = null) {
+    if (!startArtist || !goalArtist) {
+        // one or both artists are not provided, get random artists
+        let artistsList: string[] = await getArtistList();
+        const getRandomArtist = () => artistsList[Math.floor(Math.random() * artistsList.length)];
+        do {
+            startArtist = getRandomArtist();
+            goalArtist = getRandomArtist();
+        }
+        while (startArtist === goalArtist);
     }
-    while (startArtist === goalArtist);
     const dailyGameEntry = {
         startArtist: startArtist,
         goalArtist: goalArtist,
     };
     pushToDB(dailyGameEntry, dateStr);
-    console.log(`Created ${startArtist} -> ${goalArtist}`);
+    // console.log(`Created ${startArtist} -> ${goalArtist}`);
+    return dailyGameEntry;
 }
 
 async function getArtistList(): Promise<string[]> {
@@ -52,7 +54,7 @@ async function getArtistList(): Promise<string[]> {
             })
             .on('data', (row) => { artistsList.push(row[0]); })
             .on('end', () => {
-                console.log(`Parsed ${artistsList.length} rows`);
+                // console.log(`Parsed ${artistsList.length} rows`);
                 console.assert(artistsList.length > 0, 'Artists list is empty');
                 resolve(artistsList);
             });
