@@ -1,22 +1,12 @@
 import { ref, get, set } from "firebase/database";
-import { db } from "./firebase.cjs"; // adjust this path to where you initialize Firebase
-import type { DailyGame } from "./types";
+import { db } from "./firebase.ts";
+import type { DailyGame, StoredData } from "./types.ts";
+
+// module.exports = { pushToDB, fetchData, getAllData, getLatestDate };
 
 export async function fetchData() {
   try {
-    // Reference to the database, specifically the dailyGames node
-    const dbRef = ref(db, "dailyGames");
-
-    // Get the snapshot of the data
-    const snapshot = await get(dbRef);
-
-    if (!snapshot.exists()) {
-      // console.log("No data available");
-      return null;
-    }
-
-    // Fetch the data
-    const data = snapshot.val();
+    const data = await getAllData();
 
     // Get the data relevant for the current date in YYYY-MM-DD format and Berlin timezone
     const today = getCurrentDateString();
@@ -26,7 +16,7 @@ export async function fetchData() {
     let latestDate = today;
     let latestData = data[today];
     if (!latestData) {
-      latestDate = Object.keys(data)[Object.keys(data).length - 1];
+      latestDate = getLatestDate(data);
       latestData = data[latestDate];
     }
     // add date stamp to the data
@@ -38,20 +28,39 @@ export async function fetchData() {
   }
 }
 
-// export async function pushToDB(dailyGameEntry: DailyGame) {
-export async function pushToDB(dailyGameEntry: DailyGame) {
+export async function pushToDB(dailyGameEntry: DailyGame, dateStr: string | null = null) {
   try {
     // Reference to the database, specifically the dailyGames node
-    const dbRef = ref(db, "dailyGames/" + getCurrentDateString());
-    set(dbRef, dailyGameEntry);
+    const dbRef = ref(db, "dailyGames/" + (dateStr || getCurrentDateString()));
+    await set(dbRef, dailyGameEntry);
   }
   catch (error) {
     console.error("Error pushing data:", error);
   }
 }
 
+export function getLatestDate(data: StoredData): string {
+  return Object.keys(data)[Object.keys(data).length - 1];
+}
 
-export function getCurrentDateString() {
+export async function getAllData(): Promise<StoredData> {
+  // Reference to the database, specifically the dailyGames node
+  const dbRef = ref(db, "dailyGames");
+
+  // Get the snapshot of the data
+  const snapshot = await get(dbRef);
+
+  if (!snapshot.exists()) {
+    // console.log("No data available");
+    return {};
+  }
+
+  // Fetch the data
+  const data = snapshot.val();
+  return data;
+}
+
+function getCurrentDateString(): string {
   const date = new Date();
   const berlinDate = new Date(
     date.toLocaleString("en-US", { timeZone: "Europe/Berlin" })

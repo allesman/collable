@@ -1,15 +1,15 @@
-const { pushToDB, fetchData, getAllData, getLatestDate } = require("./dbUtil.cjs");
-const fs = require('fs');
-const path = require('path');
-const csv = require('fast-csv');
+import { pushToDB, getAllData, getLatestDate } from "./dbUtil.js";
+import fs from 'fs';
+import path from 'path';
+import csv from 'fast-csv';
 
-let artistsList = [];
+let artistsList: string[] = [];
 // import type { DailyGame } from "./types";
 
-async function createNewGamesUntil(untilDateStr) {
-    date = new Date(untilDateStr);
+async function createNewGamesUntil(untilDateStr: string) {
+    const date = new Date(untilDateStr);
     // get latest date with data
-    data = await getAllData();
+    const data = await getAllData();
     let latestDateStr = getLatestDate(data);
     let latestDate = new Date(latestDateStr);
     while (latestDate < date) {
@@ -19,9 +19,11 @@ async function createNewGamesUntil(untilDateStr) {
     }
 }
 
-async function createNewGame(dateStr = null) {
-    let artistsList = await getArtistList();
+async function createNewGame(dateStr: string | null = null) {
+    let artistsList: string[] = await getArtistList();
     const getRandomArtist = () => artistsList[Math.floor(Math.random() * artistsList.length)];
+    let startArtist: string;
+    let goalArtist: string;
     do {
         startArtist = getRandomArtist();
         goalArtist = getRandomArtist();
@@ -35,11 +37,11 @@ async function createNewGame(dateStr = null) {
     console.log(`Created ${startArtist} -> ${goalArtist}`);
 }
 
-async function getArtistList() {
+async function getArtistList(): Promise<string[]> {
     if (artistsList.length > 0) {
         return artistsList;
     }
-    const artistsFilePath = path.join(__dirname, '../../static/artists.csv');
+    const artistsFilePath = path.resolve('static/artists.csv');
 
     return new Promise((resolve, reject) => {
         fs.createReadStream(artistsFilePath)
@@ -57,8 +59,10 @@ async function getArtistList() {
     });
 }
 
-if (require.main === module) {
-    createNewGamesUntil("2025-04-01");
+// Check if this script is being run directly
+if (import.meta.url === new URL(import.meta.url).href) {
+    // createNewGamesUntil("2025-02-01");
+    createNewGame("2025-02-15");
 }
 
 // module.exports = createNewGame;

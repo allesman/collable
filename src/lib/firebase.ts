@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
-const fbapp = require("firebase/app");
-const fbdb = require("firebase/database");
+import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
 // import {
 //   FIREBASE_API_KEY,
 //   FIREBASE_MESSAGING_SENDER_ID,
@@ -18,8 +18,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = fbapp.initializeApp(firebaseConfig);
-const db = fbdb.getDatabase(app);
-module.exports = { db };
+const app = initializeApp(firebaseConfig);
+export const db = getDatabase(app);
+// module.exports = { db };
 
 // TODO: change database rules?
