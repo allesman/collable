@@ -34,6 +34,8 @@ export async function createNewGame(dateStr: string | null = null, startArtist: 
         }
         while (startArtist === goalArtist);
     }
+    // TODO: check if artists are valid
+    // TODO: check if connection exists???
     const dailyGameEntry = {
         startArtist: startArtist,
         goalArtist: goalArtist,

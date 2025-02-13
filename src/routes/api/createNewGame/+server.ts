@@ -1,7 +1,20 @@
 import { createNewGame, createNewGamesUntil } from '$lib/createNewGames';
 import { json } from '@sveltejs/kit';
+import dotenv from 'dotenv';
 
-export async function GET({ url }) {
+dotenv.config();
+
+export async function GET({ url, request }) {
+
+    const apiKey = request.headers.get('api-key');
+    const validApiKey = process.env.MUSICALLE_API_KEY;
+    if (!validApiKey) {
+        return json({ error: 'haha fuck server doesn\'t have api key' }, { status: 500 });
+    }
+    if (apiKey !== validApiKey) {
+        return json({ error: 'literally me when I don\'t provide the correct api key: apiKey (Unauthorized)' }, { status: 401 });
+    }
+
     const date = url.searchParams.get("d");
     const startArtist = url.searchParams.get("s");
     const goalArtist = url.searchParams.get("g");
