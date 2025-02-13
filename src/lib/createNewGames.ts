@@ -48,7 +48,7 @@ async function getArtistList(): Promise<string[]> {
     if (artistsList.length > 0) {
         return artistsList;
     }
-    const artistsFilePath = './artists.csv';
+    const artistsFilePath = '$lib/artists.csv';
 
     return new Promise((resolve, reject) => {
         fs.createReadStream(artistsFilePath)
