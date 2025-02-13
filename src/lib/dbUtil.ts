@@ -1,5 +1,6 @@
-import { ref, get } from "firebase/database";
-import { db } from "$lib/firebase"; // adjust this path to where you initialize Firebase
+import { ref, get, set } from "firebase/database";
+import { db } from "./firebase.cjs"; // adjust this path to where you initialize Firebase
+import type { DailyGame } from "./types";
 
 export async function fetchData() {
   try {
@@ -18,14 +19,7 @@ export async function fetchData() {
     const data = snapshot.val();
 
     // Get the data relevant for the current date in YYYY-MM-DD format and Berlin timezone
-    const date = new Date();
-    const berlinDate = new Date(
-      date.toLocaleString("en-US", { timeZone: "Europe/Berlin" })
-    );
-    const year = berlinDate.getFullYear();
-    const month = String(berlinDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const day = String(berlinDate.getDate()).padStart(2, "0");
-    const today = `${year}-${month}-${day}`;
+    const today = getCurrentDateString();
 
     // Get data for the current date, or otherwise the newest date existing
     // FIXME: yes in theory this is based on the assumption that there is no gap in the data (in that case, it would incorrectly show the newest data)
@@ -42,4 +36,29 @@ export async function fetchData() {
   } catch (error) {
     console.error("Error reading data:", error);
   }
+}
+
+// export async function pushToDB(dailyGameEntry: DailyGame) {
+export async function pushToDB(dailyGameEntry: DailyGame) {
+  try {
+    // Reference to the database, specifically the dailyGames node
+    const dbRef = ref(db, "dailyGames/" + getCurrentDateString());
+    set(dbRef, dailyGameEntry);
+  }
+  catch (error) {
+    console.error("Error pushing data:", error);
+  }
+}
+
+
+export function getCurrentDateString() {
+  const date = new Date();
+  const berlinDate = new Date(
+    date.toLocaleString("en-US", { timeZone: "Europe/Berlin" })
+  );
+  const year = berlinDate.getFullYear();
+  const month = String(berlinDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(berlinDate.getDate()).padStart(2, "0");
+  const today = `${year}-${month}-${day}`;
+  return today;
 }
