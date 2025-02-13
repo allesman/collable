@@ -1,7 +1,9 @@
 import { pushToDB, getAllData, getCurrentDateString } from "./dbUtil.js";
 import fs from 'fs';
-import path from 'path';
 import csv from 'fast-csv';
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 let artistsList: string[] = [];
 
@@ -48,7 +50,9 @@ async function getArtistList(): Promise<string[]> {
     if (artistsList.length > 0) {
         return artistsList;
     }
-    const artistsFilePath = './artists.csv';
+    // TODO: dude temporary asf fix
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const artistsFilePath = __dirname + '/../../../../../client/artists.csv';
 
     return new Promise((resolve, reject) => {
         fs.createReadStream(artistsFilePath)
