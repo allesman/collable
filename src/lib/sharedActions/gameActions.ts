@@ -1,9 +1,31 @@
+import { getDefaultSongs } from "$lib/gameUtils";
 import GeniusApi from "$lib/GeniusApi";
-import { splitArtist } from "$lib/stringUtils";
+import type { Song } from "$lib/types";
 import { error, type RequestEvent } from "@sveltejs/kit";
 
-// FIXME: caching (especially for splitting artists)
+// FIXME: caching
 export const gameActions = {
+
+  getSongs: async ({ request }: RequestEvent) => {
+    const data = await request.formData();
+    const artistId = data.get("artistId");
+    const amount = data.get("artistsAmount");
+    if (!artistId || typeof artistId !== "string") {
+      return error(400, "ArtistId required");
+    }
+    let defaultSongs: Song[] = [];
+    if (amount) {
+      // FIXME: especially, for bigger amounts, re-fetching all songs to get more songs is inefficient
+      // a specific amount of songs is requested
+      defaultSongs = await getDefaultSongs(artistId, parseInt(amount as string));
+    }
+    else {
+      // default amount of songs is requested
+      defaultSongs = await getDefaultSongs(artistId);
+    }
+    return JSON.stringify(defaultSongs);
+  },
+
   search: async ({ request }: RequestEvent) => {
     const data = await request.formData();
     const geniusApi = await GeniusApi.initialize();
@@ -24,35 +46,12 @@ export const gameActions = {
     const finalQuery = query + " " + artistName;
     console.log("Searching: " + finalQuery);
     // FIXME: use other api call in general (song), to 1) stop user from using tactical search, but this will need own search
+    // actually gonna use new api call with old search for now
     try {
       const data = await geniusApi.searchGenius(finalQuery);
       const searchResults = [];
       for (let i = 0; i < data.length; i++) {
-        // for debugging
-        const primaryOld = data[i].result.primary_artists;
-        console.assert(primaryOld.length == 1, "Primary artist length not 1");
-
-        let primary = [data[i].result.primary_artist];
-        const primaryName: string = primary[0].name;
-        // Check if song has combined artist (e.g. "Lana Del Rey & Quavo")
-        // TODO: ensure it's not just an artist with "&" in their name (e.g. "Simon & Garfunkel")
-        if (primaryName.includes(" & ") && !artistName.includes(" & ")) {
-          // Clear old primary artist
-          primary = [];
-          // Split into seperate artists by "&"
-          const splitArtists: string[] = splitArtist(primaryName, " & ");
-          for (const a of splitArtists) {
-            console.log("Split artist:" + a);
-            // Add full artist object to primary artists
-            const artistObj = await geniusApi.getArtistInfoFromName(a);
-            if (!artistObj) {
-              console.error("Artist not found: " + a);
-              continue;
-            }
-            primary.push(artistObj);
-          }
-        }
-
+        let primary = data[i].result.primary_artists;
         const features = data[i].result.featured_artists;
         const combinedArtists = primary.concat(features);
         // searchResults.push(data[i]); // Debug line, uncomment to see all results
@@ -78,6 +77,11 @@ export const gameActions = {
     const data = await request.formData();
     const startArtistName = data.get("startArtist");
     const goalArtistName = data.get("goalArtist");
+
+    if (startArtistName === goalArtistName) {
+      return error(400, { message: "Start artist and goal artist can't be the same" });
+    }
+
     console.log("Custom game: " + startArtistName + " -> " + goalArtistName);
 
     const geniusApi = await GeniusApi.initialize();

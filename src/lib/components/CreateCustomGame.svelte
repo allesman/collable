@@ -1,6 +1,8 @@
 <script lang="ts">
   let dialog: HTMLDialogElement;
   let invalidArtists: { s: boolean; g: boolean } = { s: false, g: false };
+  let sameArtists: boolean = false;
+  let errorMessage: string = "";
   export function openModal() {
     dialog.showModal();
   }
@@ -20,12 +22,19 @@
       dialog.close();
       // redirect to custom game page
       window.open(
-        `/custom?s=${customArtists.startArtistId}&g=${customArtists.goalArtistId}`
+        `/custom?s=${customArtists.startArtistId}&g=${customArtists.goalArtistId}`,
       );
     } else if (response.status === 404) {
       const error = await response.json();
       invalidArtists = error.error.invalidArtists;
+      errorMessage = error.error.message;
+      sameArtists = false; // so its error doesn't also show up
       // console.log(invalidArtists);
+    } else if (response.status === 400) {
+      const error = await response.json();
+      sameArtists = true;
+      errorMessage = error.error.message;
+      invalidArtists = { s: false, g: false }; // so its error doesn't also show up
     } else {
       // console.log("Something went wrong");
     }
@@ -60,7 +69,7 @@
         required
       />
       {#if invalidArtists.s}
-        <p class="text-red-500">Artist not found</p>
+        <p class="text-red-500 mt-2">{errorMessage}</p>
       {/if}
       <label class="label" for="goalArtist" />
       <input
@@ -72,9 +81,14 @@
         required
       />
       {#if invalidArtists.g}
-        <p class="text-red-500">Artist not found</p>
+        <p class="text-red-500 mt-2">{errorMessage}</p>
       {/if}
       <div class="modal-action">
+        {#if sameArtists}
+          <p class="text-red-500 flex items-center">
+            {errorMessage}
+          </p>
+        {/if}
         <label class="label" for="submit" />
         <button
           class="btn btn-success"

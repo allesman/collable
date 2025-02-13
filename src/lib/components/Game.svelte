@@ -1,5 +1,6 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
+  import type { PageData } from "../../routes/$types";
   import type {
     // SearchResult,
     Song,
@@ -8,14 +9,12 @@
   } from "$lib/types.js";
 
   // get the data from parent component
-  export let data: {
-    startArtist: Artist;
-    goalArtist: Artist;
-    isCustom: boolean;
-  };
+  export let data: PageData;
   const startArtist: Artist = data.startArtist;
   const goalArtist: Artist = data.goalArtist;
   const isCustom: boolean = data.isCustom;
+  let defaultSongs: Song[] = data.defaultSongs; // the most popular songs of the current artist, not filtered with a search query
+  const dateStamp: string = data.dateStamp;
 
   // modal shown when the user wins the game
   import YouWin from "$lib/components/YouWin.svelte";
@@ -34,9 +33,10 @@
 
   // for gameStage 0
   let artistObj: Artist = startArtist; // the current artist, initialized with the start artist
-  let searchResults: Song[] = [];
+  let searchResults: Song[] = []; // the songs found by the search query
   let error: string | null = null;
-  let isLoading: boolean = false;
+  let isLoading: boolean = false; // for loading songs from search query
+  let isLoadingMore: boolean = false; // for loading more songs
 
   async function handleSearch(event: SubmitEvent) {
     event.preventDefault();
@@ -57,7 +57,7 @@
       searchResults = JSON.parse(JSON.parse(result.data)[0]);
       searchMade = true;
     } else {
-      error = "Something went wrong";
+      error = "Something went wrong while handling search";
     }
     form.reset();
     isLoading = false;
@@ -68,31 +68,91 @@
 
   async function handleClickSong(index: number) {
     gameStage = 1;
-    searchMade = false;
-    song = searchResults[index];
+    // searchMade = false;
+    song = searchResults[index] ?? defaultSongs[index];
   }
 
   async function handleCloseSong() {
     gameStage = 0;
   }
 
-  async function handleClickArtist(index: number) {
+  async function handleClickArtist(event: SubmitEvent) {
+    event.preventDefault();
+    isLoading = true;
+    const form: HTMLFormElement = event.target as HTMLFormElement;
+    const formData: FormData = new FormData(form);
+    if (!formData.get("artistId") || event.currentTarget == null) {
+      // if query is empty or form is null, don't send request
+      isLoading = false;
+      return;
+    }
+    const artistIndex: number = parseInt(
+      formData.get("artistIndex") as string,
+      10,
+    );
     gameStage = 0;
     searchResults = [];
-    artistObj = song.combined_artists[index];
+    // artistObj = song.combined_artists[index];
+    artistObj = song.combined_artists[artistIndex];
     numGuesses++;
+    searchMade = false;
     // Check for game win
     if (artistObj.id === goalArtist.id) {
       // console.log("You win!");
+      isLoading = false;
       youWinModal.openModal();
       gameStage = 2;
+    } else {
+      // Since no game win, get new default songs for artist
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: formData,
+      });
+      if (response.ok) {
+        const result = await response.json();
+        defaultSongs = JSON.parse(JSON.parse(result.data)[0]);
+        console.assert(defaultSongs.length > 0, "No default songs returned");
+      } else {
+        error = "Something went wrong while loading data for new artist";
+      }
+      console.log(song.combined_artists);
+      isLoading = false;
     }
+  }
+
+  async function handleShowMore(event: SubmitEvent) {
+    event.preventDefault();
+    isLoadingMore = true;
+    const form: HTMLFormElement = event.target as HTMLFormElement;
+    const formData: FormData = new FormData(form);
+    if (!formData.get("artistsAmount") || event.currentTarget == null) {
+      // if query is empty or form is null, don't send request
+      isLoadingMore = false;
+      return;
+    }
+    const response = await fetch(form.action, {
+      method: "POST",
+      body: formData,
+    });
+    if (response.ok) {
+      const result = await response.json();
+      defaultSongs = JSON.parse(JSON.parse(result.data)[0]);
+      console.assert(defaultSongs.length > 0, "No default songs returned");
+      console.assert(
+        defaultSongs.length ===
+          parseInt(formData.get("artistsAmount") as string, 10),
+        `got ${defaultSongs.length} songs but should've gotten ${parseInt(formData.get("artistsAmount") as string, 10)}`,
+      );
+    } else {
+      error = "Unable to load more songs";
+    }
+    isLoadingMore = false;
   }
 </script>
 
 <div class="flex justify-center items-center">
   <div class="inline-block card bg-base-100">
-    <div class="card-body">
+    <div class="card-body pb-5">
       <div class="flex justify-center items-center">
         Use features to get from
       </div>
@@ -112,6 +172,12 @@
           alt={goalArtist.name}
         />
         {goalArtist.name}
+      </div>
+      <!-- FIXME: not 100% happy with this design yet -->
+      <div class="flex justify-center mt-3">
+        <div class="badge badge-ghost text-neutral-600">
+          {dateStamp ?? "custom"}
+        </div>
       </div>
     </div>
   </div>
@@ -140,7 +206,7 @@
     <input
       name="songQuery"
       type="text"
-      placeholder="Enter Song..."
+      placeholder="Find Song..."
       disabled={isLoading || gameStage != 0}
       class="input input-bordered select-none"
       required
@@ -157,13 +223,15 @@
   </form>
 
   {#if gameStage === 0}
-    <!-- Search Results (gameStage 0 only) -->
+    <!-- Songs (gameStage 0 only) -->
     <div class="flex items-center justify-center mt-10">
       {#if isLoading}
+        <!-- still loading -->
         <p class="mt-1">Loading...</p>
-      {:else if searchResults.length > 0}
+      {:else if (searchMade && searchResults.length > 0) || !searchMade}
+        <!-- search made and had results, display them / no search made yet, display default songs -->
         <ul class="flex flex-col items-center justify-center">
-          {#each searchResults as hit, i}
+          {#each searchMade ? searchResults : defaultSongs as hit, i}
             <li class="w-full text-center m-1">
               <button
                 on:click={() => handleClickSong(i)}
@@ -176,12 +244,30 @@
                   alt={hit.title}
                 />
                 {hit.title}
+                <!-- combined artists: {hit.combined_artists} <br /> -->
                 <span class="badge badge-secondary">{hit.artist_names}</span>
               </button>
             </li>
           {/each}
+          <li class="w-full text-center m-1 mt-4">
+            <!-- Show more button, inside here because it's only needed when there's songs being listed -->
+            <!-- FIXME: fake ass form, again -->
+            <form action="?/getSongs" on:submit|preventDefault={handleShowMore}>
+              <input
+                type="hidden"
+                name="artistsAmount"
+                value={defaultSongs.length + 10}
+              />
+              <input type="hidden" name="artistId" value={artistObj.id} />
+              <button class="btn btn-ghost" disabled={searchMade} type="submit">
+                <!-- TODO: could also put || isLoadingMore up there in disabled but idk tbh -->
+                {isLoadingMore ? "Loading..." : "Show More"}
+              </button>
+            </form>
+          </li>
         </ul>
       {:else if searchMade}
+        <!-- no search results even though a search was made-->
         <p class="text-gray-400">
           No Results. <a
             href="https://forms.gle/8P8NAvcdbUMABW427"
@@ -205,15 +291,23 @@
         {/if}
         <span class="ml-1">✕</span>
       </button>
+      <!-- lowkey fake form to pass artistid to backend when clicked -->
+      <!-- FIXME: just use custom api instead of fake form?  -->
       <ul class="flex flex-col items-center justify-center mt-5">
         {#each song.combined_artists as artist, i}
           {#if artist.id !== artistObj.id}
             <li class="w-full text-center m-1">
-              <button
-                on:click={() => handleClickArtist(i)}
-                data-index={i}
-                class="btn btn-secondary btn-outline">{artist.name}</button
+              <form
+                method="POST"
+                action="?/getSongs"
+                on:submit|preventDefault={handleClickArtist}
               >
+                <input type="hidden" name="artistIndex" value={i} />
+                <input type="hidden" name="artistId" value={artist.id} />
+                <button type="submit" class="btn btn-secondary btn-outline"
+                  >{artist.name}</button
+                >
+              </form>
             </li>
           {/if}
         {/each}
@@ -223,7 +317,9 @@
     <nbsp />
   {:else}
     <!-- Error if gameStage has ValueError -->
-    <p class="text-error text-center">Something went wrong</p>
+    <p class="text-error text-center">
+      Something went wrong. Debug information: gameStage={gameStage}
+    </p>
   {/if}
 
   <!-- Error Message (if there is one) -->
