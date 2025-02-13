@@ -19,7 +19,7 @@ async function createNewGamesUntil(untilDateStr: string) {
     }
 }
 
-async function createNewGame(dateStr: string | null = null) {
+export async function createNewGame(dateStr: string | null = null) {
     let artistsList: string[] = await getArtistList();
     const getRandomArtist = () => artistsList[Math.floor(Math.random() * artistsList.length)];
     let startArtist: string;
