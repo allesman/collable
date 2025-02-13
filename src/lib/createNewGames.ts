@@ -64,5 +64,3 @@ if (import.meta.url === new URL(import.meta.url).href) {
     // createNewGamesUntil("2025-02-01");
     createNewGame("2025-02-15");
 }
-
-// module.exports = createNewGame;

@@ -2,8 +2,6 @@ import { ref, get, set } from "firebase/database";
 import { db } from "./firebase.ts";
 import type { DailyGame, StoredData } from "./types.ts";
 
-// module.exports = { pushToDB, fetchData, getAllData, getLatestDate };
-
 export async function fetchData() {
   try {
     const data = await getAllData();

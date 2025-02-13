@@ -20,6 +20,5 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
-// module.exports = { db };
 
 // TODO: change database rules?
