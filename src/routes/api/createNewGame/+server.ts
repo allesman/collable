@@ -12,7 +12,7 @@ export async function GET({ url, request }) {
         return json({ error: 'haha fuck server doesn\'t have api key' }, { status: 500 });
     }
     if (apiKey !== validApiKey) {
-        return json({ error: 'literally me when I don\'t provide the correct api key: apiKey (Unauthorized)' }, { status: 401 });
+        return json({ error: 'literally me when I don\'t provide the correct api key (Unauthorized)' }, { status: 401 });
     }
 
     const date = url.searchParams.get("d");
