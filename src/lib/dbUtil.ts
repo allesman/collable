@@ -14,7 +14,7 @@ export async function fetchData() {
     let latestDate = today;
     let latestData = data[today];
     if (!latestData) {
-      latestDate = getLatestDate(data);
+      latestDate = Object.keys(data)[Object.keys(data).length - 1];;
       latestData = data[latestDate];
     }
     // add date stamp to the data
@@ -37,10 +37,6 @@ export async function pushToDB(dailyGameEntry: DailyGame, dateStr: string | null
   }
 }
 
-export function getLatestDate(data: StoredData): string {
-  return Object.keys(data)[Object.keys(data).length - 1];
-}
-
 export async function getAllData(): Promise<StoredData> {
   // Reference to the database, specifically the dailyGames node
   const dbRef = ref(db, "dailyGames");
@@ -58,10 +54,11 @@ export async function getAllData(): Promise<StoredData> {
   return data;
 }
 
-function getCurrentDateString(): string {
+export function getCurrentDateString(): string {
   const date = new Date();
   const berlinDate = new Date(
     date.toLocaleString("en-US", { timeZone: "Europe/Berlin" })
+    // TODO: use local time zone
   );
   const year = berlinDate.getFullYear();
   const month = String(berlinDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
