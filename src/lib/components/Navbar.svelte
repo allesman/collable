@@ -15,6 +15,8 @@
     >
       <Icon icon="mdi:sparkles-outline" class="text-xl" />Custom
     </button>
+    <!-- TODO: add hard mode toggle -->
+    <!-- TODO: add button to show tutorial popup (should also show up on first visit) -->
   </div>
 
   <a href="/" class="btn btn-ghost btn-lg text-4xl navbar-center">musicalle</a>

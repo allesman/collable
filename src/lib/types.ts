@@ -22,3 +22,13 @@ export interface Artist {
 export interface Modal {
   openModal: () => void;
 }
+
+export interface DailyGame {
+  startArtist: string;
+  goalArtist: string;
+  date?: string;
+}
+
+export interface StoredData {
+  [date: string]: DailyGame;
+}

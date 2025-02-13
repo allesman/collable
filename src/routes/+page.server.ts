@@ -2,7 +2,7 @@ import type { Actions, PageServerLoad } from "./$types";
 import GeniusApi from "$lib/GeniusApi.ts";
 import { error } from "@sveltejs/kit";
 import type { Artist } from "$lib/types";
-import { fetchData } from "$lib/readDB";
+import { fetchData } from "$lib/dbUtil";
 import { gameActions } from "$lib/sharedActions/gameActions";
 import { getDefaultSongs } from "$lib/gameUtils";
 
