@@ -6,8 +6,9 @@ import csv from 'fast-csv';
 let artistsList: string[] = [];
 // import type { DailyGame } from "./types";
 
-async function createNewGamesUntil(untilDateStr: string) {
+export async function createNewGamesUntil(untilDateStr: string) {
     const date = new Date(untilDateStr);
+    let games = [];
     // get latest date with data
     const data = await getAllData();
     let latestDateStr = getLatestDate(data);
@@ -15,8 +16,9 @@ async function createNewGamesUntil(untilDateStr: string) {
     while (latestDate < date) {
         latestDate.setDate(latestDate.getDate() + 1);
         latestDateStr = latestDate.toISOString().substring(0, 10);
-        createNewGame(latestDateStr);
+        games.push(await createNewGame(latestDateStr));
     }
+    return games;
 }
 
 export async function createNewGame(dateStr: string | null = null, startArtist: string | null = null, goalArtist: string | null = null) {
@@ -61,8 +63,8 @@ async function getArtistList(): Promise<string[]> {
     });
 }
 
-// Check if this script is being run directly
-if (import.meta.url === new URL(import.meta.url).href) {
-    // createNewGamesUntil("2025-02-01");
-    createNewGame("2025-02-15");
-}
+// // Check if this script is being run directly
+// if (import.meta.url === new URL(import.meta.url).href) {
+//     // createNewGamesUntil("2025-02-01");
+//     createNewGame("2025-02-15");
+// }
