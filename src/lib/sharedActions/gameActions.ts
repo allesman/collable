@@ -3,7 +3,7 @@ import GeniusApi from "$lib/GeniusApi";
 import type { Song } from "$lib/types";
 import { error, type RequestEvent } from "@sveltejs/kit";
 
-// FIXME: caching
+// TODO: caching
 export const gameActions = {
 
   getSongs: async ({ request }: RequestEvent) => {
@@ -15,7 +15,7 @@ export const gameActions = {
     }
     let defaultSongs: Song[] = [];
     if (amount) {
-      // FIXME: especially, for bigger amounts, re-fetching all songs to get more songs is inefficient
+      // TODO: especially, for bigger amounts, re-fetching all songs to get more songs is inefficient
       // a specific amount of songs is requested
       defaultSongs = await getDefaultSongs(artistId, parseInt(amount as string));
     }
@@ -45,8 +45,6 @@ export const gameActions = {
     }
     const finalQuery = query + " " + artistName;
     console.log("Searching: " + finalQuery);
-    // FIXME: use other api call in general (song), to 1) stop user from using tactical search, but this will need own search
-    // actually gonna use new api call with old search for now
     try {
       const data = await geniusApi.searchGenius(finalQuery);
       const searchResults = [];

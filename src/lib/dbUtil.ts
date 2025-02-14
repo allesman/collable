@@ -9,7 +9,6 @@ export async function fetchData() {
     const today = getCurrentDateString();
 
     // Get data for the current date, or otherwise the newest date existing
-    // FIXME: yes in theory this is based on the assumption that there is no gap in the data (in that case, it would incorrectly show the newest data)
     let latestDate = today;
     let latestData = data[today];
     if (!latestData) {
