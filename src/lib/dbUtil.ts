@@ -1,7 +1,6 @@
 import { ref, get, set } from "firebase/database";
 import { db } from "./firebase.ts";
 import type { DailyGame, StoredData } from "./types.ts";
-
 export async function fetchData() {
   try {
     const data = await getAllData();
@@ -56,13 +55,12 @@ export async function getAllData(): Promise<StoredData> {
 
 export function getCurrentDateString(): string {
   const date = new Date();
-  const berlinDate = new Date(
-    date.toLocaleString("en-US",)
-    // using local time zone instead of { timeZone: "Europe/Berlin" }
-  );
-  const year = berlinDate.getFullYear();
-  const month = String(berlinDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-  const day = String(berlinDate.getDate()).padStart(2, "0");
+  // const berlinDate = new Date(
+  //   date.toLocaleString("en-US",{ timeZone: "Europe/Berlin" })
+  // );
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(date.getDate()).padStart(2, "0");
   const today = `${year}-${month}-${day}`;
   return today;
 }

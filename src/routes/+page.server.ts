@@ -29,7 +29,8 @@ export const load = (async () => {
   }
   const defaultSongs = await getDefaultSongs(startArtist.id.toString());
 
-  const date = new Date(data.date);
+  const [year, month, day] = data.date.split('-').map(Number);
+  const date = new Date(year, month - 1, day); // Month is zero-based
   const dateStamp = date.toLocaleDateString('en-US');
   return {
     startArtist: startArtist,
