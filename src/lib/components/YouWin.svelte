@@ -12,7 +12,6 @@
   }
 
   let copyMessage: string | undefined = undefined;
-  // TODO: maybe don't just use url, but get it from the parent component
   function copyToClipboard() {
     const text = `🎵  ${isCustom ? `Custom Musicalle ✨` : `Musicalle ${dateStamp}`}
 

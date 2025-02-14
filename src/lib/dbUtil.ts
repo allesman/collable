@@ -57,8 +57,8 @@ export async function getAllData(): Promise<StoredData> {
 export function getCurrentDateString(): string {
   const date = new Date();
   const berlinDate = new Date(
-    date.toLocaleString("en-US", { timeZone: "Europe/Berlin" })
-    // TODO: use local time zone
+    date.toLocaleString("en-US",)
+    // using local time zone instead of { timeZone: "Europe/Berlin" }
   );
   const year = berlinDate.getFullYear();
   const month = String(berlinDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
