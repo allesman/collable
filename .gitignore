@@ -22,3 +22,4 @@ vite.config.ts.timestamp-*
 
 # My own
 test-data.json
+.vscode/launch.json
