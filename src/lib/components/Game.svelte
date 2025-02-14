@@ -14,7 +14,7 @@
   const goalArtist: Artist = data.goalArtist;
   const isCustom: boolean = data.isCustom;
   let defaultSongs: Song[] = data.defaultSongs; // the most popular songs of the current artist, not filtered with a search query
-  const dateStamp: string = data.dateStamp;
+  const dateStamp: string | undefined = data.dateStamp;
 
   // modal shown when the user wins the game
   import YouWin from "$lib/components/YouWin.svelte";
@@ -333,5 +333,6 @@
   goalArtistName={goalArtist.name}
   {numGuesses}
   {isCustom}
+  {dateStamp}
   bind:this={youWinModal}
 />

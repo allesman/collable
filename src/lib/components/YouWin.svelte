@@ -6,15 +6,15 @@
   export let startArtistName: string;
   export let goalArtistName: string;
   export let isCustom: boolean;
+  export let dateStamp: string;
   export function openModal() {
     dialog.showModal();
   }
-  const date = new Date();
 
   let copyMessage: string | undefined = undefined;
   // TODO: maybe don't just use url, but get it from the parent component
   function copyToClipboard() {
-    const text = `🎵  ${isCustom ? `Custom Musicalle ✨` : `Musicalle ${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`}
+    const text = `🎵  ${isCustom ? `Custom Musicalle ✨` : `Musicalle ${dateStamp}`}
 
 ${startArtistName} → 👤 ${numGuesses - 1} → ${goalArtistName}
 

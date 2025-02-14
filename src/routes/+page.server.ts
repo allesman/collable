@@ -29,7 +29,8 @@ export const load = (async () => {
   }
   const defaultSongs = await getDefaultSongs(startArtist.id.toString());
 
-  const dateStamp = data.date;
+  const date = new Date(data.date);
+  const dateStamp = date.toLocaleDateString('en-US');
   return {
     startArtist: startArtist,
     goalArtist: goalArtist,
