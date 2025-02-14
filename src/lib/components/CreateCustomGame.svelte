@@ -44,7 +44,7 @@
 </script>
 
 <dialog class="modal" id="my_modal_1" bind:this={dialog}>
-  <div class="modal-box">
+  <div class="modal-box rounded-2xl">
     <form method="dialog">
       <button
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -65,7 +65,7 @@
         placeholder="Start Artist"
         name="startArtist"
         id="startArtist"
-        class="input input-bordered"
+        class="input input-bordered rounded-xl"
         required
       />
       {#if invalidArtists.s}
@@ -77,7 +77,7 @@
         placeholder="Goal Artist"
         name="goalArtist"
         id="goalArtist"
-        class="input input-bordered"
+        class="input input-bordered rounded-xl"
         required
       />
       {#if invalidArtists.g}
@@ -91,7 +91,7 @@
         {/if}
         <label class="label" for="submit" />
         <button
-          class="btn btn-success"
+          class="btn btn-secondary rounded-xl"
           id="submit"
           name="submit"
           disabled={submitting}>Create</button

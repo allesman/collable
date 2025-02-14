@@ -10,7 +10,7 @@
 <div class="navbar">
   <div class="navbar-start pl-2">
     <button
-      class="btn btn-m btn-neutral text-base"
+      class="btn btn-m btn-neutral text-base rounded-xl"
       on:click={() => createCustomGame.openModal()}
     >
       <Icon icon="mdi:sparkles-outline" class="text-xl" />Custom
