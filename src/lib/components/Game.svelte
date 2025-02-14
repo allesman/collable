@@ -120,6 +120,9 @@
         const result = await response.json();
         defaultSongs = JSON.parse(JSON.parse(result.data)[0]);
         console.assert(defaultSongs.length > 0, "No default songs returned");
+        if (defaultSongs.length % 10 !== 0) {
+          noMore = true;
+        }
       } else {
         error = "Something went wrong while loading data for new artist";
       }
