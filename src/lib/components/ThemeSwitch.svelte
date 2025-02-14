@@ -3,7 +3,7 @@
   <input
     type="checkbox"
     class="theme-controller"
-    value="valentine"
+    value="retro"
     name="theme-switch"
   />
   <!-- sun icon -->

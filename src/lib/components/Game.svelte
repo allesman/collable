@@ -34,21 +34,26 @@
   // for gameStage 0
   let artistObj: Artist = startArtist; // the current artist, initialized with the start artist
   let searchResults: Song[] = []; // the songs found by the search query
+  let query: string = ""; // the search query
   let error: string | null = null;
   let isLoading: boolean = false; // for loading songs from search query
   let isLoadingMore: boolean = false; // for loading more songs
+  let noMore: boolean = false; // for when there are no more songs to load
 
   async function handleSearch(event: SubmitEvent) {
     event.preventDefault();
     isLoading = true;
+    error = null;
+    query = "";
+    // noMore = false;
     const form: HTMLFormElement = event.target as HTMLFormElement;
     const formData: FormData = new FormData(form);
     if (!formData.get("songQuery") || event.currentTarget == null) {
-      // if query is empty or form is null, don't send request
-      isLoading = false;
+      // if query is empty or form is null, reset to default songs
+      handleClickArtist(event);
       return;
     }
-    const response = await fetch(form.action, {
+    const response = await fetch("?/search", {
       method: "POST",
       body: formData,
     });
@@ -68,6 +73,7 @@
 
   async function handleClickSong(index: number) {
     gameStage = 1;
+    error = null;
     // searchMade = false;
     song = searchResults[index] ?? defaultSongs[index];
   }
@@ -79,21 +85,22 @@
   async function handleClickArtist(event: SubmitEvent) {
     event.preventDefault();
     isLoading = true;
+    noMore = false;
     const form: HTMLFormElement = event.target as HTMLFormElement;
     const formData: FormData = new FormData(form);
-    if (!formData.get("artistId") || event.currentTarget == null) {
-      // if query is empty or form is null, don't send request
-      isLoading = false;
-      return;
+    // if (!formData.get("artistId") || event.currentTarget == null) {
+    //   // if query is empty or form is null, don't send request
+    //   isLoading = false;
+    //   return;
+    // }
+    if (formData.get("artistIndex")) {
+      // If this method was actually called from clicking an artist, set them as the new artist (otherwise, keep the current artist)
+      const artistIndex = parseInt(formData.get("artistIndex") as string, 10);
+      artistObj = song.combined_artists[artistIndex];
     }
-    const artistIndex: number = parseInt(
-      formData.get("artistIndex") as string,
-      10,
-    );
     gameStage = 0;
     searchResults = [];
     // artistObj = song.combined_artists[index];
-    artistObj = song.combined_artists[artistIndex];
     numGuesses++;
     searchMade = false;
     // Check for game win
@@ -104,7 +111,8 @@
       gameStage = 2;
     } else {
       // Since no game win, get new default songs for artist
-      const response = await fetch(form.action, {
+      console.log("getting new default songs");
+      const response = await fetch("?/getSongs", {
         method: "POST",
         body: formData,
       });
@@ -115,7 +123,6 @@
       } else {
         error = "Something went wrong while loading data for new artist";
       }
-      console.log(song.combined_artists);
       isLoading = false;
     }
   }
@@ -123,6 +130,7 @@
   async function handleShowMore(event: SubmitEvent) {
     event.preventDefault();
     isLoadingMore = true;
+    // noMore = false;
     const form: HTMLFormElement = event.target as HTMLFormElement;
     const formData: FormData = new FormData(form);
     if (!formData.get("artistsAmount") || event.currentTarget == null) {
@@ -130,7 +138,7 @@
       isLoadingMore = false;
       return;
     }
-    const response = await fetch(form.action, {
+    const response = await fetch("?/getSongs", {
       method: "POST",
       body: formData,
     });
@@ -143,15 +151,19 @@
           parseInt(formData.get("artistsAmount") as string, 10),
         `got ${defaultSongs.length} songs but should've gotten ${parseInt(formData.get("artistsAmount") as string, 10)}`,
       );
+      if (defaultSongs.length % 10 !== 0) {
+        noMore = true;
+      }
     } else {
-      error = "Unable to load more songs";
+      noMore = true;
+      // error = "Unable to load more songs";
     }
     isLoadingMore = false;
   }
 </script>
 
 <div class="flex justify-center items-center">
-  <div class="inline-block card bg-base-100">
+  <div class="inline-block rounded-3xl card bg-base-100">
     <div class="card-body pb-5">
       <div class="flex justify-center items-center">
         Use features to get from
@@ -173,9 +185,9 @@
         />
         {goalArtist.name}
       </div>
-      <!-- FIXME: not 100% happy with this design yet -->
+      <!-- TODO: not 100% happy with this design yet -->
       <div class="flex justify-center mt-3">
-        <div class="badge badge-ghost text-neutral-600">
+        <div class="badge badge-ghost rounded-full text-neutral-600">
           {dateStamp ?? "custom"}
         </div>
       </div>
@@ -187,7 +199,7 @@
   <!-- TODO: extract more into components? -->
 
   <!-- Name of current artist -->
-  <div class="m-2 text-4xl text-primary flex justify-center items-center">
+  <div class="m-2 text-4xl font-bold flex justify-center items-center">
     <img
       class="w-12 rounded-full m-2 mr-5"
       src={artistObj.image_url}
@@ -198,7 +210,6 @@
   <!-- Search Bar -->
   <form
     method="POST"
-    action="?/search"
     on:submit|preventDefault={handleSearch}
     autocomplete="off"
     class="flex items-center justify-center gap-2 mt-3"
@@ -208,17 +219,22 @@
       type="text"
       placeholder="Find Song..."
       disabled={isLoading || gameStage != 0}
-      class="input input-bordered select-none"
-      required
+      class="input input-bordered select-none rounded-xl"
+      bind:value={query}
     />
     <input type="hidden" name="artistId" bind:value={artistObj.id} />
     <input type="hidden" name="artistName" bind:value={artistObj.name} />
     <button
       type="submit"
       disabled={isLoading || gameStage != 0}
-      class="btn btn-primary x_shadow-md x_shadow-primary/50 text-base"
-      ><Icon icon="mdi:search" class="text-lg" />
-      Search
+      class="btn {!query && searchMade
+        ? 'btn-ghost'
+        : 'btn-secondary'} x_shadow-md x_shadow-primary/50 text-base rounded-2xl"
+      ><Icon
+        icon={!query && searchMade ? "mdi:close" : "mdi:search"}
+        class="text-lg"
+      />
+      {!query && searchMade ? "Clear" : "Search"}
     </button>
   </form>
 
@@ -236,7 +252,7 @@
               <button
                 on:click={() => handleClickSong(i)}
                 data-index={i}
-                class="btn btn-secondary btn-outline"
+                class="btn btn-base-content rounded-full btn-outline"
               >
                 <img
                   class="w-8 rounded mr-1"
@@ -245,21 +261,27 @@
                 />
                 {hit.title}
                 <!-- combined artists: {hit.combined_artists} <br /> -->
-                <span class="badge badge-secondary">{hit.artist_names}</span>
+                <span class="badge badge-primary rounded-md"
+                  >{hit.artist_names}</span
+                >
               </button>
             </li>
           {/each}
           <li class="w-full text-center m-1 mt-4">
             <!-- Show more button, inside here because it's only needed when there's songs being listed -->
             <!-- FIXME: fake ass form, again -->
-            <form action="?/getSongs" on:submit|preventDefault={handleShowMore}>
+            <form on:submit|preventDefault={handleShowMore}>
               <input
                 type="hidden"
                 name="artistsAmount"
                 value={defaultSongs.length + 10}
               />
               <input type="hidden" name="artistId" value={artistObj.id} />
-              <button class="btn btn-ghost" disabled={searchMade} type="submit">
+              <button
+                class="btn btn-ghost"
+                disabled={searchMade || noMore}
+                type="submit"
+              >
                 <!-- TODO: could also put || isLoadingMore up there in disabled but idk tbh -->
                 {isLoadingMore ? "Loading..." : "Show More"}
               </button>
@@ -280,7 +302,7 @@
   {:else if gameStage === 1}
     <!-- Artists of Song (gameStage 1 only) -->
     <div class="flex flex-col items-center justify-center mt-10">
-      <button class="btn btn-secondary" on:click={handleCloseSong}>
+      <button class="btn btn-primary" on:click={handleCloseSong}>
         {#if song}
           <img
             class="w-8 rounded mr-1"
@@ -297,14 +319,10 @@
         {#each song.combined_artists as artist, i}
           {#if artist.id !== artistObj.id}
             <li class="w-full text-center m-1">
-              <form
-                method="POST"
-                action="?/getSongs"
-                on:submit|preventDefault={handleClickArtist}
-              >
+              <form method="POST" on:submit|preventDefault={handleClickArtist}>
                 <input type="hidden" name="artistIndex" value={i} />
                 <input type="hidden" name="artistId" value={artist.id} />
-                <button type="submit" class="btn btn-secondary btn-outline"
+                <button type="submit" class="btn btn-primary btn-outline"
                   >{artist.name}</button
                 >
               </form>

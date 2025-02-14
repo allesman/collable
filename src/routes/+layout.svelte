@@ -3,7 +3,7 @@
   import "../app.css";
 </script>
 
-<div class="bg-base-300 min-h-screen">
+<div class="min-h-screen bg-base-200">
   <Navbar />
   <slot />
 </div>

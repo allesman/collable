@@ -9,7 +9,6 @@ export async function fetchData() {
     const today = getCurrentDateString();
 
     // Get data for the current date, or otherwise the newest date existing
-    // FIXME: yes in theory this is based on the assumption that there is no gap in the data (in that case, it would incorrectly show the newest data)
     let latestDate = today;
     let latestData = data[today];
     if (!latestData) {
@@ -54,10 +53,8 @@ export async function getAllData(): Promise<StoredData> {
 }
 
 export function getCurrentDateString(): string {
+  // FIXME: move this to client side so it uses the client's timezone
   const date = new Date();
-  // const berlinDate = new Date(
-  //   date.toLocaleString("en-US",{ timeZone: "Europe/Berlin" })
-  // );
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
   const day = String(date.getDate()).padStart(2, "0");
