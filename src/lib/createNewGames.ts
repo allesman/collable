@@ -50,7 +50,7 @@ async function getArtistList(): Promise<string[]> {
     if (artistsList.length > 0) {
         return artistsList;
     }
-    // TODO: dude temporary asf fix
+    // FIXME: dude temporary asf fix
     const __dirname = dirname(fileURLToPath(import.meta.url));
     const artistsFilePath = __dirname + '/../../../../../client/artists.csv';
 
@@ -63,7 +63,6 @@ async function getArtistList(): Promise<string[]> {
             })
             .on('data', (row) => { artistsList.push(row[0]); })
             .on('end', () => {
-                // console.log(`Parsed ${artistsList.length} rows`);
                 console.assert(artistsList.length > 0, 'Artists list is empty');
                 resolve(artistsList);
             });
