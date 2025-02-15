@@ -7,7 +7,7 @@
 </script>
 
 <CreateCustomGame bind:this={createCustomGame} />
-<div class="navbar">
+<div class="navbar sticky top-0 z-50 bg-base-200">
   <div class="navbar-start pl-2">
     <button
       class="btn btn-m btn-neutral text-base rounded-xl"
@@ -19,7 +19,16 @@
     <!-- TODO: add button to show tutorial popup (should also show up on first visit) -->
   </div>
 
-  <a href="/" class="btn btn-ghost btn-lg text-4xl navbar-center">musicalle</a>
+  <a
+    href="/"
+    class="btn btn-ghost btn-lg text-4xl navbar-center"
+    on:click|preventDefault={() => {
+      const htmlElement = document.querySelector("html");
+      if (htmlElement) {
+        htmlElement.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }}>musicalle</a
+  >
 
   <!-- aligned right -->
   <div class="navbar-end pr-2">
