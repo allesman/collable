@@ -4,41 +4,49 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export async function GET({ url, request }) {
+export async function GET({ url, request, fetch }) {
 
     const apiKey = request.headers.get('api-key');
     const validApiKey = process.env.MUSICALLE_API_KEY;
     if (!validApiKey) {
-        return json({ error: 'haha fuck server doesn\'t have api key' }, { status: 500 });
+        return new Response(JSON.stringify({ error: 'haha fuck server doesn\'t have api key' }), { status: 500 });
     }
     if (apiKey !== validApiKey) {
-        return json({ error: 'literally me when I don\'t provide the correct api key (Unauthorized)' }, { status: 401 });
+        return new Response(JSON.stringify({ error: 'literally me when I don\'t provide the correct api key (Unauthorized)' }), { status: 401 });
     }
 
     const date = url.searchParams.get("d") || undefined;
     const startArtist = url.searchParams.get("s") || undefined;
     const goalArtist = url.searchParams.get("g") || undefined;
-    const batch: boolean = url.searchParams.get("batch") === "true";
+    const batch = url.searchParams.has("batch");
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     try {
         if (batch && date && dateRegex.test(date)) {
             let games = await createNewGamesUntil(date);
-            return json({ message: `Success! Created games until ${date}!`, gamesCreated: games }, { status: 200 });
+            // make fetch request to ensure that the code is executed
+            await fetch('/', { method: 'GET' });
+            return new Response(JSON.stringify({ message: `Success! Created ${games.length} games until ${date}!`, gamesCreated: games }), { status: 200 });
         }
         else if (!date && batch) {
-            return json({ error: 'Date is required for batch mode' }, { status: 400 });
+            return new Response(JSON.stringify({ error: 'Date is required for batch mode' }), { status: 400 });
         }
         else if (!date || dateRegex.test(date)) {
+            // create new game
             let game = await createNewGame(date, startArtist, goalArtist);
+            // make fetch request to ensure that the code is executed
+            await fetch('/', { method: 'GET' });
+            // return response
             return json({ message: `Success! Created ${game.date}!`, gameCreated: game }, { status: 200 });
         }
         else {
-            return json({ error: 'Invalid date format' }, { status: 400 });
+            return new Response(JSON.stringify({ error: 'Invalid date format' }), { status: 400 });
         }
     } catch (error) {
-        console.error('Error creating new game:', error);
+        console.error("Error creating new game");
         if (error instanceof Error) {
-            return json({ error: 'Failed to create new game', details: error.message }, { status: 500 });
+            console.error(error.message);
+            return new Response(JSON.stringify({ error: 'Failed to create new game', details: error.message }), { status: 500 });
+            // return new Response(json({ error: 'Failed to create new game', details: error.message }, { status: 500 }));
         }
     }
 }
