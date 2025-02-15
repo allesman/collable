@@ -1,11 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
-// import {
-//   FIREBASE_API_KEY,
-//   FIREBASE_MESSAGING_SENDER_ID,
-//   FIREBASE_APP_ID,
-// } from "$env/static/private";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {

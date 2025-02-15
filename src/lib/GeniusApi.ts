@@ -1,4 +1,5 @@
 import { CLIENT_ID, CLIENT_SECRET } from "$env/static/private";
+import { error } from "console";
 import { ClientCredentials, type AccessToken } from "simple-oauth2";
 
 export default class GeniusApi {
@@ -56,7 +57,7 @@ export default class GeniusApi {
 
   // methods the class provides for interacting with the Genius API
 
-  async getSongs (artistId:string,amount:number) {
+  async getSongs(artistId: string, amount: number) {
     const response = await fetch(
       `https://api.genius.com/artists/${artistId}/songs?per_page=${amount}&sort=popularity`,
       {
@@ -94,6 +95,10 @@ export default class GeniusApi {
 
   // new version, takes artist name
   async getArtistInfoFromName(artistName: string) {
+    if (!artistName) {
+      console.log(error(422, "No artist name provided"));
+      return null;
+    }
     const response = await fetch(
       `https://api.genius.com/search?q=${encodeURIComponent(artistName)}`,
       {

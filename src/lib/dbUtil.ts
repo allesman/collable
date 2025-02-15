@@ -1,33 +1,66 @@
 import { ref, get, set } from "firebase/database";
 import { db } from "./firebase.ts";
 import type { DailyGame, StoredData } from "./types.ts";
-export async function fetchData() {
+import { DateTime } from "luxon";
+import { error } from "@sveltejs/kit";
+export async function fetchData(): Promise<StoredData> {
   try {
+    let returnedData: StoredData;
     const data = await getAllData();
+    const dates = Object.keys(data)
 
     // Get the data relevant for the current date in YYYY-MM-DD format and Berlin timezone
-    const today = getCurrentDateString();
+    const today = DateTime.now().toFormat("yyyy-MM-dd");
 
     // Get data for the current date, or otherwise the newest date existing
     let latestDate = today;
     let latestData = data[today];
-    if (!latestData) {
-      latestDate = Object.keys(data)[Object.keys(data).length - 1];;
-      latestData = data[latestDate];
+    if (latestData) {
+      // today has data
+      // get Data for previous and next day just in case (timezones)
+      const dateBefore = DateTime.fromISO(latestDate).minus({ days: 1 }).toFormat("yyyy-MM-dd");
+      // const dateBefore = dateStringPlus(latestDate, -1);
+      const dateAfter = DateTime.fromISO(latestDate).plus({ days: 1 }).toFormat("yyyy-MM-dd");
+      returnedData = {
+        [dateBefore]: data[dateBefore],
+        [latestDate]: latestData,
+        [dateAfter]: data[dateAfter] || {},
+      }
+      // const dateAfter = dateStringPlus(latestDate, +1)
     }
-    // add date stamp to the data
-    latestData["date"] = latestDate;
-    return latestData;
+    else {
+      // today has no data, get the latest data available
+      var lowerKeys = dates.filter(function (dateStr) {
+        return DateTime.fromISO(dateStr) < DateTime.now();
+      })
+      latestDate = lowerKeys.pop() || "";
+      if (!latestDate) {
+        return error(500, "No data available for any past date");
+      }
+      console.log("Getting data for " + latestDate);
+      latestData = data[latestDate];
+      returnedData = {
+        [latestDate]: latestData,
+      }
+    }
+
+    // add date stamps to the data
+    Object.keys(returnedData).forEach(date => {
+      returnedData[date]["date"] = date;
+    });
+
+    return returnedData;
 
   } catch (error) {
     console.error("Error reading data:", error);
+    return {};
   }
 }
 
-export async function pushToDB(dailyGameEntry: DailyGame, dateStr: string | null = null) {
+export async function pushToDB(dailyGameEntry: DailyGame, dateStr?: string) {
   try {
     // Reference to the database, specifically the dailyGames node
-    const dbRef = ref(db, "dailyGames/" + (dateStr || getCurrentDateString()));
+    const dbRef = ref(db, "dailyGames/" + (dateStr || DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd")));
     await set(dbRef, dailyGameEntry);
   }
   catch (error) {
@@ -52,12 +85,12 @@ export async function getAllData(): Promise<StoredData> {
   return data;
 }
 
-export function getCurrentDateString(): string {
+export function getDateString(date: Date, timezone?: string): string {
   // FIXME: move this to client side so it uses the client's timezone
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-  const day = String(date.getDate()).padStart(2, "0");
-  const today = `${year}-${month}-${day}`;
-  return today;
+  const tzDate = new Date(date);
+  const year = tzDate.getFullYear();
+  const month = String(tzDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(tzDate.getDate()).padStart(2, "0");
+  const output = `${year}-${month}-${day}`;
+  return output;
 }
