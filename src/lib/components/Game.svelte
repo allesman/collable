@@ -39,18 +39,17 @@
   let isLoading: boolean = false; // for loading songs from search query
   let isLoadingMore: boolean = false; // for loading more songs
   let noMore: boolean = false; // for when there are no more songs to load
+  const showMoreAmount: number = 10; // the amount of songs to load when clicking "show more"
 
   async function handleSearch(event: SubmitEvent) {
     event.preventDefault();
     isLoading = true;
     error = null;
     query = "";
-    // noMore = false;
     const form: HTMLFormElement = event.target as HTMLFormElement;
     const formData: FormData = new FormData(form);
     if (!formData.get("songQuery") || event.currentTarget == null) {
-      // if query is empty or form is null, reset to default songs
-      handleClickArtist(event);
+      isLoading = false;
       return;
     }
     const response = await fetch("?/search", {
@@ -68,6 +67,12 @@
     isLoading = false;
   }
 
+  async function handleClear(event: SubmitEvent) {
+    // reset to default songs
+    event.preventDefault();
+    searchMade = false;
+  }
+
   // for gameStage 1
   let song: Song; // the song selected by the user
 
@@ -82,46 +87,37 @@
     gameStage = 0;
   }
 
-  async function handleClickArtist(event: SubmitEvent) {
-    event.preventDefault();
+  async function handleClickArtist(artistIndex?: number, artistId?: number) {
+    // event.preventDefault();
     isLoading = true;
     noMore = false;
-    const form: HTMLFormElement = event.target as HTMLFormElement;
-    const formData: FormData = new FormData(form);
-    // if (!formData.get("artistId") || event.currentTarget == null) {
-    //   // if query is empty or form is null, don't send request
-    //   isLoading = false;
-    //   return;
-    // }
-    if (formData.get("artistIndex")) {
+    console.log(artistIndex);
+    if (artistIndex !== undefined) {
       // If this method was actually called from clicking an artist, set them as the new artist (otherwise, keep the current artist)
-      const artistIndex = parseInt(formData.get("artistIndex") as string, 10);
       artistObj = song.combined_artists[artistIndex];
       // also only then increment the number of guesses
       numGuesses++;
     }
     gameStage = 0;
     searchResults = [];
-    // artistObj = song.combined_artists[index];
     searchMade = false;
     // Check for game win
     if (artistObj.id === goalArtist.id) {
-      // console.log("You win!");
       isLoading = false;
       youWinModal.openModal();
       gameStage = 2;
     } else {
       // Since no game win, get new default songs for artist
-      console.log("getting new default songs");
-      const response = await fetch("?/getSongs", {
+      const response = await fetch("api/getDefaultSongs", {
         method: "POST",
-        body: formData,
+        body: JSON.stringify({
+          artistId: artistObj.id,
+        }),
       });
       if (response.ok) {
-        const result = await response.json();
-        defaultSongs = JSON.parse(JSON.parse(result.data)[0]);
+        ({ defaultSongs } = await response.json());
         console.assert(defaultSongs.length > 0, "No default songs returned");
-        if (defaultSongs.length % 10 !== 0) {
+        if (defaultSongs.length % showMoreAmount !== 0) {
           noMore = true;
         }
       } else {
@@ -142,13 +138,18 @@
       isLoadingMore = false;
       return;
     }
-    const response = await fetch("?/getSongs", {
+    const response = await fetch("api/getDefaultSongs", {
       method: "POST",
-      body: formData,
+      body: JSON.stringify({
+        artistId: artistObj.id,
+        amount: defaultSongs.length + showMoreAmount,
+      }),
     });
     if (response.ok) {
-      const result = await response.json();
-      defaultSongs = JSON.parse(JSON.parse(result.data)[0]);
+      // const result = await response.json();
+      ({ defaultSongs } = await response.json());
+      console.log(defaultSongs);
+      // defaultSongs = JSON.parse(JSON.parse(result.data)[0]);
       console.assert(defaultSongs.length > 0, "No default songs returned");
       console.assert(
         defaultSongs.length ===
@@ -219,7 +220,7 @@
   <!-- Search Bar -->
   <form
     method="POST"
-    on:submit|preventDefault={handleSearch}
+    on:submit|preventDefault={!query && searchMade ? handleClear : handleSearch}
     autocomplete="off"
     class="flex items-center justify-center gap-2 mt-3"
   >
@@ -322,19 +323,14 @@
         {/if}
         <span class="ml-1">✕</span>
       </button>
-      <!-- lowkey fake form to pass artistid to backend when clicked -->
-      <!-- FIXME: just use custom api instead of fake form?  -->
       <ul class="flex flex-col items-center justify-center mt-5">
         {#each song.combined_artists as artist, i}
           {#if artist.id !== artistObj.id}
             <li class="w-full text-center m-1">
-              <form method="POST" on:submit|preventDefault={handleClickArtist}>
-                <input type="hidden" name="artistIndex" value={i} />
-                <input type="hidden" name="artistId" value={artist.id} />
-                <button type="submit" class="btn btn-primary btn-outline"
-                  >{artist.name}</button
-                >
-              </form>
+              <button
+                on:click={() => handleClickArtist(i, artist.id)}
+                class="btn btn-primary btn-outline">{artist.name}</button
+              >
             </li>
           {/if}
         {/each}

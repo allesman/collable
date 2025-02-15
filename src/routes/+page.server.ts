@@ -34,7 +34,7 @@ export const load = (async () => {
     }
   }
 
-  console.log(DateTime.now());
+  // console.log(DateTime.now());
   return {
     dateDependentData: dateDependentData,
     isCustom: false,
