@@ -18,11 +18,11 @@ export async function createNewGamesUntil(untilDateStr: string) {
     // get todays date
     const data = await getAllData();
     let latestDateStr = DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd");
-    let latestDate = new Date(latestDateStr);
+    let latestDate = DateTime.fromISO(latestDateStr);
     const existingDates = new Set(Object.keys(data));
     while (latestDate < date) {
-        latestDate.setDate(latestDate.getDate() + 1);
-        latestDateStr = latestDate.toISOString().substring(0, 10);
+        latestDate.plus({ days: 1 });
+        latestDateStr = latestDate.toFormat("yyyy-MM-dd");
         if (!existingDates.has(latestDateStr)) {
             try {
                 games.push(await createNewGame(latestDateStr));
