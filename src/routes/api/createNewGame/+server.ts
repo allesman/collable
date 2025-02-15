@@ -30,7 +30,7 @@ export async function GET({ url, request }) {
         }
         else if (!date || dateRegex.test(date)) {
             let game = await createNewGame(date, startArtist, goalArtist);
-            return json({ message: `Success! Created ${date || "today's"}!`, gameCreated: game }, { status: 200 });
+            return json({ message: `Success! Created ${game.date}!`, gameCreated: game }, { status: 200 });
         }
         else {
             return json({ error: 'Invalid date format' }, { status: 400 });

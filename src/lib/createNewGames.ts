@@ -8,6 +8,7 @@ import { DateTime } from "luxon";
 
 import GeniusApi from "./GeniusApi.ts";
 import { error } from "@sveltejs/kit";
+import type { DailyGame } from "./types.ts";
 
 let artistsList: string[] = [];
 
@@ -29,7 +30,7 @@ export async function createNewGamesUntil(untilDateStr: string) {
     return games;
 }
 
-export async function createNewGame(dateStr?: string, startArtist?: string, goalArtist?: string) {
+export async function createNewGame(dateStr?: string, startArtist?: string, goalArtist?: string): Promise<DailyGame> {
     if (!startArtist || !goalArtist) {
         // one or both artists are not provided, get random artists
         let artistsList: string[] = await getArtistList();

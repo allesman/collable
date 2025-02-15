@@ -66,6 +66,10 @@ export async function pushToDB(dailyGameEntry: DailyGame, dateStr?: string) {
   catch (error) {
     console.error("Error pushing data:", error);
   }
+  return {
+    date: dateStr || DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd"),
+    ...dailyGameEntry,
+  }
 }
 
 export async function getAllData(): Promise<StoredData> {
