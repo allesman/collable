@@ -88,13 +88,3 @@ export async function getAllData(): Promise<StoredData> {
   const data = snapshot.val();
   return data;
 }
-
-export function getDateString(date: Date, timezone?: string): string {
-  // FIXME: move this to client side so it uses the client's timezone
-  const tzDate = new Date(date);
-  const year = tzDate.getFullYear();
-  const month = String(tzDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-  const day = String(tzDate.getDate()).padStart(2, "0");
-  const output = `${year}-${month}-${day}`;
-  return output;
-}
