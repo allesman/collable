@@ -160,9 +160,14 @@
       }
     } else {
       noMore = true;
-      // error = "Unable to load more songs";
     }
     isLoadingMore = false;
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
+    }, 1); // delay by 1 milliseconds
   }
 </script>
 
@@ -264,7 +269,7 @@
                   alt={hit.title}
                 />
                 {hit.title}
-                <!-- combined artists: {hit.combined_artists} <br /> -->
+                <!-- TODO: fix formatting -->
                 <span class="badge badge-primary rounded-md"
                   >{hit.artist_names}</span
                 >
