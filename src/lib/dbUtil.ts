@@ -35,7 +35,7 @@ export async function fetchData(): Promise<StoredData> {
       })
       latestDate = lowerKeys.pop() || "";
       if (!latestDate) {
-        return error(500, "No data available for any past date");
+        return error(500, { message: "No data available for any past date" });
       }
       console.log("Getting data for " + latestDate);
       latestData = data[latestDate];
@@ -59,12 +59,16 @@ export async function fetchData(): Promise<StoredData> {
 
 export async function pushToDB(dailyGameEntry: DailyGame, dateStr?: string) {
   try {
-    // Reference to the database, specifically the dailyGames node
+    // Reference to the database, specifically the dailyGames node and the correspending date node
     const dbRef = ref(db, "dailyGames/" + (dateStr || DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd")));
     await set(dbRef, dailyGameEntry);
   }
   catch (error) {
     console.error("Error pushing data:", error);
+  }
+  return {
+    date: dateStr || DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd"),
+    ...dailyGameEntry,
   }
 }
 

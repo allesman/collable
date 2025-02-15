@@ -8,11 +8,12 @@ import { DateTime } from "luxon";
 
 import GeniusApi from "./GeniusApi.ts";
 import { error } from "@sveltejs/kit";
+import type { DailyGame } from "./types.ts";
 
 let artistsList: string[] = [];
 
 export async function createNewGamesUntil(untilDateStr: string) {
-    const date = new Date(untilDateStr);
+    const date = DateTime.fromISO(untilDateStr);
     let games = [];
     // get todays date
     const data = await getAllData();
@@ -23,13 +24,19 @@ export async function createNewGamesUntil(untilDateStr: string) {
         latestDate.setDate(latestDate.getDate() + 1);
         latestDateStr = latestDate.toISOString().substring(0, 10);
         if (!existingDates.has(latestDateStr)) {
-            games.push(await createNewGame(latestDateStr));
+            try {
+                games.push(await createNewGame(latestDateStr));
+            }
+            catch (e) {
+                console.error(e);
+            }
         }
     }
     return games;
+
 }
 
-export async function createNewGame(dateStr?: string, startArtist?: string, goalArtist?: string) {
+export async function createNewGame(dateStr?: string, startArtist?: string, goalArtist?: string): Promise<DailyGame> {
     if (!startArtist || !goalArtist) {
         // one or both artists are not provided, get random artists
         let artistsList: string[] = await getArtistList();
@@ -47,18 +54,21 @@ export async function createNewGame(dateStr?: string, startArtist?: string, goal
     const geniusApi = await GeniusApi.initialize();
     let startArtistObj = await geniusApi.getArtistInfoFromName(startArtist);
     if (!startArtistObj) {
-        return error(422, `Artist "${startArtist}" not found`);
+        throw error(422, { message: `Artist "${startArtist}" not found` });
     }
     let goalArtistObj = await geniusApi.getArtistInfoFromName(goalArtist);
     if (!goalArtistObj) {
-        return error(422, `Artist "${goalArtist}" not found`);
+        throw error(422, { message: `Artist "${goalArtist}" not found` });
     }
     const dailyGameEntry = {
         startArtist: startArtist,
         goalArtist: goalArtist,
     };
     pushToDB(dailyGameEntry, dateStr);
-    return dailyGameEntry;
+    return {
+        date: dateStr,
+        ...dailyGameEntry
+    };
 }
 
 async function getArtistList(): Promise<string[]> {
@@ -66,8 +76,13 @@ async function getArtistList(): Promise<string[]> {
         return artistsList;
     }
     // FIXME: dude temporary asf fix
-    const __dirname = dirname(fileURLToPath(import.meta.url));
-    const artistsFilePath = __dirname + '/../../../../../client/artists.csv';
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    let artistsFilePath = __dirname + '/../../../../../client/artists.csv';
+    if (!fs.existsSync(artistsFilePath)) {
+        // Development mode
+        artistsFilePath = __dirname + '/../../static/artists.csv';
+    }
 
     return new Promise((resolve, reject) => {
         fs.createReadStream(artistsFilePath)
@@ -83,3 +98,5 @@ async function getArtistList(): Promise<string[]> {
             });
     });
 }
+
+// getArtistList();
