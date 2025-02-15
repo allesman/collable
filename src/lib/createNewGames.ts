@@ -1,9 +1,13 @@
-import { pushToDB, getAllData, getCurrentDateString } from "./dbUtil.js";
+import { pushToDB, getAllData } from "./dbUtil.js";
 import fs from 'fs';
 import csv from 'fast-csv';
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { DateTime } from "luxon";
+
+import GeniusApi from "./GeniusApi.ts";
+import { error } from "@sveltejs/kit";
 
 let artistsList: string[] = [];
 
@@ -12,7 +16,7 @@ export async function createNewGamesUntil(untilDateStr: string) {
     let games = [];
     // get todays date
     const data = await getAllData();
-    let latestDateStr = getCurrentDateString();
+    let latestDateStr = DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd");
     let latestDate = new Date(latestDateStr);
     const existingDates = new Set(Object.keys(data));
     while (latestDate < date) {
@@ -25,7 +29,7 @@ export async function createNewGamesUntil(untilDateStr: string) {
     return games;
 }
 
-export async function createNewGame(dateStr: string | null = null, startArtist: string | null = null, goalArtist: string | null = null) {
+export async function createNewGame(dateStr?: string, startArtist?: string, goalArtist?: string) {
     if (!startArtist || !goalArtist) {
         // one or both artists are not provided, get random artists
         let artistsList: string[] = await getArtistList();
@@ -36,8 +40,19 @@ export async function createNewGame(dateStr: string | null = null, startArtist: 
         }
         while (startArtist === goalArtist);
     }
-    // TODO: check if artists are valid
     // TODO: check if connection exists???
+    if (startArtist === goalArtist) {
+        return error(422, { message: "Start artist and goal artist can't be the same" });
+    }
+    const geniusApi = await GeniusApi.initialize();
+    let startArtistObj = await geniusApi.getArtistInfoFromName(startArtist);
+    if (!startArtistObj) {
+        return error(422, `Artist "${startArtist}" not found`);
+    }
+    let goalArtistObj = await geniusApi.getArtistInfoFromName(goalArtist);
+    if (!goalArtistObj) {
+        return error(422, `Artist "${goalArtist}" not found`);
+    }
     const dailyGameEntry = {
         startArtist: startArtist,
         goalArtist: goalArtist,

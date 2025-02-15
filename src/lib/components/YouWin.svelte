@@ -41,8 +41,8 @@ ${window.location.href}`;
     </form>
     <h3 class="text-2xl font-bold text-primary">You Win!</h3>
     <p class="py-4">
-      It took you <span class="text-primary font-bold">{numGuesses}</span>
-      {numGuesses == 1 ? "guess" : "guesses"} to get from
+      It took you <span class="text-primary font-bold">{numGuesses - 1}</span>
+      {numGuesses - 1 == 1 ? "artist" : "artists"} to get from
       <span class="text-primary font-bold">{startArtistName}</span>
       to
       <span class="text-primary font-bold">{goalArtistName}</span>!

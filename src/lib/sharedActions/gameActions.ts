@@ -67,7 +67,7 @@ export const gameActions = {
       return JSON.stringify(searchResults);
     } catch (e) {
       console.error(e);
-      return error(500, "Whut?");
+      return error(500, "Error while performing search");
     }
   },
 

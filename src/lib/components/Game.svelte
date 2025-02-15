@@ -14,7 +14,7 @@
   const goalArtist: Artist = data.goalArtist;
   const isCustom: boolean = data.isCustom;
   let defaultSongs: Song[] = data.defaultSongs; // the most popular songs of the current artist, not filtered with a search query
-  const dateStamp: string | undefined = data.dateStamp;
+  const dateStamp: string = data.dateStamp;
 
   // modal shown when the user wins the game
   import YouWin from "$lib/components/YouWin.svelte";
@@ -97,11 +97,12 @@
       // If this method was actually called from clicking an artist, set them as the new artist (otherwise, keep the current artist)
       const artistIndex = parseInt(formData.get("artistIndex") as string, 10);
       artistObj = song.combined_artists[artistIndex];
+      // also only then increment the number of guesses
+      numGuesses++;
     }
     gameStage = 0;
     searchResults = [];
     // artistObj = song.combined_artists[index];
-    numGuesses++;
     searchMade = false;
     // Check for game win
     if (artistObj.id === goalArtist.id) {
@@ -191,7 +192,7 @@
       <!-- TODO: not 100% happy with this design yet -->
       <div class="flex justify-center mt-3">
         <div class="badge badge-ghost rounded-full text-neutral-600">
-          {dateStamp ?? "custom"}
+          {isCustom ? "custom" : dateStamp}
         </div>
       </div>
     </div>

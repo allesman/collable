@@ -15,9 +15,9 @@ export async function GET({ url, request }) {
         return json({ error: 'literally me when I don\'t provide the correct api key (Unauthorized)' }, { status: 401 });
     }
 
-    const date = url.searchParams.get("d");
-    const startArtist = url.searchParams.get("s");
-    const goalArtist = url.searchParams.get("g");
+    const date = url.searchParams.get("d") || undefined;
+    const startArtist = url.searchParams.get("s") || undefined;
+    const goalArtist = url.searchParams.get("g") || undefined;
     const batch: boolean = url.searchParams.get("batch") === "true";
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     try {

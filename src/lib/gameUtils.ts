@@ -6,6 +6,9 @@ export async function getDefaultSongs(artistId: string, amount: number = 10): Pr
     // returns default songs for artist with added combined artists for each song
     const geniusApi = await GeniusApi.initialize();
     console.assert(geniusApi, "GeniusApi not initialized");
+    if (!artistId) {
+        throw error(422, { message: "Artist ID not provided" });
+    }
     try {
         const songs = await geniusApi.getSongs(artistId, amount);
         // add combined artists
@@ -19,6 +22,6 @@ export async function getDefaultSongs(artistId: string, amount: number = 10): Pr
         return songs;
     } catch (e) {
         console.error(e);
-        return error(500, "Whut?");
+        return error(500, "Error while fetching defaultSongs");
     }
 }

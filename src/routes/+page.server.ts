@@ -1,10 +1,11 @@
 import type { Actions, PageServerLoad } from "./$types";
 import GeniusApi from "$lib/GeniusApi.ts";
 import { error } from "@sveltejs/kit";
-import type { Artist } from "$lib/types";
+import type { Artist, Song, StoredData } from "$lib/types";
 import { fetchData } from "$lib/dbUtil";
 import { gameActions } from "$lib/sharedActions/gameActions";
 import { getDefaultSongs } from "$lib/gameUtils";
+import { DateTime } from "luxon";
 
 let startArtist: Artist;
 let goalArtist: Artist;
@@ -13,31 +14,30 @@ export const load = (async () => {
   // Access Genius API
   const geniusApi = await GeniusApi.initialize();
   // Access database
-  const data = await fetchData();
-
+  const data: StoredData = await fetchData();
   // Since start and goal artist are not custom set, set them to default values of the day from the database
-  const startArtistName: string = data.startArtist;
-  const goalArtistName: string = data.goalArtist;
+  let dateDependentData: { [key: string]: any } = {};
+  for (const date of Object.keys(data)) {
+    try {
+      const startArtistInfo = await geniusApi.getArtistInfoFromName(data[date].startArtist);
+      const goalArtistInfo = await geniusApi.getArtistInfoFromName(data[date].goalArtist);
+      const defaultSongs = await getDefaultSongs(startArtistInfo.id);
 
-  startArtist = await geniusApi.getArtistInfoFromName(startArtistName);
-  if (!startArtist) {
-    return error(500, `Artist "${startArtistName}" not found`);
+      dateDependentData[date] = {
+        startArtist: startArtistInfo,
+        goalArtist: goalArtistInfo,
+        defaultSongs: defaultSongs,
+        date: DateTime.fromISO(date).toFormat("M/d/yyyy"),
+      };
+    } catch (e) {
+      console.error(e);
+    }
   }
-  goalArtist = await geniusApi.getArtistInfoFromName(goalArtistName);
-  if (!goalArtist) {
-    return error(500, `Artist "${goalArtistName}" not found`);
-  }
-  const defaultSongs = await getDefaultSongs(startArtist.id.toString());
 
-  const [year, month, day] = data.date.split('-').map(Number);
-  const date = new Date(year, month - 1, day); // Month is zero-based
-  const dateStamp = date.toLocaleDateString('en-US');
+  console.log(DateTime.now());
   return {
-    startArtist: startArtist,
-    goalArtist: goalArtist,
+    dateDependentData: dateDependentData,
     isCustom: false,
-    defaultSongs: defaultSongs,
-    dateStamp: dateStamp,
   };
 }) satisfies PageServerLoad;
 
