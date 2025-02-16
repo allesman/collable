@@ -88,7 +88,6 @@
   }
 
   async function handleClickArtist(artistIndex?: number, artistId?: number) {
-    // event.preventDefault();
     isLoading = true;
     noMore = false;
     console.log(artistIndex);
@@ -115,7 +114,8 @@
         }),
       });
       if (response.ok) {
-        ({ defaultSongs } = await response.json());
+        let { newSongs } = await response.json();
+        defaultSongs = newSongs;
         console.assert(defaultSongs.length > 0, "No default songs returned");
         if (defaultSongs.length % showMoreAmount !== 0) {
           noMore = true;
