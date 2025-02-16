@@ -182,7 +182,7 @@
       <!-- TODO: not 100% happy with this design yet -->
       <div class="flex justify-center mt-3">
         <div class="badge badge-ghost rounded-full text-neutral-600">
-          {isCustom ? "custom" : dateStamp}
+          {isCustom ? "custom" : "🗓️ " + dateStamp}
         </div>
       </div>
     </div>
