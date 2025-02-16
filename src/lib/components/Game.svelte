@@ -93,7 +93,9 @@
     console.log(artistIndex);
     if (artistIndex !== undefined) {
       // If this method was actually called from clicking an artist, set them as the new artist (otherwise, keep the current artist)
-      artistObj = song.combined_artists[artistIndex];
+      artistObj = song.primary_artists.concat(song.featured_artists)[
+        artistIndex
+      ];
       // also only then increment the number of guesses
       numGuesses++;
     }
@@ -299,7 +301,7 @@
         <span class="ml-1">✕</span>
       </button>
       <ul class="flex flex-col items-center justify-center mt-5">
-        {#each song.combined_artists as artist, i}
+        {#each song.primary_artists.concat(song.featured_artists) as artist, i}
           {#if artist.id !== artistObj.id}
             <li class="w-full text-center m-1">
               <button
