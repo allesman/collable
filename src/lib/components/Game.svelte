@@ -162,11 +162,13 @@
 <div class="flex justify-center items-center">
   <div class="inline-block rounded-3xl card bg-base-100">
     <div class="card-body pb-5">
-      <div class="flex justify-center items-center">
+      <div
+        class="flex justify-center items-center text-shadow-soft shadow-base-content"
+      >
         Use features to get from
       </div>
       <div
-        class="flex justify-center items-center pt-2 text-2xl font-bold gap-3"
+        class="flex justify-center items-center pt-2 text-2xl font-bold gap-3 text-shadow-soft shadow-base-content"
       >
         <img
           class="w-10 rounded-full"
@@ -184,8 +186,10 @@
       </div>
       <!-- TODO: not 100% happy with this design yet -->
       <div class="flex justify-center mt-3">
-        <div class="badge badge-ghost rounded-full text-neutral-600">
-          {isCustom ? "custom" : "🗓️ " + dateStamp}
+        <div
+          class="badge badge-ghost rounded-full text-shadow-soft shadow-neutral-600 text-neutral-600"
+        >
+          {isCustom ? "✨ custom" : "🗓️ " + dateStamp}
         </div>
       </div>
     </div>
@@ -196,7 +200,9 @@
   <!-- TODO: extract more into components? -->
 
   <!-- Name of current artist -->
-  <div class="m-2 text-4xl font-bold flex justify-center items-center">
+  <div
+    class="m-2 text-4xl font-bold flex justify-center items-center text-shadow-soft shadow-base-content"
+  >
     <img
       class="w-12 rounded-full m-2 mr-5"
       src={artistObj.image_url}
