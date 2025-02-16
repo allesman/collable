@@ -64,11 +64,7 @@ export async function createNewGame(dateStr?: string, startArtist?: string, goal
         startArtist: startArtist,
         goalArtist: goalArtist,
     };
-    pushToDB(dailyGameEntry, dateStr);
-    return {
-        date: dateStr,
-        ...dailyGameEntry
-    };
+    return await pushToDB(dailyGameEntry, dateStr);
 }
 
 async function getArtistList(): Promise<string[]> {
