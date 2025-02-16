@@ -3,7 +3,6 @@ import GeniusApi from "$lib/GeniusApi";
 import type { Song } from "$lib/types";
 import { error, type RequestEvent } from "@sveltejs/kit";
 
-// TODO: caching
 export const gameActions = {
   search: async ({ request }: RequestEvent) => {
     const data = await request.formData();

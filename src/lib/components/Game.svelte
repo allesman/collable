@@ -127,17 +127,8 @@
     }
   }
 
-  async function handleShowMore(event: SubmitEvent) {
-    event.preventDefault();
+  async function handleShowMore() {
     isLoadingMore = true;
-    // noMore = false;
-    const form: HTMLFormElement = event.target as HTMLFormElement;
-    const formData: FormData = new FormData(form);
-    if (!formData.get("artistsAmount") || event.currentTarget == null) {
-      // if query is empty or form is null, don't send request
-      isLoadingMore = false;
-      return;
-    }
     const response = await fetch("api/getDefaultSongs", {
       method: "POST",
       body: JSON.stringify({
@@ -146,19 +137,12 @@
       }),
     });
     if (response.ok) {
-      // const result = await response.json();
-      ({ defaultSongs } = await response.json());
-      console.log(defaultSongs);
-      // defaultSongs = JSON.parse(JSON.parse(result.data)[0]);
-      console.assert(defaultSongs.length > 0, "No default songs returned");
-      console.assert(
-        defaultSongs.length ===
-          parseInt(formData.get("artistsAmount") as string, 10),
-        `got ${defaultSongs.length} songs but should've gotten ${parseInt(formData.get("artistsAmount") as string, 10)}`,
-      );
-      if (defaultSongs.length % 10 !== 0) {
-        noMore = true;
-      }
+      let { newSongs } = await response.json();
+      defaultSongs = [...defaultSongs, ...newSongs];
+      console.assert(newSongs.length > 0, "No default songs returned");
+      // less songs than requested, so no more to load after this (1 unit of grace because sometimes the genius API is weird and returns less than requested)
+      noMore = newSongs.length < showMoreAmount - 1;
+      console.log(noMore ? defaultSongs.length : "");
     } else {
       noMore = true;
     }
@@ -279,23 +263,14 @@
           {/each}
           <li class="w-full text-center m-1 mt-4">
             <!-- Show more button, inside here because it's only needed when there's songs being listed -->
-            <!-- FIXME: fake ass form, again -->
-            <form on:submit|preventDefault={handleShowMore}>
-              <input
-                type="hidden"
-                name="artistsAmount"
-                value={defaultSongs.length + 10}
-              />
-              <input type="hidden" name="artistId" value={artistObj.id} />
-              <button
-                class="btn btn-ghost"
-                disabled={searchMade || noMore}
-                type="submit"
-              >
-                <!-- TODO: could also put || isLoadingMore up there in disabled but idk tbh -->
-                {isLoadingMore ? "Loading..." : "Show More"}
-              </button>
-            </form>
+            <button
+              class="btn btn-ghost"
+              disabled={searchMade || noMore}
+              on:click={handleShowMore}
+            >
+              <!-- TODO: could also put || isLoadingMore up there in disabled but idk tbh -->
+              {isLoadingMore ? "Loading..." : "Show More"}
+            </button>
           </li>
         </ul>
       {:else if searchMade}

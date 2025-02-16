@@ -10,7 +10,8 @@ export async function getDefaultSongs(artistId: string, amount: number = 10): Pr
         throw error(422, { message: "Artist ID not provided" });
     }
     try {
-        const songs = await geniusApi.getSongs(artistId, amount);
+        // we only get and return the <=10 new songs aka those from the last page
+        const songs = await geniusApi.getSongs(artistId, 10, Math.ceil(amount / 10));
         // add combined artists
         // TODO: move this logic to when song is actually clicked?
         for (let i = 0; i < songs.length; i++) {
