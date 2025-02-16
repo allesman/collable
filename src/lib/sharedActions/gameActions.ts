@@ -3,29 +3,7 @@ import GeniusApi from "$lib/GeniusApi";
 import type { Song } from "$lib/types";
 import { error, type RequestEvent } from "@sveltejs/kit";
 
-// TODO: caching
 export const gameActions = {
-
-  getSongs: async ({ request }: RequestEvent) => {
-    const data = await request.formData();
-    const artistId = data.get("artistId");
-    const amount = data.get("artistsAmount");
-    if (!artistId || typeof artistId !== "string") {
-      return error(400, "ArtistId required");
-    }
-    let defaultSongs: Song[] = [];
-    if (amount) {
-      // TODO: especially, for bigger amounts, re-fetching all songs to get more songs is inefficient
-      // a specific amount of songs is requested
-      defaultSongs = await getDefaultSongs(artistId, parseInt(amount as string));
-    }
-    else {
-      // default amount of songs is requested
-      defaultSongs = await getDefaultSongs(artistId);
-    }
-    return JSON.stringify(defaultSongs);
-  },
-
   search: async ({ request }: RequestEvent) => {
     const data = await request.formData();
     const geniusApi = await GeniusApi.initialize();
@@ -56,7 +34,6 @@ export const gameActions = {
         for (const element of combinedArtists) {
           if (element.id == artistId) {
             const song = data[i].result;
-            song["combined_artists"] = combinedArtists;
             searchResults.push(song);
             break;
           }

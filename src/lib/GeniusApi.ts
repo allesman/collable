@@ -57,9 +57,9 @@ export default class GeniusApi {
 
   // methods the class provides for interacting with the Genius API
 
-  async getSongs(artistId: string, amount: number) {
+  async getSongs(artistId: string, per_page: number, page: number) {
     const response = await fetch(
-      `https://api.genius.com/artists/${artistId}/songs?per_page=${amount}&sort=popularity`,
+      `https://api.genius.com/artists/${artistId}/songs?per_page=${per_page}&page=${page}&sort=popularity`,
       {
         headers: {
           Authorization: `Bearer ${this.#accessToken}`,

@@ -35,7 +35,7 @@ export async function fetchData(): Promise<StoredData> {
       })
       latestDate = lowerKeys.pop() || "";
       if (!latestDate) {
-        return error(500, "No data available for any past date");
+        return error(500, { message: "No data available for any past date" });
       }
       console.log("Getting data for " + latestDate);
       latestData = data[latestDate];
@@ -59,12 +59,16 @@ export async function fetchData(): Promise<StoredData> {
 
 export async function pushToDB(dailyGameEntry: DailyGame, dateStr?: string) {
   try {
-    // Reference to the database, specifically the dailyGames node
+    // Reference to the database, specifically the dailyGames node and the correspending date node
     const dbRef = ref(db, "dailyGames/" + (dateStr || DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd")));
     await set(dbRef, dailyGameEntry);
   }
   catch (error) {
     console.error("Error pushing data:", error);
+  }
+  return {
+    date: dateStr || DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd"),
+    ...dailyGameEntry,
   }
 }
 
@@ -83,14 +87,4 @@ export async function getAllData(): Promise<StoredData> {
   // Fetch the data
   const data = snapshot.val();
   return data;
-}
-
-export function getDateString(date: Date, timezone?: string): string {
-  // FIXME: move this to client side so it uses the client's timezone
-  const tzDate = new Date(date);
-  const year = tzDate.getFullYear();
-  const month = String(tzDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-  const day = String(tzDate.getDate()).padStart(2, "0");
-  const output = `${year}-${month}-${day}`;
-  return output;
 }
