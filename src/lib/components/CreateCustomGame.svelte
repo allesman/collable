@@ -98,14 +98,6 @@
         >
       </div>
     </form>
-    <!-- TODO: change to Close instead of ✕? -->
-    <!-- <div class="modal-action flex"> -->
-    <!-- <button class="btn btn-success">Create</button>
-    <form method="dialog" class="flex justify-start"> -->
-    <!-- if there is a button in form, it will close the modal -->
-    <!-- <button class="btn btn-error">Cancel</button>
-    </form> -->
-    <!-- </div> -->
   </div>
   <form method="dialog" class="modal-backdrop">
     <button disabled={submitting}>close</button>
