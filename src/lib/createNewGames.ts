@@ -47,7 +47,7 @@ export async function createNewGame(dateStr?: string, startArtist?: string, goal
         }
         while (startArtist === goalArtist);
     }
-    // TODO: check if connection exists???
+    // TODO: check if connection even exists???
     if (startArtist === goalArtist) {
         return error(422, { message: "Start artist and goal artist can't be the same" });
     }
