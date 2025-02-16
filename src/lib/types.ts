@@ -10,7 +10,7 @@ export interface Song {
   artist_names: string;
   primary_artists: Artist[];
   featured_artists: Artist[];
-  combined_artists: Artist[];
+  // combined_artists: Artist[];
 }
 
 export interface Artist {

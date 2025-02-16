@@ -34,7 +34,6 @@ export const gameActions = {
         for (const element of combinedArtists) {
           if (element.id == artistId) {
             const song = data[i].result;
-            song["combined_artists"] = combinedArtists;
             searchResults.push(song);
             break;
           }
