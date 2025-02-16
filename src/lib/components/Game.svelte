@@ -80,6 +80,7 @@
     gameStage = 1;
     error = null;
     // searchMade = false;
+    // TODO: play that song?
     song = searchResults[index] ?? defaultSongs[index];
   }
 
