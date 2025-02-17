@@ -177,7 +177,6 @@
   }
 
   function handleGetHint(): void {
-    console.log("hint time");
     hint.openModal();
   }
 </script>
@@ -211,7 +210,7 @@
         <div class="flex items-center gap-1">
           {goalArtist.name}
           <button on:click={handleGetHint}>
-            <Icon icon="mdi:lightbulb" class="text-secondary " />
+            <Icon icon="mdi:lightbulb" class="text-2xl font-bold" />
           </button>
         </div>
       </div>

@@ -13,6 +13,7 @@
       class="btn btn-m btn-neutral text-base rounded-xl"
       on:click={() => createCustomGame.openModal()}
     >
+      <!-- TODO: maybe not vibrant enough? -->
       <Icon icon="mdi:sparkles-outline" class="text-xl" />Custom
     </button>
     <!-- TODO: add hard mode toggle (hard mode:no default songs?? or songs with artist credits only) -->

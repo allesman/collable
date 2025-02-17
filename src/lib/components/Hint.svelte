@@ -54,7 +54,7 @@
             >
         </form>
         <h3 class="text-2xl font-bold">Hint</h3>
-        These are the top songs of<span class="text-secondary font-bold">
+        These are the top songs of<span class="text-primary font-bold">
             &nbsp;{artistObj.name}</span
         >:
         <!-- </div> -->
