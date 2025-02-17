@@ -41,6 +41,9 @@
   let noMore: boolean = false; // for when there are no more songs to load
   const showMoreAmount: number = 10; // the amount of songs to load when clicking "show more"
 
+  import Hint from "$lib/components/Hint.svelte";
+  let hint: Hint;
+
   async function handleSearch(event: SubmitEvent) {
     event.preventDefault();
     isLoading = true;
@@ -172,6 +175,11 @@
       });
     }, 1); // delay by 1 milliseconds
   }
+
+  function handleGetHint(): void {
+    console.log("hint time");
+    hint.openModal();
+  }
 </script>
 
 <div class="flex justify-center items-center">
@@ -191,13 +199,21 @@
           alt={startArtist.name}
         />
         {startArtist.name}
-        <Icon icon="mdi:arrow-right-thick" />
+        <Icon
+          icon="mdi:arrow-right-thick"
+          class="text-shadow-soft shadow-base-content"
+        />
         <img
           class="w-10 rounded-full"
           src={goalArtist.image_url}
           alt={goalArtist.name}
         />
-        {goalArtist.name}
+        <div class="flex items-center gap-1">
+          {goalArtist.name}
+          <button on:click={handleGetHint}>
+            <Icon icon="mdi:lightbulb" class="text-secondary " />
+          </button>
+        </div>
       </div>
       <!-- TODO: not 100% happy with this design yet -->
       <div class="flex justify-center mt-3">
@@ -213,7 +229,6 @@
 
 <div class="p-3">
   <!-- TODO: extract more into components? -->
-
   <!-- Name of current artist -->
   <div
     class="m-2 text-4xl font-bold flex justify-center items-center text-shadow-soft shadow-base-content"
@@ -261,7 +276,9 @@
     <div class="flex items-center justify-center mt-10">
       {#if isLoading}
         <!-- still loading -->
-        <p class="mt-1">Loading...</p>
+        <p class="mt-1">
+          <span class="loading loading-spinner"></span> Loading...
+        </p>
       {:else if (searchMade && searchResults.length > 0) || !searchMade}
         <!-- search made and had results, display them / no search made yet, display default songs -->
         <ul class="flex flex-col items-center justify-center">
@@ -293,7 +310,11 @@
               on:click={handleShowMore}
             >
               <!-- TODO: could also put || isLoadingMore up there in disabled but idk tbh -->
-              {isLoadingMore ? "Loading..." : "Show More"}
+              {#if isLoadingMore}
+                <span class="loading loading-spinner"></span> Loading...
+              {:else}
+                Show More
+              {/if}
             </button>
           </li>
         </ul>
@@ -369,3 +390,5 @@
   {dateStamp}
   bind:this={youWinModal}
 />
+
+<Hint bind:this={hint} artistObj={goalArtist} />
