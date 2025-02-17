@@ -79,9 +79,24 @@
   async function handleClickSong(index: number) {
     gameStage = 1;
     error = null;
-    // searchMade = false;
-    // TODO: play that song?
     song = searchResults[index] ?? defaultSongs[index];
+    const response = await fetch("api/getAppleMusicId", {
+      method: "POST",
+      body: JSON.stringify({
+        songId: song.id,
+      }),
+    });
+    if (response.ok) {
+      let { apple_music_id } = await response.json();
+      song = { ...song, apple_music_id };
+    } else {
+      error = "Something went wrong while loading data for new song";
+    }
+    // searchMade = false;
+    // document
+    //   .getElementById("apple-music-player")
+    //   .contentWindow.document.getElementByClassName("play-initial")
+    //   .click();
   }
 
   async function handleCloseSong() {
@@ -319,9 +334,20 @@
           {/if}
         {/each}
       </ul>
+      <iframe
+        class=" w-64 max-w-[660px] overflow-hidden border-radius-10 rounded-2xl mt-10"
+        title="Listen to the song"
+        id="apple-music-player"
+        allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+        frameborder="0"
+        height="175"
+        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+        src={`https://embed.music.apple.com/song/${song.apple_music_id}`}
+      ></iframe>
+      <!-- ?theme=dark -->
     </div>
   {:else if gameStage === 2}
-    <nbsp />
+    <nbsp></nbsp>
   {:else}
     <!-- Error if gameStage has ValueError -->
     <p class="text-error text-center">

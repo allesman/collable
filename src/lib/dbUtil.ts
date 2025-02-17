@@ -59,21 +59,16 @@ export async function fetchData(): Promise<StoredData> {
 
 export async function pushToDB(dailyGameEntry: DailyGame, dateStr?: string) {
   try {
-    const myDate = DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd");
     // Reference to the database, specifically the dailyGames node and the correspending date node
-    const dbRef = ref(db, "dailyGames/" + (dateStr || myDate));
-    // const dbRef = ref(db, "dailyGames/" + (dateStr || DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd")));
+    const dbRef = ref(db, "dailyGames/" + (dateStr || DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd")));
     await set(dbRef, dailyGameEntry);
-    return {
-      ...dailyGameEntry,
-      date: dateStr || myDate,
-      // date: dateStr || DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd"),
-    }
   }
   catch (error) {
-    if (error instanceof Error) {
-      throw new Error("Error pushing data:", error);
-    }
+    console.error("Error pushing data:", error);
+  }
+  return {
+    date: dateStr || DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd"),
+    ...dailyGameEntry,
   }
 }
 
