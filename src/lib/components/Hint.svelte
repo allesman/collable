@@ -71,16 +71,16 @@
                         <li class="w-full text-center m-1">
                             <button
                                 data-index={i}
-                                class="btn btn-base-content rounded-full btn-outline no-animation"
+                                class="btn btn-base-content rounded-full btn-outline no-animation h-auto py-1"
                             >
                                 <img
                                     class="w-8 rounded mr-1"
                                     src={hit.song_art_image_thumbnail_url}
                                     alt={hit.title}
                                 />
-                                {hit.title}
-                                <!-- TODO: fix formatting -->
-                                <span class="badge badge-primary rounded-md"
+                                <span>{hit.title}</span>
+                                <span
+                                    class="badge badge-primary rounded-md h-auto"
                                     >{hit.artist_names}</span
                                 >
                             </button>
@@ -93,7 +93,6 @@
                             disabled={noMore}
                             on:click={handleShowMore}
                         >
-                            <!-- TODO: could also put || isLoadingMore up there in disabled but idk tbh -->
                             {#if isLoadingMore}
                                 <span class="loading loading-spinner"></span> Loading...
                             {:else}

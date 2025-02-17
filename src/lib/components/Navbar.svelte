@@ -18,6 +18,25 @@
     </button>
     <!-- TODO: add hard mode toggle (hard mode:no default songs?? or songs with artist credits only) -->
     <!-- TODO: add button to show tutorial popup (should also show up on first visit) -->
+    <!-- Identify the artist matchup:
+
+Kendrick Lamar
+
+Chappell Roan
+
+2
+
+Tap on the related artists that you think will get you closer to the target artist. Press and hold on an artist to hear a sample of their music. The less steps it takes you, the better your score!
+
+If you get stuck, you can Reset, use the Hint, or Give Up.
+
+3
+
+Select the target artist once they pop up or you'll miss it! Have fun!
+Clicking an artist box
+What's a related artist?
+
+Related artists are based on the "Fans Also Like" sections on music services. They use data from listeners of an artist to identify other artists that fans frequently listen to.  -->
   </div>
 
   <a

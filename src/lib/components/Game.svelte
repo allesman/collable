@@ -289,16 +289,18 @@
               <button
                 on:click={() => handleClickSong(i)}
                 data-index={i}
-                class="btn btn-base-content rounded-full btn-outline"
+                class="btn btn-base-content rounded-full btn-outline h-auto py-1"
               >
-                <img
-                  class="w-8 rounded mr-1"
-                  src={hit.song_art_image_thumbnail_url}
-                  alt={hit.title}
-                />
-                {hit.title}
+                <div class="flex items-center">
+                  <img
+                    class="w-8 rounded mr-1"
+                    src={hit.song_art_image_thumbnail_url}
+                    alt={hit.title}
+                  />
+                  {hit.title}
+                </div>
                 <!-- TODO: fix formatting -->
-                <span class="badge badge-primary rounded-md"
+                <span class="badge badge-primary rounded-md h-auto"
                   >{hit.artist_names}</span
                 >
               </button>
