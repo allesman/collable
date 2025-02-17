@@ -41,6 +41,9 @@
   let noMore: boolean = false; // for when there are no more songs to load
   const showMoreAmount: number = 10; // the amount of songs to load when clicking "show more"
 
+  import Hint from "$lib/components/Hint.svelte";
+  let hint: Hint;
+
   async function handleSearch(event: SubmitEvent) {
     event.preventDefault();
     isLoading = true;
@@ -79,9 +82,24 @@
   async function handleClickSong(index: number) {
     gameStage = 1;
     error = null;
-    // searchMade = false;
-    // TODO: play that song?
     song = searchResults[index] ?? defaultSongs[index];
+    const response = await fetch("api/getAppleMusicId", {
+      method: "POST",
+      body: JSON.stringify({
+        songId: song.id,
+      }),
+    });
+    if (response.ok) {
+      let { apple_music_id } = await response.json();
+      song = { ...song, apple_music_id };
+    } else {
+      error = "Something went wrong while loading data for new song";
+    }
+    // searchMade = false;
+    // document
+    //   .getElementById("apple-music-player")
+    //   .contentWindow.document.getElementByClassName("play-initial")
+    //   .click();
   }
 
   async function handleCloseSong() {
@@ -157,16 +175,22 @@
       });
     }, 1); // delay by 1 milliseconds
   }
+
+  function handleGetHint(): void {
+    hint.openModal();
+  }
 </script>
 
 <div class="flex justify-center items-center">
   <div class="inline-block rounded-3xl card bg-base-100">
     <div class="card-body pb-5">
-      <div class="flex justify-center items-center">
+      <div
+        class="flex justify-center items-center text-shadow-soft shadow-base-content"
+      >
         Use features to get from
       </div>
       <div
-        class="flex justify-center items-center pt-2 text-2xl font-bold gap-3"
+        class="flex justify-center items-center pt-2 text-2xl font-bold gap-3 text-shadow-soft shadow-base-content"
       >
         <img
           class="w-10 rounded-full"
@@ -174,18 +198,31 @@
           alt={startArtist.name}
         />
         {startArtist.name}
-        <Icon icon="mdi:arrow-right-thick" />
+        <Icon
+          icon="mdi:arrow-right-thick"
+          class="text-shadow-soft shadow-base-content"
+        />
         <img
           class="w-10 rounded-full"
           src={goalArtist.image_url}
           alt={goalArtist.name}
         />
-        {goalArtist.name}
+        <div class="flex items-center gap-1">
+          {goalArtist.name}
+          <button
+            on:click={handleGetHint}
+            class="btn btn-ghost btn-circle btn-sm"
+          >
+            <Icon icon="mdi:lightbulb" class="text-2xl font-bold" />
+          </button>
+        </div>
       </div>
       <!-- TODO: not 100% happy with this design yet -->
       <div class="flex justify-center mt-3">
-        <div class="badge badge-ghost rounded-full text-neutral-600">
-          {isCustom ? "custom" : "🗓️ " + dateStamp}
+        <div
+          class="badge badge-ghost rounded-full text-shadow-soft shadow-neutral-600 text-neutral-600"
+        >
+          {isCustom ? "✨ custom" : "🗓️ " + dateStamp}
         </div>
       </div>
     </div>
@@ -194,9 +231,10 @@
 
 <div class="p-3">
   <!-- TODO: extract more into components? -->
-
   <!-- Name of current artist -->
-  <div class="m-2 text-4xl font-bold flex justify-center items-center">
+  <div
+    class="m-2 text-4xl font-bold flex justify-center items-center text-shadow-soft shadow-base-content"
+  >
     <img
       class="w-12 rounded-full m-2 mr-5"
       src={artistObj.image_url}
@@ -240,7 +278,9 @@
     <div class="flex items-center justify-center mt-10">
       {#if isLoading}
         <!-- still loading -->
-        <p class="mt-1">Loading...</p>
+        <p class="mt-1">
+          <span class="loading loading-spinner"></span> Loading...
+        </p>
       {:else if (searchMade && searchResults.length > 0) || !searchMade}
         <!-- search made and had results, display them / no search made yet, display default songs -->
         <ul class="flex flex-col items-center justify-center">
@@ -249,16 +289,18 @@
               <button
                 on:click={() => handleClickSong(i)}
                 data-index={i}
-                class="btn btn-base-content rounded-full btn-outline"
+                class="btn btn-base-content rounded-full btn-outline h-auto py-1"
               >
-                <img
-                  class="w-8 rounded mr-1"
-                  src={hit.song_art_image_thumbnail_url}
-                  alt={hit.title}
-                />
-                {hit.title}
+                <div class="flex items-center">
+                  <img
+                    class="w-8 rounded mr-1"
+                    src={hit.song_art_image_thumbnail_url}
+                    alt={hit.title}
+                  />
+                  {hit.title}
+                </div>
                 <!-- TODO: fix formatting -->
-                <span class="badge badge-primary rounded-md"
+                <span class="badge badge-primary rounded-md h-auto"
                   >{hit.artist_names}</span
                 >
               </button>
@@ -272,7 +314,11 @@
               on:click={handleShowMore}
             >
               <!-- TODO: could also put || isLoadingMore up there in disabled but idk tbh -->
-              {isLoadingMore ? "Loading..." : "Show More"}
+              {#if isLoadingMore}
+                <span class="loading loading-spinner"></span> Loading...
+              {:else}
+                Show More
+              {/if}
             </button>
           </li>
         </ul>
@@ -313,9 +359,20 @@
           {/if}
         {/each}
       </ul>
+      <iframe
+        class=" w-64 max-w-[660px] overflow-hidden border-radius-10 rounded-2xl mt-10"
+        title="Listen to the song"
+        id="apple-music-player"
+        allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+        frameborder="0"
+        height="175"
+        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+        src={`https://embed.music.apple.com/song/${song.apple_music_id}`}
+      ></iframe>
+      <!-- ?theme=dark -->
     </div>
   {:else if gameStage === 2}
-    <nbsp />
+    <nbsp></nbsp>
   {:else}
     <!-- Error if gameStage has ValueError -->
     <p class="text-error text-center">
@@ -337,3 +394,5 @@
   {dateStamp}
   bind:this={youWinModal}
 />
+
+<Hint bind:this={hint} artistObj={goalArtist} />

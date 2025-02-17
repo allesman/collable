@@ -13,7 +13,7 @@
 
   let copyMessage: string | undefined = undefined;
   function copyToClipboard() {
-    const text = `🎵  ${isCustom ? `Custom Musicalle ✨` : `Musicalle ${dateStamp}`}
+    const text = `🎵  ${isCustom ? `Custom Collable ✨` : `Collable ${dateStamp}`}
 
 ${startArtistName} → 👤 ${numGuesses - 1} → ${goalArtistName}
 

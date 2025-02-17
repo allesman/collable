@@ -10,6 +10,7 @@ export interface Song {
   artist_names: string;
   primary_artists: Artist[];
   featured_artists: Artist[];
+  apple_music_id: string;
   // combined_artists: Artist[];
 }
 
