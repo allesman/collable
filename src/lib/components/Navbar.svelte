@@ -17,7 +17,6 @@
     </button>
     <!-- TODO: add hard mode toggle (hard mode:no default songs?? or songs with artist credits only) -->
     <!-- TODO: add button to show tutorial popup (should also show up on first visit) -->
-    <!-- TODO: hint? (show default songs/artists connected to goal artist) -->
   </div>
 
   <a
