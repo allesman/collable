@@ -209,7 +209,10 @@
         />
         <div class="flex items-center gap-1">
           {goalArtist.name}
-          <button on:click={handleGetHint}>
+          <button
+            on:click={handleGetHint}
+            class="btn btn-ghost btn-circle btn-sm"
+          >
             <Icon icon="mdi:lightbulb" class="text-2xl font-bold" />
           </button>
         </div>
