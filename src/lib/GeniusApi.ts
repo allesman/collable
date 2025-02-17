@@ -144,4 +144,21 @@ export default class GeniusApi {
     const data = await response.json();
     return data.response.artist;
   }
+  async getSongInfoFromId(id: string) {
+    const response = await fetch(
+      `https://api.genius.com/songs/${encodeURIComponent(id)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.#accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error fetching data: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.response.song;
+  }
 }
