@@ -303,7 +303,6 @@
                   />
                   {hit.title}
                 </div>
-                <!-- TODO: fix formatting -->
                 <span class="badge badge-primary rounded-md h-auto"
                   >{hit.artist_names}</span
                 >
