@@ -30,7 +30,8 @@ export const load = (async () => {
         date: DateTime.fromISO(date).toFormat("M/d/yyyy"),
       };
     } catch (e) {
-      console.error(`Problem with reading Stored Data aka ${JSON.stringify(data)}, could be because data after doesnt exist yet: ` + e);
+      const startArtistInfo = await geniusApi.getArtistInfoFromName(data[date].startArtist);
+      console.error(`Problem with reading Stored Data aka start artist ${JSON.stringify(startArtistInfo)}, could be because data after doesnt exist yet: ` + e);
     }
   }
 
