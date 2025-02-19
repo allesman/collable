@@ -6,6 +6,22 @@
 
   let createCustomGame: CreateCustomGame;
   let tutorial: Tutorial;
+
+  if (typeof window !== "undefined") {
+    checkFirstVisit();
+  }
+
+  function checkFirstVisit() {
+    if (localStorage.getItem("was_visited") !== "true") {
+      setTimeout(() => {
+        tutorial.openModal();
+        console.log("first visit");
+      }, 10);
+      localStorage.setItem("was_visited", "true");
+      return;
+    }
+    console.log("not first visit");
+  }
 </script>
 
 <CreateCustomGame bind:this={createCustomGame} />
