@@ -32,14 +32,16 @@
       class="btn btn-m btn-neutral rounded-xl"
       on:click={() => createCustomGame.openModal()}
     >
-      <Icon icon="mdi:sparkles-outline" class="text-xl" />Custom
+      <Icon icon="mdi:sparkles-outline" class="text-xl" />
+      <span class="hidden xs:block">Custom</span>
     </button>
     <!-- TODO: add hard mode toggle (hard mode:no default songs?? or songs with artist credits only) -->
     <button
       class="btn btn-m btn-neutral rounded-xl"
       on:click={() => tutorial.openModal()}
     >
-      <Icon icon="mdi:help-circle-outline" class="text-xl" />How To Play
+      <Icon icon="mdi:help-circle-outline" class="text-xl" />
+      <span class="hidden md:block">How To Play</span>
     </button>
   </div>
 
