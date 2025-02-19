@@ -30,7 +30,7 @@ export const load = (async () => {
         date: DateTime.fromISO(date).toFormat("M/d/yyyy"),
       };
     } catch (e) {
-      console.error(`Problem with reading Stored Data from ${date} aka ${JSON.stringify(data[date])}, could be because data after doesnt exist yet: ` + e);
+      console.error(`Problem with reading Stored Data from dates ${Object.keys(data)} aka ${JSON.stringify(data)}, could be because data after doesnt exist yet: ` + e);
     }
   }
 
