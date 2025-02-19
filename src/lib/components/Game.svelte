@@ -149,6 +149,9 @@
   }
 
   async function handleShowMore() {
+    if (isLoadingMore) {
+      return;
+    }
     isLoadingMore = true;
     const response = await fetch("api/getDefaultSongs", {
       method: "POST",
@@ -300,7 +303,6 @@
                   />
                   {hit.title}
                 </div>
-                <!-- TODO: fix formatting -->
                 <span class="badge badge-primary rounded-md h-auto"
                   >{hit.artist_names}</span
                 >
@@ -314,7 +316,6 @@
               disabled={searchMade || noMore}
               on:click={handleShowMore}
             >
-              <!-- TODO: could also put || isLoadingMore up there in disabled but idk tbh -->
               {#if isLoadingMore}
                 <span class="loading loading-spinner"></span> Loading...
               {:else}
