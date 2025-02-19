@@ -149,6 +149,9 @@
   }
 
   async function handleShowMore() {
+    if (isLoadingMore) {
+      return;
+    }
     isLoadingMore = true;
     const response = await fetch("api/getDefaultSongs", {
       method: "POST",
