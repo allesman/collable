@@ -123,7 +123,7 @@ export default class GeniusApi {
         return hit.result.primary_artist;
       }
     }
-
+    console.error(404, `Artist ${artistName} not found`);
     return null;
   }
 
