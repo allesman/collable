@@ -177,6 +177,7 @@
   }
 
   function handleGetHint(): void {
+    // TODO: include whether was used in result
     hint.openModal();
   }
 </script>

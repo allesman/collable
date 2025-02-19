@@ -30,7 +30,7 @@ export const load = (async () => {
         date: DateTime.fromISO(date).toFormat("M/d/yyyy"),
       };
     } catch (e) {
-      console.error("Problem with reading Stored Data, could be because data after doesnt exist yet: " + e);
+      console.error(`Problem with reading Stored Data aka ${data}, could be because data after doesnt exist yet: ` + e);
     }
   }
 
