@@ -10,7 +10,7 @@
 <div class="navbar sticky top-0 z-50 bg-base-200">
   <div class="navbar-start pl-2">
     <button
-      class="btn btn-m btn-neutral text-base rounded-xl"
+      class="btn btn-m btn-outline rounded-xl"
       on:click={() => createCustomGame.openModal()}
     >
       <!-- TODO: maybe not vibrant enough? -->
