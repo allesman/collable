@@ -96,7 +96,7 @@ export default class GeniusApi {
   // new version, takes artist name
   async getArtistInfoFromName(artistName: string) {
     if (!artistName) {
-      console.log(error(422, "No artist name provided"));
+      console.error(422, "No artist name provided");
       return null;
     }
     const response = await fetch(
