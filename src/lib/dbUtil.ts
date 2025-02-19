@@ -24,7 +24,9 @@ export async function fetchData(): Promise<StoredData> {
       returnedData = {
         [dateBefore]: data[dateBefore],
         [latestDate]: latestData,
-        [dateAfter]: data[dateAfter] || {},
+      }
+      if (data[dateAfter]) {
+        returnedData[dateAfter] = data[dateAfter];
       }
       // const dateAfter = dateStringPlus(latestDate, +1)
     }
