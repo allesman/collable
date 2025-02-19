@@ -317,7 +317,6 @@
               disabled={searchMade || noMore}
               on:click={handleShowMore}
             >
-              <!-- TODO: could also put || isLoadingMore up there in disabled but idk tbh -->
               {#if isLoadingMore}
                 <span class="loading loading-spinner"></span> Loading...
               {:else}
