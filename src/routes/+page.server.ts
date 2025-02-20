@@ -21,12 +21,14 @@ export const load = (async () => {
     try {
       const startArtistInfo = await geniusApi.getArtistInfoFromName(data[date].startArtist);
       const goalArtistInfo = await geniusApi.getArtistInfoFromName(data[date].goalArtist);
-      const defaultSongs = await getDefaultSongs(startArtistInfo.id);
+      // TODO: move this to frontend
+      // const defaultSongs = await getDefaultSongs(startArtistInfo.id);
+
 
       dateDependentData[date] = {
         startArtist: startArtistInfo,
         goalArtist: goalArtistInfo,
-        defaultSongs: defaultSongs,
+        // defaultSongs: defaultSongs,
         date: DateTime.fromISO(date).toFormat("M/d/yyyy"),
       };
     } catch (e) {

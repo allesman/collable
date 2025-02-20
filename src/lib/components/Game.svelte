@@ -13,7 +13,8 @@
   const startArtist: Artist = data.startArtist;
   const goalArtist: Artist = data.goalArtist;
   const isCustom: boolean = data.isCustom;
-  let defaultSongs: Song[] = data.defaultSongs; // the most popular songs of the current artist, not filtered with a search query
+  let defaultSongs: Song[] = new Array(); // the most popular songs of the current artist, not filtered with a search query
+  // let defaultSongs: Song[] = data.defaultSongs; // the most popular songs of the current artist, not filtered with a search query
   const dateStamp: string = data.dateStamp;
 
   // modal shown when the user wins the game
@@ -148,7 +149,7 @@
     }
   }
 
-  async function handleShowMore() {
+  async function handleShowMore(scrollDown: boolean = true) {
     if (isLoadingMore) {
       return;
     }
@@ -171,18 +172,25 @@
       noMore = true;
     }
     isLoadingMore = false;
-    setTimeout(() => {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth",
-      });
-    }, 1); // delay by 1 milliseconds
+    if (scrollDown) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }, 1); // delay by 1 milliseconds
+    }
   }
 
   function handleGetHint(): void {
     // TODO: include whether was used in result
     hint.openModal();
   }
+  import { onMount } from "svelte";
+
+  onMount(() => {
+    handleShowMore(false);
+  });
 </script>
 
 <div class="flex justify-center items-center">
