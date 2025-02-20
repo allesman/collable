@@ -20,13 +20,13 @@ export const load = (async ({ url }) => {
   // get full artist info
   const startArtist = await geniusApi.getArtistInfoFromId(startArtistId);
   const goalArtist = await geniusApi.getArtistInfoFromId(goalArtistId);
-  const defaultSongs = await getDefaultSongs(startArtist.id.toString());
+  // const defaultSongs = await getDefaultSongs(startArtist.id.toString());
 
   return {
     startArtist: startArtist,
     goalArtist: goalArtist,
     isCustom: true,
-    defaultSongs: defaultSongs,
+    // defaultSongs: defaultSongs,
     dateStamp: null, // no date stamp for custom games
   };
 }) satisfies PageServerLoad;

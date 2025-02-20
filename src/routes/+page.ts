@@ -20,7 +20,7 @@ export const load: PageLoad = (async ({ parent, data }) => {
         startArtist: relevantData.startArtist,
         goalArtist: relevantData.goalArtist,
         isCustom: isCustom,
-        defaultSongs: relevantData.defaultSongs,
+        // defaultSongs: relevantData.defaultSongs,
         dateStamp: relevantData.date,
     };
 }) satisfies PageLoad;
