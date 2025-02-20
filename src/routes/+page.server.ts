@@ -19,9 +19,9 @@ export const load = (async () => {
   let dateDependentData: { [key: string]: any } = {};
   for (const date of Object.keys(data)) {
     try {
+      // TODO: move this to frontend
       const startArtistInfo = await geniusApi.getArtistInfoFromName(data[date].startArtist);
       const goalArtistInfo = await geniusApi.getArtistInfoFromName(data[date].goalArtist);
-      // TODO: move this to frontend
       // const defaultSongs = await getDefaultSongs(startArtistInfo.id);
 
 
