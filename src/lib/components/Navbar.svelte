@@ -15,12 +15,12 @@
     if (localStorage.getItem("was_visited") !== "true") {
       setTimeout(() => {
         tutorial.openModal();
-        console.log("first visit");
+        // console.log("first visit");
       }, 10);
       localStorage.setItem("was_visited", "true");
       return;
     }
-    console.log("not first visit");
+    // console.log("not first visit");
   }
 </script>
 
