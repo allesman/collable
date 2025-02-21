@@ -110,7 +110,6 @@
   async function handleClickArtist(artistIndex?: number, artistId?: number) {
     isLoading = true;
     noMore = false;
-    console.log(artistIndex);
     if (artistIndex !== undefined) {
       // If this method was actually called from clicking an artist, set them as the new artist (otherwise, keep the current artist)
       artistObj = song.primary_artists.concat(song.featured_artists)[
@@ -167,7 +166,7 @@
       console.assert(newSongs.length > 0, "No default songs returned");
       // less songs than requested, so no more to load after this (1 unit of grace because sometimes the genius API is weird and returns less than requested)
       noMore = newSongs.length < showMoreAmount - 1;
-      console.log(noMore ? defaultSongs.length : "");
+      // console.log(noMore ? defaultSongs.length : "");
     } else {
       noMore = true;
     }
@@ -322,7 +321,7 @@
             <button
               class="btn btn-ghost"
               disabled={searchMade || noMore}
-              on:click={handleShowMore}
+              on:click={() => handleShowMore()}
             >
               {#if isLoadingMore}
                 <span class="loading loading-spinner"></span> Loading...
@@ -369,16 +368,16 @@
           {/if}
         {/each}
       </ul>
-      <iframe
+      <!-- <iframe
         class=" w-64 max-w-[660px] overflow-hidden border-radius-10 rounded-2xl mt-10"
         title="Listen to the song"
         id="apple-music-player"
-        allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+        allow="fullscreen *;"
         frameborder="0"
         height="175"
-        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation allow-autoplay"
         src={`https://embed.music.apple.com/song/${song.apple_music_id}`}
-      ></iframe>
+      ></iframe> -->
       <!-- ?theme=dark -->
     </div>
   {:else if gameStage === 2}

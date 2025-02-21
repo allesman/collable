@@ -39,7 +39,7 @@ export const gameActions = {
           }
         }
       }
-      console.log(searchResults.length + " songs featured artist");
+      // console.log(searchResults.length + " songs featured artist");
       // TODO: filter out results that aren't songs through applemusicid != null ?
       return JSON.stringify(searchResults);
     } catch (e) {
