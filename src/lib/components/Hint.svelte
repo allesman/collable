@@ -10,8 +10,9 @@
     let noMore: boolean = false; // for when there are no more songs to load
     export function openModal() {
         dialog.showModal();
-        handleShowMore();
-        // TODO: only call the above method the first time
+        if (defaultSongs.length === 0) {
+            handleShowMore();
+        }
     }
     async function handleShowMore() {
         isLoadingMore = true;
