@@ -50,8 +50,8 @@ export const gameActions = {
 
   customGame: async ({ request }: RequestEvent) => {
     const data = await request.formData();
-    const startArtistName = data.get("startArtist");
-    const goalArtistName = data.get("goalArtist");
+    const startArtistName = data.get("startArtist")?.toString().trim().toLowerCase();
+    const goalArtistName = data.get("goalArtist")?.toString().trim().toLowerCase();
 
     if (startArtistName === goalArtistName) {
       return error(400, { message: "Start artist and goal artist can't be the same" });
