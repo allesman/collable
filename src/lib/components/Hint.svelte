@@ -11,6 +11,7 @@
     export function openModal() {
         dialog.showModal();
         handleShowMore();
+        // TODO: only call the above method the first time
     }
     async function handleShowMore() {
         isLoadingMore = true;
