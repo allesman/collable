@@ -1,33 +1,34 @@
 import { ref, get, set } from "firebase/database";
 import { db } from "./firebase.ts";
-import type { DailyGame, StoredData } from "./types.ts";
+import type { AllData, DailyGame } from "./types.ts";
+// import type { DailyGame, StoredData } from "./types.ts";
 import { DateTime } from "luxon";
 import { error } from "@sveltejs/kit";
-export async function fetchData(): Promise<StoredData> {
+export async function fetchData(date: string): Promise<DailyGame> {
   try {
-    let returnedData: StoredData;
+    // let returnedData: StoredData;
     const data = await getAllData();
     const dates = Object.keys(data)
 
     // Get the data relevant for the current date in YYYY-MM-DD format and Berlin timezone
-    const today = DateTime.now().toFormat("yyyy-MM-dd");
+    // const today = DateTime.now().toFormat("yyyy-MM-dd");
 
     // Get data for the current date, or otherwise the newest date existing
-    let latestDate = today;
-    let latestData = data[today];
+    let latestDate = date;
+    let latestData = data[date];
     if (latestData) {
       // today has data
-      // get Data for previous and next day just in case (timezones)
-      const dateBefore = DateTime.fromISO(latestDate).minus({ days: 1 }).toFormat("yyyy-MM-dd");
-      // const dateBefore = dateStringPlus(latestDate, -1);
-      const dateAfter = DateTime.fromISO(latestDate).plus({ days: 1 }).toFormat("yyyy-MM-dd");
-      returnedData = {
-        [dateBefore]: data[dateBefore],
-        [latestDate]: latestData,
-      }
-      if (data[dateAfter]) {
-        returnedData[dateAfter] = data[dateAfter];
-      }
+      // // get Data for previous and next day just in case (timezones)
+      // const dateBefore = DateTime.fromISO(latestDate).minus({ days: 1 }).toFormat("yyyy-MM-dd");
+      // // const dateBefore = dateStringPlus(latestDate, -1);
+      // const dateAfter = DateTime.fromISO(latestDate).plus({ days: 1 }).toFormat("yyyy-MM-dd");
+      // returnedData = {
+      //   [dateBefore]: data[dateBefore],
+      //   [latestDate]: latestData,
+      // }
+      // if (data[dateAfter]) {
+      //   returnedData[dateAfter] = data[dateAfter];
+      // }
       // const dateAfter = dateStringPlus(latestDate, +1)
     }
     else {
@@ -39,23 +40,25 @@ export async function fetchData(): Promise<StoredData> {
       if (!latestDate) {
         return error(500, { message: "No data available for any past date" });
       }
-      console.log("Getting data for " + latestDate);
+      // console.log("Getting data for " + latestDate);
       latestData = data[latestDate];
-      returnedData = {
-        [latestDate]: latestData,
-      }
+      // returnedData = {
+      //   [latestDate]: latestData,
+      // }
     }
 
     // add date stamps to the data
-    Object.keys(returnedData).forEach(date => {
-      returnedData[date]["date"] = date;
-    });
+    // Object.keys(returnedData).forEach(date => {
+    //   returnedData[date]["date"] = date;
+    // });
+    // TODO: dunno if needed
+    latestData["date"] = latestDate;
 
-    return returnedData;
+    return latestData;
 
   } catch (error) {
     console.error("Error reading data:", error);
-    return {};
+    throw error instanceof Error ? error : new Error("Error reading data");
   }
 }
 
@@ -74,7 +77,7 @@ export async function pushToDB(dailyGameEntry: DailyGame, dateStr?: string) {
   }
 }
 
-export async function getAllData(): Promise<StoredData> {
+export async function getAllData(): Promise<AllData> {
   // Reference to the database, specifically the dailyGames node
   const dbRef = ref(db, "dailyGames");
 
