@@ -10,12 +10,11 @@
 
   // get the data from parent component
   export let data: PageData;
-  const startArtist: Artist = data.startArtist;
-  const goalArtist: Artist = data.goalArtist;
   const isCustom: boolean = data.isCustom;
   let defaultSongs: Song[] = new Array(); // the most popular songs of the current artist, not filtered with a search query
   // let defaultSongs: Song[] = data.defaultSongs; // the most popular songs of the current artist, not filtered with a search query
-  const dateStamp: string = data.dateStamp;
+  // const dateStamp: string = data.dateStamp;
+  let dateStamp: string;
 
   // modal shown when the user wins the game
   import YouWin from "$lib/components/YouWin.svelte";
@@ -23,17 +22,20 @@
 
   // counting how many guesses the user has made
   let numGuesses: number = 0;
+  // saving the path traversed
+  let path: string[] = [];
   // saving whether a search has been made
   let searchMade: boolean = false;
 
   // the different stages of the game
+  // -1: page is still loading
   // 0: select a song by the current artist
   // 1: select artist featured on the song to be new current artist -> back to 0 or 2
   // 2: win
-  let gameStage: number = 0;
+  let gameStage: number = -1;
 
   // for gameStage 0
-  let artistObj: Artist = startArtist; // the current artist, initialized with the start artist
+  let artistObj: Artist; // the current artist
   let searchResults: Song[] = []; // the songs found by the search query
   let query: string = ""; // the search query
   let error: string | null = null;
@@ -44,6 +46,40 @@
 
   import Hint from "$lib/components/Hint.svelte";
   let hint: Hint;
+  let usedHint: boolean = false;
+
+  let startArtist: Artist;
+  let goalArtist: Artist;
+
+  async function fetchMatchupData() {
+    try {
+      let gameData;
+      if (isCustom) {
+        gameData = data;
+      } else {
+        const response = await fetch("api/getMatchupData", {
+          method: "POST",
+          body: JSON.stringify({
+            date: DateTime.now().toFormat("yyyy-MM-dd"),
+          }),
+        });
+        if (response.ok) {
+          gameData = await response.json();
+        } else {
+          error = "Failed to fetch matchup data";
+        }
+      }
+      startArtist = gameData.startArtist;
+      goalArtist = gameData.goalArtist;
+      dateStamp = gameData.dateStamp;
+      artistObj = startArtist;
+      path.push(startArtist.name);
+      gameStage = 0;
+      handleShowMore(false);
+    } catch (err) {
+      error = "An error occurred while fetching matchup data";
+    }
+  }
 
   async function handleSearch(event: SubmitEvent) {
     event.preventDefault();
@@ -117,6 +153,8 @@
       ];
       // also only then increment the number of guesses
       numGuesses++;
+      // and add the artist to the path
+      path.push(artistObj.name);
     }
     gameStage = 0;
     searchResults = [];
@@ -149,7 +187,7 @@
   }
 
   async function handleShowMore(scrollDown: boolean = true) {
-    if (isLoadingMore) {
+    if (isLoadingMore || gameStage === -1) {
       return;
     }
     isLoadingMore = true;
@@ -182,13 +220,14 @@
   }
 
   function handleGetHint(): void {
-    // TODO: include whether was used in result
+    usedHint = true;
     hint.openModal();
   }
   import { onMount } from "svelte";
+  import { DateTime } from "luxon";
 
   onMount(() => {
-    handleShowMore(false);
+    fetchMatchupData();
   });
 </script>
 
@@ -203,37 +242,56 @@
       <div
         class="flex justify-center items-center pt-2 text-2xl font-bold gap-3 text-shadow-soft shadow-base-content"
       >
-        <img
-          class="w-10 rounded-full"
-          src={startArtist.image_url}
-          alt={startArtist.name}
-        />
-        {startArtist.name}
+        {#if startArtist}
+          <img
+            class="w-10 rounded-full"
+            src={startArtist.image_url}
+            alt={startArtist.name}
+          />
+          {startArtist.name}
+        {:else}
+          <div class="w-10 h-10 rounded-full skeleton"></div>
+          <div class="w-24 h-6 skeleton"></div>
+        {/if}
         <Icon
           icon="mdi:arrow-right-thick"
           class="text-shadow-soft shadow-base-content"
         />
-        <img
-          class="w-10 rounded-full"
-          src={goalArtist.image_url}
-          alt={goalArtist.name}
-        />
-        <div class="flex items-center gap-1">
-          {goalArtist.name}
-          <button
-            on:click={handleGetHint}
-            class="btn btn-ghost btn-circle btn-sm"
-          >
-            <Icon icon="mdi:lightbulb" class="text-2xl font-bold" />
-          </button>
-        </div>
+
+        {#if goalArtist}
+          <img
+            class="w-10 rounded-full"
+            src={goalArtist.image_url}
+            alt={goalArtist.name}
+          />
+          <div class="flex items-center gap-1">
+            {goalArtist.name}
+            <button
+              on:click={handleGetHint}
+              class="btn btn-ghost btn-circle btn-sm"
+            >
+              <Icon icon="mdi:lightbulb" class="text-2xl font-bold" />
+            </button>
+          </div>
+        {:else}
+          <div class="w-10 h-10 rounded-full skeleton"></div>
+          <div class="w-24 h-6 skeleton"></div>
+        {/if}
       </div>
       <!-- TODO: not 100% happy with this design yet -->
       <div class="flex justify-center mt-3">
         <div
           class="badge badge-ghost rounded-full text-shadow-soft shadow-neutral-600 text-neutral-600"
+          class:skeleton={gameStage === -1}
+          class:w-20={gameStage === -1}
         >
-          {isCustom ? "✨ custom" : "🗓️ " + dateStamp}
+          {#if gameStage !== -1}
+            {#if isCustom}
+              ✨ custom
+            {:else}
+              🗓️ {dateStamp}
+            {/if}
+          {/if}
         </div>
       </div>
     </div>
@@ -246,11 +304,17 @@
   <div
     class="m-2 text-4xl font-bold flex justify-center items-center text-shadow-soft shadow-base-content"
   >
-    <img
-      class="w-12 rounded-full m-2 mr-5"
-      src={artistObj.image_url}
-      alt={artistObj.name}
-    />{artistObj.name}
+    {#if goalArtist}
+      <!-- FIXME -->
+      <img
+        class="w-12 rounded-full m-2 mr-5"
+        src={artistObj?.image_url}
+        alt={artistObj?.name}
+      />{artistObj?.name}
+    {:else}
+      <div class="w-12 h-12 rounded-full m-2 mr-5 skeleton"></div>
+      <div class="w-32 h-10 skeleton"></div>
+    {/if}
   </div>
 
   <!-- Search Bar -->
@@ -268,8 +332,10 @@
       class="input input-bordered select-none rounded-xl"
       bind:value={query}
     />
-    <input type="hidden" name="artistId" bind:value={artistObj.id} />
-    <input type="hidden" name="artistName" bind:value={artistObj.name} />
+    {#if gameStage !== -1}
+      <input type="hidden" name="artistId" bind:value={artistObj.id} />
+      <input type="hidden" name="artistName" bind:value={artistObj.name} />
+    {/if}
     <button
       type="submit"
       disabled={isLoading || gameStage != 0}
@@ -284,7 +350,7 @@
     </button>
   </form>
 
-  {#if gameStage === 0}
+  {#if gameStage === -1 || gameStage === 0}
     <!-- Songs (gameStage 0 only) -->
     <div class="flex items-center justify-center mt-10">
       {#if isLoading}
@@ -323,7 +389,7 @@
               disabled={searchMade || noMore}
               on:click={() => handleShowMore()}
             >
-              {#if isLoadingMore}
+              {#if isLoadingMore || gameStage === -1}
                 <span class="loading loading-spinner"></span> Loading...
               {:else}
                 Show More
@@ -396,11 +462,13 @@
 </div>
 
 <YouWin
-  startArtistName={startArtist.name}
-  goalArtistName={goalArtist.name}
+  startArtistName={startArtist?.name}
+  goalArtistName={goalArtist?.name}
   {numGuesses}
   {isCustom}
   {dateStamp}
+  {usedHint}
+  {path}
   bind:this={youWinModal}
 />
 

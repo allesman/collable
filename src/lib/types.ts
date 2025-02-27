@@ -30,6 +30,6 @@ export interface DailyGame {
   date?: string;
 }
 
-export interface StoredData {
+export interface AllData {
   [date: string]: DailyGame;
 }
