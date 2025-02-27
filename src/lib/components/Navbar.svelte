@@ -57,7 +57,10 @@
   >
 
   <!-- aligned right -->
-  <div class="navbar-end pr-2">
+  <div class="navbar-end pr-2 gap-2">
+    <a href="https://www.instagram.com/collable.app/" target="_blank">
+      <Icon icon="mdi:instagram" class="w-10 h-10"></Icon>
+    </a>
     <ThemeSwitch />
   </div>
 </div>
