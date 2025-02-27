@@ -23,6 +23,8 @@
 
   // counting how many guesses the user has made
   let numGuesses: number = 0;
+  // saving the path traversed
+  let path: string[] = [startArtist.name];
   // saving whether a search has been made
   let searchMade: boolean = false;
 
@@ -44,6 +46,7 @@
 
   import Hint from "$lib/components/Hint.svelte";
   let hint: Hint;
+  let usedHint: boolean = false;
 
   async function handleSearch(event: SubmitEvent) {
     event.preventDefault();
@@ -117,6 +120,8 @@
       ];
       // also only then increment the number of guesses
       numGuesses++;
+      // and add the artist to the path
+      path.push(artistObj.name);
     }
     gameStage = 0;
     searchResults = [];
@@ -182,7 +187,7 @@
   }
 
   function handleGetHint(): void {
-    // TODO: include whether was used in result
+    usedHint = true;
     hint.openModal();
   }
   import { onMount } from "svelte";
@@ -401,6 +406,8 @@
   {numGuesses}
   {isCustom}
   {dateStamp}
+  {usedHint}
+  {path}
   bind:this={youWinModal}
 />
 

@@ -7,17 +7,20 @@
   export let goalArtistName: string;
   export let isCustom: boolean;
   export let dateStamp: string;
+  export let usedHint: boolean;
+  export let path: string[];
   export function openModal() {
     dialog.showModal();
   }
 
   let copyMessage: string | undefined = undefined;
-  function copyToClipboard() {
+  function copyResultToClipboard() {
     const text = `🎵  ${isCustom ? `Custom Collable ✨` : `Collable ${dateStamp}`}
 
-${startArtistName} → 👤 ${numGuesses - 1} → ${goalArtistName}
+${startArtistName} → 👤 ${numGuesses - 1} → ${goalArtistName}${usedHint ? " 💡" : ""}
 
-${window.location.href}`;
+${isCustom ? window.location.href : "https://collable.app"}`; // To avoid unnecessary parameters (e.g. added by ig) at least for daily games
+    // TODO: do same for custom games
     navigator.clipboard
       .writeText(text)
       .then(() => {
@@ -28,6 +31,21 @@ ${window.location.href}`;
       })
       .catch((err) => {
         copyMessage = "Failed to copy results to clipboard :(";
+      });
+  }
+
+  function copySolutionToClipboard() {
+    const text = "||" + path.join(" → ") + "||";
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        copyMessage = "Copied solution to clipboard!";
+        setTimeout(() => {
+          copyMessage = undefined;
+        }, 1500);
+      })
+      .catch((err) => {
+        copyMessage = "Failed to copy solution to clipboard :(";
       });
   }
 </script>
@@ -48,8 +66,17 @@ ${window.location.href}`;
       <span class="text-primary font-bold">{goalArtistName}</span>!
     </p>
     <div class="modal-actions">
-      <button class="btn btn-primary text-base" on:click={copyToClipboard}>
+      <button
+        class="btn btn-primary text-base"
+        on:click={copyResultToClipboard}
+      >
         <Icon icon="mdi:share-variant" class="text-xl" />Share
+      </button>
+      <button
+        class="btn btn-primary text-base"
+        on:click={copySolutionToClipboard}
+      >
+        <Icon icon="mdi:content-copy" class="text-xl" />Copy Path
       </button>
     </div>
   </div>
