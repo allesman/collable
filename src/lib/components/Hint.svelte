@@ -10,7 +10,9 @@
     let noMore: boolean = false; // for when there are no more songs to load
     export function openModal() {
         dialog.showModal();
-        handleShowMore();
+        if (defaultSongs.length === 0) {
+            handleShowMore();
+        }
     }
     async function handleShowMore() {
         isLoadingMore = true;
@@ -55,7 +57,7 @@
         </form>
         <h3 class="text-2xl font-bold">Hint</h3>
         These are the top songs of<span class="text-primary font-bold">
-            &nbsp;{artistObj.name}</span
+            &nbsp;{artistObj?.name}</span
         >:
         <!-- </div> -->
         <div class="flex items-center justify-center mt-10">
