@@ -23,22 +23,28 @@
       <span class="font-bold text-shadow-soft shadow-base-content"
         >collable</span
       >
-      is all about connecting the dots between different artists! Your task is to
-      get from a <span class="font-bold">Start Artist</span> to a
-      <span class="font-bold">Goal Artist</span>.
+      is all about connecting the dots between different artists!
     </p>
+    <!-- <p class="py-1 text-2xl">
+      Your task is to get from a <span class="font-bold">Start Artist</span> to
+      a
+      <span class="font-bold">Goal Artist</span>.
+    </p> -->
     <p class="py-1 text-2xl">
       Move from one artist to another through songs that <span class="font-bold"
         >feature both artists</span
-      >. You can either click on any of the songs listed or search for a
-      specific one.
+      >.
     </p>
+
+    <!-- <p class="py-1 text-2xl">
+      You can either click on any of the songs listed or search for a specific
+      one.
+    </p> -->
     <p class="py-1 text-2xl">
-      Try to make your way to the Goal Artist in as few steps as possible! If
-      you get stuck, you can use the
+      If you get stuck, use the
       <span class="inline-flex">
         <Icon icon="mdi:lightbulb" class="text-xl font-bold" />
-      </span> <span class="font-bold">Hint</span> to see their top songs.
+      </span> <span class="font-bold">Hint</span>.
     </p>
     <div class="modal-actions pt-3">
       <button class="btn btn-primary text-base" on:click={handleExampleGame}>
