@@ -305,7 +305,6 @@
     class="m-2 text-4xl font-bold flex justify-center items-center text-shadow-soft shadow-base-content"
   >
     {#if goalArtist}
-      <!-- FIXME -->
       <img
         class="w-12 rounded-full m-2 mr-5"
         src={artistObj?.image_url}
