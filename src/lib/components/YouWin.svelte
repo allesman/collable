@@ -15,12 +15,18 @@
 
   let copyMessage: string | undefined = undefined;
   function copyResultToClipboard() {
+    const url = new URL(window.location.href);
+    // To avoid unnecessary parameters (e.g. added by ig)
+    const trimmedUrl =
+      "https://collable.app" +
+      (isCustom
+        ? `/custom?s=${url.searchParams.get("s")}&g=${url.searchParams.get("g")}`
+        : "");
     const text = `🎵  ${isCustom ? `Custom Collable ✨` : `Collable ${dateStamp}`}
 
 ${startArtistName} → 👤 ${numGuesses - 1} → ${goalArtistName}${usedHint ? " 💡" : ""}
 
-${isCustom ? window.location.href : "https://collable.app"}`; // To avoid unnecessary parameters (e.g. added by ig) at least for daily games
-    // TODO: do same for custom games
+${trimmedUrl}`;
     navigator.clipboard
       .writeText(text)
       .then(() => {
