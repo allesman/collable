@@ -278,7 +278,6 @@
           <div class="w-24 h-6 skeleton"></div>
         {/if}
       </div>
-      <!-- TODO: not 100% happy with this design yet -->
       <div class="flex justify-center mt-3">
         <div
           class="badge badge-ghost rounded-full text-shadow-soft shadow-neutral-600 text-neutral-600"
