@@ -10,6 +10,8 @@ import GeniusApi from "./GeniusApi.ts";
 import { error } from "@sveltejs/kit";
 import type { DailyGame } from "./types.ts";
 
+import artistsRaw from '$lib/assets/artists.csv?raw';
+
 let artistsList: string[] = [];
 
 export async function createNewGamesUntil(untilDateStr: string) {
@@ -71,18 +73,8 @@ async function getArtistList(): Promise<string[]> {
     if (artistsList.length > 0) {
         return artistsList;
     }
-    // FIXME: dude temporary asf fix
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    let artistsFilePath = __dirname + '/../../../../../client/artists.csv';
-    if (!fs.existsSync(artistsFilePath)) {
-        // Development mode
-        artistsFilePath = __dirname + '/../../static/artists.csv';
-    }
-
     return new Promise((resolve, reject) => {
-        fs.createReadStream(artistsFilePath)
-            .pipe(csv.parse({ headers: false }))
+        csv.parseString(artistsRaw, { headers: false })
             .on('error', error => {
                 console.error(error);
                 reject(error);
@@ -94,5 +86,3 @@ async function getArtistList(): Promise<string[]> {
             });
     });
 }
-
-// getArtistList();
