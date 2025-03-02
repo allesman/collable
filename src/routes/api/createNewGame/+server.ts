@@ -22,7 +22,7 @@ export async function GET({ url, request, fetch }) {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     try {
         if (batch && date && dateRegex.test(date)) {
-            let games = await createNewGamesUntil(date);
+            const games = await createNewGamesUntil(date);
             // make fetch request to ensure that the code is executed
             await fetch('/', { method: 'GET' });
             return new Response(JSON.stringify({ message: `Success! Created ${games.length} games until ${date}!`, gamesCreated: games }), { status: 200 });
@@ -32,7 +32,7 @@ export async function GET({ url, request, fetch }) {
         }
         else if (!date || dateRegex.test(date)) {
             // create new game
-            let game = await createNewGame(date, startArtist, goalArtist);
+            const game = await createNewGame(date, startArtist, goalArtist);
             // make fetch request to ensure that the code is executed
             await fetch('/', { method: 'GET' });
             // return response

@@ -1,9 +1,6 @@
 import { pushToDB, getAllData } from "./dbUtil.js";
-import fs from 'fs';
 import csv from 'fast-csv';
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import { DateTime } from "luxon";
 
 import GeniusApi from "./GeniusApi.ts";
@@ -16,10 +13,12 @@ let artistsList: string[] = [];
 
 export async function createNewGamesUntil(untilDateStr: string) {
     const date = DateTime.fromISO(untilDateStr);
+    // eslint-disable-next-line prefer-const
     let games = [];
     // get todays date
     const data = await getAllData();
     let latestDateStr = DateTime.now().setZone('Pacific/Kiritimati').toFormat("yyyy-MM-dd");
+    // eslint-disable-next-line prefer-const
     let latestDate = DateTime.fromISO(latestDateStr);
     const existingDates = new Set(Object.keys(data));
     while (latestDate < date) {
@@ -41,7 +40,7 @@ export async function createNewGamesUntil(untilDateStr: string) {
 export async function createNewGame(dateStr?: string, startArtist?: string, goalArtist?: string): Promise<DailyGame> {
     if (!startArtist || !goalArtist) {
         // one or both artists are not provided, get random artists
-        let artistsList: string[] = await getArtistList();
+        const artistsList: string[] = await getArtistList();
         const getRandomArtist = () => artistsList[Math.floor(Math.random() * artistsList.length)];
         do {
             startArtist = getRandomArtist();
@@ -54,11 +53,11 @@ export async function createNewGame(dateStr?: string, startArtist?: string, goal
         return error(422, { message: "Start artist and goal artist can't be the same" });
     }
     const geniusApi = await GeniusApi.initialize();
-    let startArtistObj = await geniusApi.getArtistInfoFromName(startArtist);
+    const startArtistObj = await geniusApi.getArtistInfoFromName(startArtist);
     if (!startArtistObj) {
         throw error(422, { message: `Artist "${startArtist}" not found` });
     }
-    let goalArtistObj = await geniusApi.getArtistInfoFromName(goalArtist);
+    const goalArtistObj = await geniusApi.getArtistInfoFromName(goalArtist);
     if (!goalArtistObj) {
         throw error(422, { message: `Artist "${goalArtist}" not found` });
     }
@@ -73,7 +72,7 @@ async function getArtistList(): Promise<string[]> {
     if (artistsList.length > 0) {
         return artistsList;
     }
-    return new Promise((resolve, reject) => {
+    artistsList = await new Promise((resolve, reject) => {
         csv.parseString(artistsRaw, { headers: false })
             .on('error', error => {
                 console.error(error);
@@ -85,4 +84,5 @@ async function getArtistList(): Promise<string[]> {
                 resolve(artistsList);
             });
     });
+    return artistsList;
 }

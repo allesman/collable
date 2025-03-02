@@ -1,7 +1,6 @@
 import { fetchData } from '$lib/dbUtil.js';
 import GeniusApi from '$lib/GeniusApi.js';
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 import type { DailyGame } from '$lib/types.js';
 
 export async function POST({ request }) {
@@ -18,7 +17,7 @@ export async function POST({ request }) {
         const dateStamp = game.date;
         return json({ startArtist, goalArtist, dateStamp });
     } catch (e) {
-        console.error(`Problem with reading Stored Data aka ${JSON.stringify(game)}`);
+        console.error(`Problem with reading Stored Data aka ${JSON.stringify(game)}: ${e}`);
     }
     return json({ message: "hi" });
 }

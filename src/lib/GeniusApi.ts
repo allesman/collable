@@ -1,5 +1,4 @@
 import { CLIENT_ID, CLIENT_SECRET } from "$env/static/private";
-import { error } from "console";
 import { ClientCredentials, type AccessToken } from "simple-oauth2";
 
 export default class GeniusApi {

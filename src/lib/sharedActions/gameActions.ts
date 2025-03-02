@@ -1,6 +1,4 @@
-import { getDefaultSongs } from "$lib/gameUtils";
 import GeniusApi from "$lib/GeniusApi";
-import type { Song } from "$lib/types";
 import { error, type RequestEvent } from "@sveltejs/kit";
 
 export const gameActions = {
@@ -27,7 +25,7 @@ export const gameActions = {
       const data = await geniusApi.searchGenius(finalQuery);
       const searchResults = [];
       for (let i = 0; i < data.length; i++) {
-        let primary = data[i].result.primary_artists;
+        const primary = data[i].result.primary_artists;
         const features = data[i].result.featured_artists;
         const combinedArtists = primary.concat(features);
         // searchResults.push(data[i]); // Debug line, uncomment to see all results

@@ -1,7 +1,6 @@
 import { getDefaultSongs } from '$lib/gameUtils';
 import type { Song } from '$lib/types';
 import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 
 // TODO: caching
 export async function POST({ request }) {

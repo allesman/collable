@@ -14,7 +14,7 @@ export async function fetchData(date: string): Promise<DailyGame> {
     let latestData = data[date];
     if (!latestData) {
       // today has no data, get the latest data available
-      var lowerKeys = dates.filter(function (dateStr) {
+      const lowerKeys = dates.filter(function (dateStr) {
         return DateTime.fromISO(dateStr) < DateTime.now();
       })
       latestDate = lowerKeys.pop() || "";
