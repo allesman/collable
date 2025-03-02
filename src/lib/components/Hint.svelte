@@ -45,7 +45,12 @@
     let submitting = false;
 </script>
 
-<dialog class="modal" id="my_modal_1" bind:this={dialog}>
+<dialog
+    class="modal invisible"
+    id="my_modal_1"
+    bind:this={dialog}
+    tabindex="-1"
+>
     <div class="modal-box rounded-2xl">
         <!-- <div class="bg-base-100 sticky top-0 z-50"> -->
         <form method="dialog">

@@ -56,7 +56,12 @@ ${trimmedUrl}`;
   }
 </script>
 
-<dialog class="modal" id="my_modal_1" bind:this={dialog}>
+<dialog
+  class="modal invisible"
+  id="my_modal_1"
+  bind:this={dialog}
+  tabindex="-1"
+>
   <div class="modal-box">
     <form method="dialog">
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"

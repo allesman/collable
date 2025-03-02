@@ -3,8 +3,12 @@
   let invalidArtists: { s: boolean; g: boolean } = { s: false, g: false };
   let sameArtists: boolean = false;
   let errorMessage: string = "";
+  let focusOnThis: HTMLInputElement | null = null;
   export function openModal() {
     dialog.showModal();
+    if (focusOnThis) {
+      focusOnThis.focus();
+    }
   }
   async function handleCreateCustomGame(event: SubmitEvent) {
     event.preventDefault();
@@ -43,7 +47,12 @@
   let submitting = false;
 </script>
 
-<dialog class="modal" id="my_modal_1" bind:this={dialog}>
+<dialog
+  class="modal invisible"
+  id="my_modal_1"
+  bind:this={dialog}
+  tabindex="-1"
+>
   <div class="modal-box rounded-2xl">
     <form method="dialog">
       <button
@@ -65,7 +74,8 @@
         placeholder="Start Artist"
         name="startArtist"
         id="startArtist"
-        class="input input-bordered rounded-xl"
+        class="input input-bordered rounded-x visible"
+        bind:this={focusOnThis}
         required
       />
       {#if invalidArtists.s}
