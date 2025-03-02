@@ -24,7 +24,7 @@ export async function fetchData(date: string): Promise<DailyGame> {
       latestData = data[latestDate];
     }
 
-    latestData["date"] = latestDate;
+    latestData["date"] = DateTime.fromISO(latestDate).toFormat("MM-dd-yyyy");
 
     return latestData;
 
