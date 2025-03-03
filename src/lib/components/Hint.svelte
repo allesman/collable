@@ -84,6 +84,8 @@
                                     class="w-8 rounded mr-1"
                                     src={hit.song_art_image_thumbnail_url}
                                     alt={hit.title}
+                                    width="8"
+                                    height="8"
                                 />
                                 <span>{hit.title}</span>
                                 <span

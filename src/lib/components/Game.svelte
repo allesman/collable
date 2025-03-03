@@ -247,6 +247,8 @@
             class="w-10 rounded-full"
             src={startArtist.image_url}
             alt={startArtist.name}
+            width="10"
+            height="10"
           />
           {startArtist.name}
         {:else}
@@ -263,6 +265,8 @@
             class="w-10 rounded-full"
             src={goalArtist.image_url}
             alt={goalArtist.name}
+            width="10"
+            height="10"
           />
           <div class="flex items-center gap-1">
             {goalArtist.name}
@@ -308,6 +312,8 @@
         class="w-12 rounded-full m-2 mr-5"
         src={artistObj?.image_url}
         alt={artistObj?.name}
+        width="12"
+        height="12"
       />{artistObj?.name}
     {:else}
       <div class="w-12 h-12 rounded-full m-2 mr-5 skeleton"></div>
@@ -417,6 +423,8 @@
             class="w-8 rounded mr-1"
             src={song.song_art_image_thumbnail_url}
             alt={song.title}
+            width="8"
+            height="8"
           />
           {song.title}
         {/if}
