@@ -31,6 +31,7 @@
     <button
       class="btn btn-m btn-neutral rounded-xl"
       on:click={() => createCustomGame.openModal()}
+      aria-label="Create a custom game"
     >
       <Icon icon="mdi:sparkles-outline" class="text-xl" />
       <span class="hidden xs:block">Custom</span>
@@ -39,6 +40,7 @@
     <button
       class="btn btn-m btn-neutral rounded-xl"
       on:click={() => tutorial.openModal()}
+      aria-label="How to play"
     >
       <Icon icon="mdi:help-circle-outline" class="text-xl" />
       <span class="hidden md:block">How To Play</span>
@@ -61,7 +63,11 @@
     <!-- <a href="https://www.tiktok.com/collable_app/" target="_blank">
       <Icon icon="proicons:tiktok" class="w-10 h-10"></Icon>
     </a> -->
-    <a href="https://www.instagram.com/collable.app/" target="_blank">
+    <a
+      href="https://www.instagram.com/collable.app/"
+      target="_blank"
+      aria-label="Instagram Page"
+    >
       <Icon icon="mdi:instagram" class="w-10 h-10"></Icon>
     </a>
     <ThemeSwitch />

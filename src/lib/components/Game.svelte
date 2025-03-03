@@ -273,6 +273,7 @@
             <button
               on:click={handleGetHint}
               class="btn btn-ghost btn-circle btn-sm"
+              aria-label="Get Hint"
             >
               <Icon icon="mdi:lightbulb" class="text-2xl font-bold" />
             </button>
@@ -301,7 +302,7 @@
   </div>
 </div>
 
-<div class="p-3">
+<div class="p-3 min-w-max min-h-max">
   <!-- TODO: extract more into components? -->
   <!-- Name of current artist -->
   <div

@@ -5,6 +5,7 @@
     class="theme-controller"
     value="retro"
     name="theme-switch"
+    aria-label="Switch between light and dark mode"
   />
   <!-- sun icon -->
   <svg
