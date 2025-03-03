@@ -302,7 +302,7 @@
   </div>
 </div>
 
-<div class="p-3 min-w-max min-h-max">
+<div class="p-3 min-w-full min-h-max">
   <!-- TODO: extract more into components? -->
   <!-- Name of current artist -->
   <div
