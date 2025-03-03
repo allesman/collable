@@ -14,7 +14,7 @@
   function checkFirstVisit() {
     if (localStorage.getItem("was_visited") !== "true") {
       setTimeout(() => {
-        tutorial.openModal();
+        // tutorial.openModal();
         // console.log("first visit");
       }, 10);
       localStorage.setItem("was_visited", "true");
