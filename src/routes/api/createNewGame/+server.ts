@@ -20,6 +20,9 @@ export async function GET({ url, request, fetch }) {
     const goalArtist = url.searchParams.get("g") || undefined;
     const batch = url.searchParams.has("batch");
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+    console.log("Creating new game");
+
     try {
         if (batch && date && dateRegex.test(date)) {
             const games = await createNewGamesUntil(date);
