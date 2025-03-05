@@ -25,13 +25,13 @@
       const customArtists = JSON.parse(JSON.parse(result.data)[0]);
       dialog.close();
       // redirect to custom game page
-      const popUp = window.open(
-        `/custom?s=${customArtists.startArtistId}&g=${customArtists.goalArtistId}`,
-      );
+      const customPath = `/custom?s=${customArtists.startArtistId}&g=${customArtists.goalArtistId}`;
+      const popUp = window.open(customPath);
       if (popUp == null || typeof popUp == "undefined") {
-        alert(
-          "Your browser is blocking pop-ups. To use custom games, please check your browser settings and allow pop-ups for this website.",
+        console.log(
+          "Your browser is blocking pop-ups. To let new games open up in a new tab, please check your browser settings and allow pop-ups for this website.",
         );
+        window.location.href = customPath;
       }
     } else if (response.status === 404) {
       const error = await response.json();
