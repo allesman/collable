@@ -25,9 +25,14 @@
       const customArtists = JSON.parse(JSON.parse(result.data)[0]);
       dialog.close();
       // redirect to custom game page
-      window.open(
+      const popUp = window.open(
         `/custom?s=${customArtists.startArtistId}&g=${customArtists.goalArtistId}`,
       );
+      if (popUp == null || typeof popUp == "undefined") {
+        alert(
+          "Your browser is blocking pop-ups. To use custom games, please check your browser settings and allow pop-ups for this website.",
+        );
+      }
     } else if (response.status === 404) {
       const error = await response.json();
       invalidArtists = error.error.invalidArtists;
