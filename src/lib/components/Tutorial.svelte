@@ -46,7 +46,7 @@
       one.
     </p> -->
     <p class="py-1 text-2xl">
-      If you get stuck, use the
+      If you're stuck, use the
       <span class="inline-flex">
         <Icon icon="mdi:lightbulb" class="text-xl font-bold" />
       </span> <span class="font-bold">Hint</span>.
