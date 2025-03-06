@@ -21,15 +21,16 @@
             body: JSON.stringify({
                 artistId: artistObj.id,
                 amount: defaultSongs.length + showMoreAmount,
+                featuringOnly: true,
             }),
         });
         if (response.ok) {
             let { newSongs } = await response.json();
             defaultSongs = [...defaultSongs, ...newSongs];
-            console.assert(newSongs.length > 0, "No default songs returned");
-            // less songs than requested, so no more to load after this (1 unit of grace because sometimes the genius API is weird and returns less than requested)
-            noMore = newSongs.length < showMoreAmount - 1;
-            // console.log(noMore ? defaultSongs.length : "");
+            // console.assert(newSongs.length > 0, "No default songs returned");
+            // // less songs than requested, so no more to load after this (1 unit of grace because sometimes the genius API is weird and returns less than requested)
+            // noMore = newSongs.length < showMoreAmount - 1;
+            // // console.log(noMore ? defaultSongs.length : "");
         } else {
             noMore = true;
         }
@@ -61,7 +62,7 @@
             >
         </form>
         <h3 class="text-2xl font-bold">Hint</h3>
-        These are the top songs of<span class="text-primary font-bold">
+        These are the top songs featuring<span class="text-primary font-bold">
             &nbsp;{artistObj?.name}</span
         >:
         <!-- </div> -->

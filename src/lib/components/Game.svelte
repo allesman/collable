@@ -196,6 +196,7 @@
       body: JSON.stringify({
         artistId: artistObj.id,
         amount: defaultSongs.length + showMoreAmount,
+        featuringOnly: false,
       }),
     });
     if (response.ok) {
