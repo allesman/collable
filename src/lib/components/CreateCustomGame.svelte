@@ -6,9 +6,7 @@
   let focusOnThis: HTMLInputElement | null = null;
   export function openModal() {
     dialog.showModal();
-    if (focusOnThis) {
-      focusOnThis.focus();
-    }
+    focusOnThis ? focusOnThis.focus() : null;
   }
   async function handleCreateCustomGame(event: SubmitEvent) {
     event.preventDefault();
