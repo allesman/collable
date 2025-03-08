@@ -1,0 +1,17 @@
+name = "musicalle"
+type = "javascript"
+account_id = "your-cloudflare-account-id"
+workers_dev = true
+compatibility_date = "2023-10-01"
+nodejs_compat = true
+platform = "node"
+
+[build]
+command = "npm run build"
+cwd = "./"
+watch_dir = "./src"
+
+[env.production]
+workers_dev = false
+zone_id = "your-cloudflare-zone-id"
+route = "https://https://collable-14jyo4rf9-allesman-studios.vercel.app//*"
