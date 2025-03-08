@@ -50,7 +50,8 @@
 		"firebase": "^10.13.0",
 		"luxon": "^3.5.0",
 		"simple-oauth2": "^5.1.0",
-		"tsx": "^4.19.2"
+		"tsx": "^4.19.2",
+		"wrangler": "^3.114.0"
 	},
 	"overrides": {
 		"cookie": "0.7.0",
