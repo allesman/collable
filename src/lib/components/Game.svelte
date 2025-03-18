@@ -120,18 +120,19 @@
     gameStage = 1;
     error = null;
     song = searchResults[index] ?? defaultSongs[index];
-    const response = await fetch("api/getAppleMusicId", {
-      method: "POST",
-      body: JSON.stringify({
-        songId: song.id,
-      }),
-    });
-    if (response.ok) {
-      let { apple_music_id } = await response.json();
-      song = { ...song, apple_music_id };
-    } else {
-      error = "Something went wrong while loading data for new song";
-    }
+    // const response = await fetch("api/getAppleMusicId", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     songId: song.id,
+    //   }),
+    // });
+    // if (response.ok) {
+    //   let { apple_music_id } = await response.json();
+    //   song = { ...song, apple_music_id };
+    // } else {
+    //   error = "Something went wrong while loading data for new song";
+    // }
+
     // searchMade = false;
     // document
     //   .getElementById("apple-music-player")
