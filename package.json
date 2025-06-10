@@ -53,7 +53,6 @@
 	},
 	"overrides": {
 		"cookie": "0.7.0",
-		"undici": "6.21.1",
 		"esbuild": "0.25.0"
 	}
 }
