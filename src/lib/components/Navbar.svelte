@@ -74,8 +74,9 @@
       href="https://www.linktr.ee/collableapp"
       target="_blank"
       aria-label="Linktree"
+      class="btn btn-m btn-neutral rounded-xl"
     >
-      <Icon icon="mdi:link-variant" class="w-10 h-10"></Icon>
+      <Icon icon="mdi:link-variant" class="text-xl"></Icon>
       <!-- <Icon icon="mdi:share-variant-outline" class="w-10 h-10"></Icon> -->
     </a>
     <ThemeSwitch />
