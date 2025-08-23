@@ -49,7 +49,7 @@
 
   <a
     href="/"
-    class="btn btn-ghost btn-lg text-4xl navbar-center text-shadow-softer shadow-base-content"
+    class="btn btn-ghost btn-lg text-4xl navbar-center text-shadow-soft shadow-base-content"
     on:click|preventDefault={() => {
       const htmlElement = document.querySelector("html");
       if (htmlElement) {
