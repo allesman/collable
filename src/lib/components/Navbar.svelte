@@ -73,8 +73,9 @@
       href="https://www.ko-fi.com/collable"
       target="_blank"
       aria-label="Donation Link"
+      class="btn btn-m btn-neutral rounded-xl"
     >
-      <Icon icon="mdi:gift-outline" class="w-10 h-10 text-warning "></Icon>
+      <Icon icon="mdi:gift-outline" class="text-xl text-warning "></Icon>
     </a>
     <!-- <a href="https://www.tiktok.com/collable_app/" target="_blank">
       <Icon icon="proicons:tiktok" class="w-10 h-10"></Icon>
@@ -86,15 +87,14 @@
     >
       <Icon icon="mdi:instagram" class="w-10 h-10"></Icon>
     </a> -->
-    <a
+    <!-- <a
       href="https://www.linktr.ee/collableapp"
       target="_blank"
       aria-label="Linktree"
       class="btn btn-m btn-neutral rounded-xl"
     >
       <Icon icon="mdi:link-variant" class="text-xl"></Icon>
-      <!-- <Icon icon="mdi:share-variant-outline" class="w-10 h-10"></Icon> -->
-    </a>
+    </a> -->
     <ThemeSwitch />
   </div>
 </div>
