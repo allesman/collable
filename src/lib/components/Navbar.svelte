@@ -45,6 +45,15 @@
       <Icon icon="mdi:help-circle-outline" class="text-xl" />
       <span class="hidden md:block">How To Play</span>
     </button>
+    <!-- <a
+      class="btn btn-m btn-neutral rounded-xl"
+      href="https://www.ko-fi.com/collable"
+      target="_blank"
+      aria-label="Donation Site"
+    >
+      <Icon icon="mdi:gift-outline" class="text-xl" />
+      <span class="hidden lg:block">Donate</span>
+    </a> -->
   </div>
 
   <a
@@ -60,6 +69,13 @@
 
   <!-- aligned right -->
   <div class="navbar-end pr-2 gap-2">
+    <a
+      href="https://www.ko-fi.com/collable"
+      target="_blank"
+      aria-label="Donation Link"
+    >
+      <Icon icon="mdi:gift-outline" class="w-10 h-10 text-warning "></Icon>
+    </a>
     <!-- <a href="https://www.tiktok.com/collable_app/" target="_blank">
       <Icon icon="proicons:tiktok" class="w-10 h-10"></Icon>
     </a> -->

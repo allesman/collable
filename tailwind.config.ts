@@ -49,7 +49,7 @@ export default {
             secondary: "#a4cbb4",
             "base-200": "#091319",
           },
-          retro: { ...themes["retro"] },
+          retro: { ...themes["retro"], },
         },
       ]
     ,
