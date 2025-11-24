@@ -69,14 +69,20 @@
 
   <!-- aligned right -->
   <div class="navbar-end pr-2 gap-2">
-    <a
-      href="https://www.ko-fi.com/collable"
-      target="_blank"
-      aria-label="Donation Link"
-      class="btn btn-m btn-neutral rounded-xl"
-    >
-      <Icon icon="mdi:gift-outline" class="text-xl text-warning "></Icon>
-    </a>
+    <div class="indicator">
+      <!-- New Daisyui Stuff, not working in 4.x -->
+      <!-- <span class="indicator-item badge badge-primary text-xs">New</span> -->
+      <!-- Old implementation -->
+      <span class="indicator-item badge badge-warning badge-xs"></span>
+      <a
+        href="https://www.ko-fi.com/collable"
+        target="_blank"
+        aria-label="Donation Link"
+        class="btn btn-m btn-neutral rounded-xl"
+      >
+        <Icon icon="mdi:gift-outline" class="text-xl text-warning "></Icon>
+      </a>
+    </div>
     <!-- <a href="https://www.tiktok.com/collable_app/" target="_blank">
       <Icon icon="proicons:tiktok" class="w-10 h-10"></Icon>
     </a> -->
