@@ -7,6 +7,8 @@
   let createCustomGame: CreateCustomGame;
   let tutorial: Tutorial;
 
+  let isFirstVisit: boolean = true;
+
   if (typeof window !== "undefined") {
     checkFirstVisit();
   }
@@ -19,6 +21,8 @@
       }, 10);
       localStorage.setItem("was_visited", "true");
       return;
+    } else {
+      isFirstVisit = false;
     }
     // console.log("not first visit");
   }
@@ -73,7 +77,11 @@
       <!-- New Daisyui Stuff, not working in 4.x -->
       <!-- <span class="indicator-item badge badge-primary text-xs">New</span> -->
       <!-- Old implementation -->
-      <span class="indicator-item badge badge-warning badge-xs"></span>
+      <span
+        class="indicator-item badge badge-warning badge-xs {isFirstVisit
+          ? 'hidden'
+          : ''}"
+      ></span>
       <a
         href="https://www.ko-fi.com/collable"
         target="_blank"
